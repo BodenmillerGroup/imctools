@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('--acquisition', metavar='acquisition', type=str, default='all',
                         help='all or acquisition ID: acquisitions to write as tiff.')
 
-    parser.add_argument('--tiff_type', metavar='tiff_type', type=str, default='ome',
+    parser.add_argument('--tifftype',  type=str, default='ome',
                         help='ome or imagej: Write the files either with ome metadata or imagej compatible mode.'
                         )
     parser.add_argument('--compression', metavar='compression', type=int, default=0,
@@ -43,7 +43,7 @@ if __name__ == "__main__":
             outname = fn
             outname = outname.replace('.mcd', '_'+aid+'.tiff')
             iw = imc_img.get_image_writer(outname)
-            iw.save_image(mode=args.tiff_type, compression=args.compression)
+            iw.save_image(mode=args.tifftype, compression=args.compression)
 
         print('Finished!')
 
