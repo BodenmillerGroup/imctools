@@ -1,13 +1,12 @@
 # read in and display ImagePlus object(s)
 from ij import IJ
 from loci.plugins import BF
-from ij.io import OpenDialog\
+from ij.io import OpenDialog
 from loci.formats import ImageReader
 from loci.formats import MetadataTools
 import i5d.Image5D
 
 op = OpenDialog('Choose multichannel TIFF')
-
 file = op.getDirectory()+op.getFileName()
 imps = BF.openImagePlus(file)
 imag = imps[0]
