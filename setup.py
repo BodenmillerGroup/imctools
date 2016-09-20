@@ -12,7 +12,7 @@ with open('LICENSE') as f:
 setup(
     name='imctools',
     version='0.0.1',
-    description='Tools to handle IMC data'
+    description='Tools to handle IMC data',
     long_description=readme,
     author='Vito Zanotelli',
     author_email='vito.zanotelli@uzh.ch',

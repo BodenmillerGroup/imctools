@@ -3,7 +3,8 @@ This defines the IMC acquisition base class
 """
 import os
 import numpy as np
-from tiffwriter import TiffWriter
+from imctools.io.tiffwriter import TiffWriter
+import xml.etree.ElementTree as et
 
 
 
@@ -78,6 +79,12 @@ class ImcAcquisition(object):
         out_names = [label+'_'+name for label, name in zip(self.channel_labels, self.channel_names)]
         tw = TiffWriter(filename, self.get_img_stack(), channel_name=out_names, original_description=self._original_metadata)
         tw.save_image()
+
+    def get_image_writer(self, filename):
+        out_names = [label+'_'+name for label, name in zip(self.channel_labels, self.channel_names)]
+        tw = TiffWriter(filename, self.get_img_stack(), channel_name=out_names, original_description=self._original_metadata)
+        return tw
+
 
 
     @staticmethod

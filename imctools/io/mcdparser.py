@@ -2,7 +2,7 @@ import numpy as np
 import mmap
 import xml.etree.ElementTree as et
 
-from imcacquisition import ImcAcquisition
+from imctools.io.imcacquisition import ImcAcquisition
 
 class McdParser(object):
     """Parsing data from Fluidigm MCD files
@@ -151,7 +151,7 @@ class McdParser(object):
             data_offset_end = int(acquisition.find('ns:DataEndOffset', ns).text)
             data_size = (data_offset_end - data_offset_start + 1) / 4
             n_rows = data_size / n_channel
-            data = np.memmap(fn, dtype='<f', mode='r', offset=data_offset_start,
+            data = np.memmap(self._fh, dtype='<f', mode='r', offset=data_offset_start,
                              shape=(int(n_rows), n_channel))
             acquisition_dict.update({ac_id: (acquisition, data)})
 
@@ -198,6 +198,8 @@ def _add_nullbytes(buffer_str):
 
 
 if __name__ == '__main__':
+
+
     import matplotlib.pyplot as plt
     fn = '/mnt/imls-bod/data_vito/grade1.mcd'
     with McdParser(fn) as testmcd:
@@ -212,5 +214,5 @@ if __name__ == '__main__':
         # plt.figure()
         # plt.imshow(img.squeeze())
         # plt.show()
-        imc_img.save_image('/mnt/imls-bod/data_vito/test.tiff')
+        imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
     #acquisition_dict = get_mcd_data(fn, xml_public)
