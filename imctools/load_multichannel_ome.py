@@ -5,6 +5,7 @@ from ij.io import OpenDialog
 from loci.formats import ImageReader
 from loci.formats import MetadataTools
 import i5d.Image5D
+import i5d
 
 
 def load_img(file_name):

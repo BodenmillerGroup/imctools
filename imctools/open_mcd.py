@@ -7,6 +7,7 @@ from ij import ImageStack
 from loci.formats import ImageReader
 from loci.formats import MetadataTools
 import i5d.Image5D
+import i5d
 
 
 import os
