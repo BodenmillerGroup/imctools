@@ -18,7 +18,9 @@ sys.path.append(os.path.realpath(imctool_dir))
 from io import mcdparserbase
 
 if __name__ == '__main__':
-    fn = '/home/vitoz/temp/grade1.mcd'
+    #fn = '/home/vitoz/temp/grade1.mcd'
+    op = OpenDialog('Choose multichannel TIFF')
+    fn = os.path.join(op.getDirectory(), op.getFileName())
     with mcdparserbase.McdParserBase(fn) as testmcd:
         #print(testmcd.filename)
         #print(testmcd.n_acquisitions)
