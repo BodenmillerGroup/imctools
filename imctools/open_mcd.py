@@ -29,8 +29,6 @@ if __name__ == '__main__':
 
         (n_rows, n_channels) = testmcd.get_acquisition_dimensions('0')
         buffer_size = len(img_data)
-        print(buffer_size)
-        print(n_channels)
         img_channels = n_channels-3
 
 
@@ -38,7 +36,6 @@ if __name__ == '__main__':
         y_vec = [int(img_data[i]) for i in range(1, buffer_size, n_channels)]
         max_x = int(max(x_vec)+1)
         max_y = int(max(y_vec)+1)
-        print(max_x, max_y )
         #imp = IJ.createHyperStack('test', max_x, max_y, n_channels, 1, 1, 32)
         stack = ImageStack.create(max_x, max_y, img_channels, 32)
 
@@ -59,7 +56,7 @@ if __name__ == '__main__':
         # idx = range(6, buffer_size, n_channels)
         # for i in range(max_y*max_x):
         #     pix[i] = img_data[idx[i]]
-        i5d_img = i5d.Image5D('test', stack, n_channels, 1, 1)
+        i5d_img = i5d.Image5D('test', stack, img_channels, 1, 1)
         for i in range(img_channels):
             (name, label) = channel_dict[i+3]
             cid = label + '_' + name
