@@ -1,3 +1,4 @@
+from __future__ import with_statement, division
 import xml.etree.ElementTree as et
 import struct
 
@@ -73,8 +74,6 @@ class McdParserBase(object):
         (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
         buffer = self.get_acquisition_buffer(ac_id)
         bufformat = '<'+str(int(n_rows*n_channel)) +'f'
-        print(bufformat)
-        print(data_size)
         data = struct.unpack(bufformat, buffer)
         return data
 
@@ -96,8 +95,8 @@ class McdParserBase(object):
         """
         ns = self._ns
         xml = self._xml
-        return [channel_xml for channel_xml in xml.findall('ns:AcquisitionChannel', ns)
-                if channel_xml.find('ns:AcquisitionID', ns).text == ac_id]
+        return [channel_xml for channel_xml in xml.findall(ns+'AcquisitionChannel')
+                if channel_xml.find(ns+'AcquisitionID').text == ac_id]
 
     def get_acquisition_channels(self, ac_id):
         """
@@ -109,9 +108,9 @@ class McdParserBase(object):
         channel_xmls = self.get_acquisition_channels_xml(ac_id)
         channel_dict = dict()
         for cxml in channel_xmls:
-            channel_name = cxml.find('ns:ChannelName', ns).text
-            order_nr = int(cxml.find('ns:OrderNumber', ns).text)
-            channel_lab = cxml.find('ns:ChannelLabel', ns).text
+            channel_name = cxml.find(ns+'ChannelName').text
+            order_nr = int(cxml.find(ns+'OrderNumber').text)
+            channel_lab = cxml.find(ns+'ChannelLabel').text
             channel_dict.update({order_nr: (channel_name, channel_lab)})
 
         return channel_dict
@@ -125,13 +124,13 @@ class McdParserBase(object):
         acquisition_dict = dict()
         xml = self._xml
         ns = self._ns
+        # TODO: There can be different number of channels per acquisition! Check acquisition channel!
+        n_channel = int(len(xml.findall(ns+'AcquisitionChannel')))
 
-        n_channel = int(len(xml.findall('ns:AcquisitionChannel', ns)))
-
-        for acquisition in xml.findall('ns:Acquisition', ns):
-            ac_id = acquisition.find('ns:ID', ns).text
-            data_offset_start = int(acquisition.find('ns:DataStartOffset', ns).text)
-            data_offset_end = int(acquisition.find('ns:DataEndOffset', ns).text)
+        for acquisition in xml.findall(ns+'Acquisition'):
+            ac_id = acquisition.find(ns+'ID').text
+            data_offset_start = int(acquisition.find(ns+'DataStartOffset').text)
+            data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
             data_size = (data_offset_end - data_offset_start + 1)
             n_rows = data_size/ (n_channel*4)
             data_param = (data_offset_start, data_size, n_rows, n_channel)
@@ -175,8 +174,9 @@ class McdParserBase(object):
 
         f.seek(xml_start)
         xml = f.read(xml_stop-xml_start).decode('utf-8')
+        xml = xml.replace('\x00','')
         self._xml = et.fromstring(xml)
-        self._ns = {'ns': self._xml.tag.split('}')[0].strip('{')}
+        self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
 
 
     def get_imc_acquisition(self, ac_id):
