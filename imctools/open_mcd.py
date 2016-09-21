@@ -61,7 +61,8 @@ if __name__ == '__main__':
         #     pix[i] = img_data[idx[i]]
         i5d_img = i5d.Image5D('test', stack, n_channels, 1, 1)
         for i in range(img_channels):
-            cid = '_'.join(channel_dict[i+3])
+            (name, label) = channel_dict[i+3]
+            cid = label + '_' + name
             i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
 
         i5d_img.setDefaultColors()
