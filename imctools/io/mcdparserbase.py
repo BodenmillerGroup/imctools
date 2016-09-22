@@ -42,7 +42,7 @@ class McdParserBase(object):
         Acquisition IDs
         :return:
         """
-        return self._acquisition_dict.keys()
+        return list(self._acquisition_dict.keys())
 
     def get_acquisition_xml(self, ac_id):
         """

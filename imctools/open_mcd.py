@@ -1,6 +1,8 @@
 from __future__ import with_statement, division
 
+
 from ij import IJ
+import ij.gui as gui
 from loci.plugins import BF
 from ij.io import OpenDialog
 from ij import ImageStack
@@ -56,13 +58,34 @@ def convert_mcd_to_img(mcd_parser, ac_id):
 
     return i5d_img
 
+def choose_acquisition_dialog(mcd_parser):
+    """
+
+    :param mcd_parser:
+    :return:
+    """
+    gd = gui.GenericDialog('Choose Acquisition')
+
+    ac_ids = mcd_parser.acquisition_ids
+    bools = [False for aid in ac_ids]
+    bools[0] = True
+    gd.addCheckboxGroup(len(ac_ids), 1, ac_ids, bools)
+    gd.showDialog()
+    if not gd.wasCanceled():
+        return [aid for aid in ac_ids if gd.getNextBoolean()]
+    else:
+        return []
+
 if __name__ == '__main__':
 
     op = OpenDialog('Choose mcd file')
     fn = os.path.join(op.getDirectory(), op.getFileName())
 
     with mcdparserbase.McdParserBase(fn) as mcd_parser:
-        ac_ids = mcd_parser.acquisition_ids
-        i5d_img = convert_mcd_to_img(mcd_parser, ac_id=ac_ids[0])
-    i5d_img.show()
+        ac_ids = choose_acquisition_dialog(mcd_parser)
+
+        if len(ac_ids) > 0:
+            for aid in ac_ids:
+                i5d_img = convert_mcd_to_img(mcd_parser, ac_id=aid)
+                i5d_img.show()
 
