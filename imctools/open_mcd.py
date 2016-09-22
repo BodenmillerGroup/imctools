@@ -51,6 +51,9 @@ def convert_mcd_to_img(mcd_parser, ac_id):
     i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
     for i in range(img_channels):
         (name, label) = channel_dict[i + 3]
+        if label is None:
+            label = name
+
         cid = label + '_' + name
         i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
 

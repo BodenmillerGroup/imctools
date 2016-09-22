@@ -184,21 +184,9 @@ class McdParserBase(object):
         f.seek(xml_start)
         xml = f.read(xml_stop-xml_start).decode('utf-8')
         xml = xml.replace('\x00','')
+        print(xml)
         self._xml = et.fromstring(xml)
         self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
-
-
-    def get_imc_acquisition(self, ac_id):
-
-        data = self.get_acquisition_rawdata(ac_id)
-        nchan = data.shape[1]
-        channels = self.get_acquisition_channels(ac_id)
-        channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
-        return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
-                              data=self.get_acquisition_rawdata(ac_id),
-                              channel_names=channel_name,
-                              channel_labels=channel_label,
-                              original_metadata=str(et.tostring(self._xml, encoding='utf8', method='xml')))
 
     def close(self):
         """Close the file handle."""
