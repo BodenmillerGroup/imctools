@@ -47,7 +47,8 @@ def convert_mcd_to_img(mcd_parser, ac_id):
             cur_proc.putPixelValue(x, y, v)
 
     file_name = os.path.split(mcd_parser.filename)[1].replace('.mcd','')
-    file_name = '_'.join((file_name,ac_id))
+    description = mcd_parser.get_acquisition_description(aid, default='Acquisition' + aid)
+    file_name = '_'.join((file_name,'a'+ac_id, 'd'+description))
     i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
     for i in range(img_channels):
         (name, label) = channel_dict[i + 3]
@@ -61,6 +62,7 @@ def convert_mcd_to_img(mcd_parser, ac_id):
 
     return i5d_img
 
+
 def choose_acquisition_dialog(mcd_parser):
     """
 
@@ -70,9 +72,11 @@ def choose_acquisition_dialog(mcd_parser):
     gd = gui.GenericDialog('Choose Acquisition')
 
     ac_ids = mcd_parser.acquisition_ids
+
+    descriptions = [mcd_parser.get_acquisition_description(aid, default='Acquisition '+aid) for aid in ac_ids]
     bools = [False for aid in ac_ids]
     bools[0] = True
-    gd.addCheckboxGroup(len(ac_ids), 1, ac_ids, bools)
+    gd.addCheckboxGroup(len(ac_ids), 2, descriptions, bools)
     gd.showDialog()
     if not gd.wasCanceled():
         return [aid for aid in ac_ids if gd.getNextBoolean()]

@@ -1,6 +1,10 @@
+from __future__ import with_statement, division
+
 """
 This defines the IMC acquisition base class
+This can be extended too e.g. read the data from a text file instead from a provided array.
 """
+
 import os
 import numpy as np
 from imctools.io.tiffwriter import TiffWriter
@@ -8,7 +12,7 @@ import xml.etree.ElementTree as et
 
 
 
-class ImcAcquisition(object):
+class ImcAcquisitionBase(object):
     """
      An Image Acquisition Object representing a single acquisition
 

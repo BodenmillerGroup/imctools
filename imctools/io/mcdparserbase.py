@@ -44,6 +44,21 @@ class McdParserBase(object):
         """
         return list(self._acquisition_dict.keys())
 
+    def get_acquisition_description(self, ac_id, default=None):
+        """
+        Get the description field of the acquisition
+        :param ac_id:
+        :return:
+        """
+        ns  = self._ns
+        xml = self.get_acquisition_xml(ac_id)
+        description = xml.find(ns+'description')
+        if description is not None:
+            return description.text
+        else:
+            return default
+
+
     def get_acquisition_xml(self, ac_id):
         """
         Get the acquisition XML of the acquisition with the id
@@ -121,6 +136,9 @@ class McdParserBase(object):
             channel_name = cxml.find(ns+'ChannelName').text
             order_nr = int(cxml.find(ns+'OrderNumber').text)
             channel_lab = cxml.find(ns+'ChannelLabel').text
+
+            if channel_lab is None:
+                channel_lab = channel_name[:]
             channel_dict.update({order_nr: (channel_name, channel_lab)})
 
         return channel_dict
