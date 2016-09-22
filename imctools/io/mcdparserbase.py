@@ -98,6 +98,16 @@ class McdParserBase(object):
         return [channel_xml for channel_xml in xml.findall(ns+'AcquisitionChannel')
                 if channel_xml.find(ns+'AcquisitionID').text == ac_id]
 
+    def get_nchannels_acquisition(self, ac_id):
+        """
+        Get the number of channels in an acquisition
+        :param ac_id:
+        :return:
+        """
+        channel_xml = self.get_acquisition_channels_xml(ac_id)
+
+        return len(channel_xml)
+
     def get_acquisition_channels(self, ac_id):
         """
         Returns a dict with the channel metadata
@@ -124,11 +134,10 @@ class McdParserBase(object):
         acquisition_dict = dict()
         xml = self._xml
         ns = self._ns
-        # TODO: There can be different number of channels per acquisition! Check acquisition channel!
-        n_channel = int(len(xml.findall(ns+'AcquisitionChannel')))
 
         for acquisition in xml.findall(ns+'Acquisition'):
             ac_id = acquisition.find(ns+'ID').text
+            n_channel = self.get_nchannels_acquisition(ac_id)
             data_offset_start = int(acquisition.find(ns+'DataStartOffset').text)
             data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
             data_size = (data_offset_end - data_offset_start + 1)

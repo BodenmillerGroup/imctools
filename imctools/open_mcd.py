@@ -17,54 +17,52 @@ sys.path.append(os.path.realpath(imctool_dir))
 
 from io import mcdparserbase
 
+
+def convert_mcd_to_img(mcd_parser, ac_id):
+    """
+    Load an MCD and convert it to a image5d Tiff
+    :param filename: Filename of the MCD
+    :return: an image5d image
+    """
+
+    img_data = mcd_parser.get_acquisition_rawdata(ac_id)
+    channel_dict = mcd_parser.get_acquisition_channels(ac_id)
+
+    (n_rows, n_channels) = mcd_parser.get_acquisition_dimensions(ac_id)
+    buffer_size = len(img_data)
+    img_channels = n_channels - 3
+
+    x_vec = [int(img_data[i]) for i in range(0, buffer_size, n_channels)]
+    y_vec = [int(img_data[i]) for i in range(1, buffer_size, n_channels)]
+    max_x = int(max(x_vec) + 1)
+    max_y = int(max(y_vec) + 1)
+    stack = ImageStack.create(max_x, max_y, img_channels, 32)
+
+    for cur_chan in range(img_channels):
+        cur_proc = stack.getProcessor(cur_chan + 1)
+        cur_values = [img_data[i] for i in range(cur_chan + 3, buffer_size, n_channels)]
+        for x, y, v in zip(x_vec, y_vec, cur_values):
+            cur_proc.putPixelValue(x, y, v)
+
+    file_name = os.path.split(mcd_parser.filename)[1].replace('.mcd','')
+    file_name = '_'.join((file_name,ac_id))
+    i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
+    for i in range(img_channels):
+        (name, label) = channel_dict[i + 3]
+        cid = label + '_' + name
+        i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
+
+    i5d_img.setDefaultColors()
+
+    return i5d_img
+
 if __name__ == '__main__':
-    #fn = '/home/vitoz/temp/grade1.mcd'
-    op = OpenDialog('Choose multichannel TIFF')
+
+    op = OpenDialog('Choose mcd file')
     fn = os.path.join(op.getDirectory(), op.getFileName())
-    with mcdparserbase.McdParserBase(fn) as testmcd:
-        #print(testmcd.filename)
-        #print(testmcd.n_acquisitions)
-        # print(testmcd.get_acquisition_xml('0'))
-        #print(testmcd.get_acquisition_channels_xml('0'))
-        #print(testmcd.get_acquisition_channels('0'))
-        img_data = testmcd.get_acquisition_rawdata('0')
-        channel_dict = testmcd.get_acquisition_channels('0')
 
-        (n_rows, n_channels) = testmcd.get_acquisition_dimensions('0')
-        buffer_size = len(img_data)
-        img_channels = n_channels-3
-
-
-        x_vec = [int(img_data[i]) for i in range(0, buffer_size, n_channels)]
-        y_vec = [int(img_data[i]) for i in range(1, buffer_size, n_channels)]
-        max_x = int(max(x_vec)+1)
-        max_y = int(max(y_vec)+1)
-        #imp = IJ.createHyperStack('test', max_x, max_y, n_channels, 1, 1, 32)
-        stack = ImageStack.create(max_x, max_y, img_channels, 32)
-
-
-        #stack.setVoxel(0, 0, 0, img_data)
-        for cur_chan in range(img_channels):
-            cur_proc = stack.getProcessor(cur_chan+1)
-            cur_values = [img_data[i] for i in range(cur_chan+3, buffer_size, n_channels)]
-            for x, y, v in zip(x_vec, y_vec, cur_values):
-                    cur_proc.putPixelValue(x, y, v)
-            #stack.setPixels([img_data[i] for i in range(cur_chan, buffer_size, n_channels) if i < buffer_size ], cur_chan+1)
-
-        #imp.setStack(stack, n_channels, 1, 1)
-        #print(imp.getStackSize())
-
-        #img_processor = stack.getProcessor(1)
-        #img_processor.putRow(0,0,[img_data[i] for i in range(0, buffer_size, n_channels)],buffer_size)
-        # idx = range(6, buffer_size, n_channels)
-        # for i in range(max_y*max_x):
-        #     pix[i] = img_data[idx[i]]
-        i5d_img = i5d.Image5D('test', stack, img_channels, 1, 1)
-        for i in range(img_channels):
-            (name, label) = channel_dict[i+3]
-            cid = label + '_' + name
-            i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
-
-        i5d_img.setDefaultColors()
-        i5d_img.show()
+    with mcdparserbase.McdParserBase(fn) as mcd_parser:
+        ac_ids = mcd_parser.acquisition_ids
+        i5d_img = convert_mcd_to_img(mcd_parser, ac_id=ac_ids[0])
+    i5d_img.show()
 
