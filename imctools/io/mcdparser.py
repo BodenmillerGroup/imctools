@@ -39,11 +39,6 @@ class McdParser(McdParserBase):
         """
         return np.array(self._acquisition_dict[ac_id][1])
 
-
-    @property
-    def xml(self):
-        return self._xml
-
     def retrieve_mcd_xml(self, start_str='<MCDSchema', stop_str='</MCDSchema>'):
         """
         Finds the MCD metadata XML in the binary.
@@ -54,7 +49,6 @@ class McdParser(McdParserBase):
         :param stop_str:
         :return:
         """
-
         mm = mmap.mmap(self._fh.fileno(), 0, prot=mmap.PROT_READ)
 
         xml_start = mm.rfind(start_str.encode('utf-8'))

@@ -1,7 +1,8 @@
 from __future__ import with_statement, division
 import xml.etree.ElementTree as et
 import struct
-
+import array
+import sys
 
 class McdParserBase(object):
     """Parsing data from Fluidigm MCD files
@@ -88,8 +89,14 @@ class McdParserBase(object):
         f = self._fh
         (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
         buffer = self.get_acquisition_buffer(ac_id)
-        bufformat = '<'+str(int(n_rows*n_channel)) +'f'
-        data = struct.unpack(bufformat, buffer)
+        dat = array.array('f')
+        f.seek(data_offset_start)
+        dat.fromfile(f, int(n_rows * n_channel))
+        if sys.byteorder != 'little':
+            dat.byteswap()
+
+        data = [[dat[i] for i in range(row*n_channel,(row*n_channel)+n_channel)]
+                     for row in range(n_rows)]
         return data
 
     def get_acquisition_dimensions(self, ac_id):
@@ -160,7 +167,7 @@ class McdParserBase(object):
             data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
             data_size = (data_offset_end - data_offset_start + 1)
             n_rows = data_size/ (n_channel*4)
-            data_param = (data_offset_start, data_size, n_rows, n_channel)
+            data_param = (data_offset_start, data_size, int(n_rows), int(n_channel))
             acquisition_dict.update({ac_id: (acquisition, data_param)})
         self._acquisition_dict = acquisition_dict
 

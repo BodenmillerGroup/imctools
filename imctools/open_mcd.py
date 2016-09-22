@@ -34,17 +34,16 @@ def convert_mcd_to_img(mcd_parser, ac_id):
     buffer_size = len(img_data)
     img_channels = n_channels - 3
 
-    x_vec = [int(img_data[i]) for i in range(0, buffer_size, n_channels)]
-    y_vec = [int(img_data[i]) for i in range(1, buffer_size, n_channels)]
+    x_vec = [int(img_data[i][0]) for i in range(n_rows)]
+    y_vec = [int(img_data[i][1]) for i in range(n_rows)]
     max_x = int(max(x_vec) + 1)
     max_y = int(max(y_vec) + 1)
     stack = ImageStack.create(max_x, max_y, img_channels, 32)
 
     for cur_chan in range(img_channels):
         cur_proc = stack.getProcessor(cur_chan + 1)
-        cur_values = [img_data[i] for i in range(cur_chan + 3, buffer_size, n_channels)]
-        for x, y, v in zip(x_vec, y_vec, cur_values):
-            cur_proc.putPixelValue(x, y, v)
+        cur_values = [img_data[i][cur_chan + 3] for i in range(n_rows)]
+        for x, y, v in zip(x_vec, y_vec, cur_values): cur_proc.putPixelValue(x, y, v)
 
     file_name = os.path.split(mcd_parser.filename)[1].replace('.mcd','')
     description = mcd_parser.get_acquisition_description(aid, default='Acquisition' + aid)
@@ -84,7 +83,6 @@ def choose_acquisition_dialog(mcd_parser):
         return []
 
 if __name__ == '__main__':
-
     op = OpenDialog('Choose mcd file')
     fn = os.path.join(op.getDirectory(), op.getFileName())
 
