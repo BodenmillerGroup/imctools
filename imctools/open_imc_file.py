@@ -20,19 +20,18 @@ sys.path.append(os.path.realpath(imctool_dir))
 from io import mcdparserbase
 
 
-def convert_mcd_to_img(mcd_parser, ac_id):
+def convert_imc_to_image(imc_acquisition):
     """
     Load an MCD and convert it to a image5d Tiff
     :param filename: Filename of the MCD
     :return: an image5d image
     """
 
-    img_data = mcd_parser.get_acquisition_rawdata(ac_id)
-    channel_dict = mcd_parser.get_acquisition_channels(ac_id)
-
-    (n_rows, n_channels) = mcd_parser.get_acquisition_dimensions(ac_id)
-    buffer_size = len(img_data)
-    img_channels = n_channels - 3
+    img_data = imc_acquisition.data
+    img_channels = imc_acquisition.n_channels
+    channel_names = imc_acquisition.channel_names
+    channel_labels = imc_acquisition.channel_labels
+    ac_id = imc_acquisition.image_ID
 
     x_vec, y_vec = zip(*[tuple(int(row[i]) for i in [0,1]) for row in img_data])
     max_x = int(max(x_vec) + 1)
@@ -46,12 +45,13 @@ def convert_mcd_to_img(mcd_parser, ac_id):
         for col, val in enumerate(row[3:]):
             img_processors[col].putPixelValue(x, y, val)
 
-    file_name = os.path.split(mcd_parser.filename)[1].replace('.mcd','')
-    description = mcd_parser.get_acquisition_description(aid, default='Acquisition' + aid)
+    file_name = imc_acquisition.original_filename.replace('.mcd','')
+    description = imc_acquisition.image_description
     file_name = '_'.join((file_name,'a'+ac_id, 'd'+description))
     i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
     for i in range(img_channels):
-        (name, label) = channel_dict[i + 3]
+        name = channel_names[i]
+        label = channel_labels[i]
         if label is None:
             label = name
 
@@ -87,11 +87,13 @@ if __name__ == '__main__':
     op = OpenDialog('Choose mcd file')
     fn = os.path.join(op.getDirectory(), op.getFileName())
 
-    with mcdparserbase.McdParserBase(fn) as mcd_parser:
-        ac_ids = choose_acquisition_dialog(mcd_parser)
+    if '.mcd' in fn:
+        with mcdparserbase.McdParserBase(fn) as mcd_parser:
+            ac_ids = choose_acquisition_dialog(mcd_parser)
+            if len(ac_ids) > 0:
+                imc_acs = [mcd_parser.get_imc_acquisition(aid) for aid in ac_ids]
 
-        if len(ac_ids) > 0:
-            for aid in ac_ids:
-                i5d_img = convert_mcd_to_img(mcd_parser, ac_id=aid)
-                i5d_img.show()
+    for imc_ac in imc_acs:
+        i5d_img = convert_imc_to_image(imc_ac)
+        i5d_img.show()
 

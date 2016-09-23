@@ -3,6 +3,7 @@ import xml.etree.ElementTree as et
 import struct
 import array
 import sys
+import imcacquisitionbase
 
 class McdParserBase(object):
     """Parsing data from Fluidigm MCD files
@@ -213,6 +214,19 @@ class McdParserBase(object):
         self._xml = et.fromstring(xml)
         self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
 
+    def get_imc_acquisition(self, ac_id):
+
+        data = self.get_acquisition_rawdata(ac_id)
+        nchan = self.get_nchannels_acquisition(ac_id)
+        channels = self.get_acquisition_channels(ac_id)
+        channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
+        return imcacquisitionbase.ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
+                              data=self.get_acquisition_rawdata(ac_id),
+                              channel_names=channel_name,
+                              channel_labels=channel_label,
+                              original_metadata=str(et.tostring(self._xml, encoding='utf8')),
+                              image_description=self.get_acquisition_description(ac_id))
+
     def close(self):
         """Close the file handle."""
         self._fh.close()
@@ -273,8 +287,7 @@ if __name__ == '__main__':
         print(testmcd.get_acquisition_channels_xml('0'))
         print(testmcd.get_acquisition_channels('0'))
         print(len(testmcd.get_acquisition_rawdata('0')))
-        # plt.figure()
-        # plt.imshow(img.squeeze())
-        # plt.show()
+        imc_ac = testmcd.get_imc_acquisition('0')
+        print(imc_ac.shape)
         #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
         # acquisition_dict = get_mcd_data(fn, xml_public)
