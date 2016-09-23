@@ -18,6 +18,7 @@ imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
 sys.path.append(os.path.realpath(imctool_dir))
 
 from io import mcdparserbase
+from io import imctextacquisitionbase
 
 
 def convert_imc_to_image(imc_acquisition):
@@ -46,16 +47,20 @@ def convert_imc_to_image(imc_acquisition):
             img_processors[col].putPixelValue(x, y, val)
 
     file_name = imc_acquisition.original_filename.replace('.mcd','')
+    file_name = imc_acquisition.original_filename.replace('.txt', '')
     description = imc_acquisition.image_description
-    file_name = '_'.join((file_name,'a'+ac_id, 'd'+description))
+    if description is not None:
+        file_name = '_'.join((file_name,'a'+ac_id, 'd'+description))
+    else:
+        file_name = '_'.join((file_name, 'a' + ac_id))
     i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
     for i in range(img_channels):
         name = channel_names[i]
-        label = channel_labels[i]
-        if label is None:
-            label = name
-
-        cid = label + '_' + name
+        if channel_labels is None:
+            cid = name
+        else:
+            label = channel_labels[i]
+            cid = label + '_' + name
         i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
 
     i5d_img.setDefaultColors()
@@ -87,11 +92,18 @@ if __name__ == '__main__':
     op = OpenDialog('Choose mcd file')
     fn = os.path.join(op.getDirectory(), op.getFileName())
 
-    if '.mcd' in fn:
+    if fn[-4:] == '.mcd':
         with mcdparserbase.McdParserBase(fn) as mcd_parser:
             ac_ids = choose_acquisition_dialog(mcd_parser)
             if len(ac_ids) > 0:
                 imc_acs = [mcd_parser.get_imc_acquisition(aid) for aid in ac_ids]
+
+    if fn[-4:] == '.txt':
+        imc_acs = [imctextacquisitionbase.ImcTextAcquisitionBase(filename=fn)]
+        #print('start reshape')
+        #img = imc_acs[0]
+        #imgstack = img.get_img_stack_cyx()
+        #print('end')
 
     for imc_ac in imc_acs:
         i5d_img = convert_imc_to_image(imc_ac)

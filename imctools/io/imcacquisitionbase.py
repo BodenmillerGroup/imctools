@@ -39,16 +39,15 @@ class ImcAcquisitionBase(object):
         self._channel_names = self.validate_channels(channel_names)
         self._channel_labels = self.validate_channels(channel_labels)
         self._original_metadata = original_metadata
-        if image_description is None:
-            self.image_description = image_ID[:]
+        self.image_description = image_description
 
     @property
     def original_filename(self):
-        return os.path.filename(self._original_file)
+        return os.path.split(self.original_file)[1]
 
     @property
     def n_channels(self):
-        return self._shape[2]
+        return len(self._data[0])-3
 
     @property
     def shape(self):
@@ -60,7 +59,10 @@ class ImcAcquisitionBase(object):
 
     @property
     def channel_labels(self):
-        return self._channel_labels[3:]
+        if self._channel_labels is not None:
+            return self._channel_labels[3:]
+        else:
+            return None
 
     @property
     def data(self):
@@ -76,9 +78,9 @@ class ImcAcquisitionBase(object):
             channel_idxs = range(self.shape[2])
 
         data = self._data
-        img = [[[0. for i in range(self.shape[0])]
-                for j in range(self.shape[1])]
-               for k in range(len(channel_idxs))]
+        img = self._initialize_empty_listarray([self.shape[0],
+                                                self.shape[1],
+                                                len(channel_idxs)])
         # will be c, y, x
         for row in data:
             x = int(row[0])
@@ -114,11 +116,20 @@ class ImcAcquisitionBase(object):
         self._shape = tuple([int(x_max), int(y_max), self.n_channels])
 
     def validate_channels(self, channel):
-        if len(channel) == self.n_channels:
+        if channel is None:
+            return None
+        elif len(channel) == self.n_channels:
             channel = ['X', 'Y', 'Z'] + channel
         elif len(channel) != self.n_channels+3:
             raise ValueError('Incompatible channel names/labels!')
         return channel
+
+    @staticmethod
+    def _initialize_empty_listarray(shape):
+        img = [[[0. for i in range(shape[0])]
+          for j in range(shape[1])]
+         for k in range(shape[2])]
+        return img
 
 if __name__ == '__main__':
     from mcdparserbase import McdParserBase

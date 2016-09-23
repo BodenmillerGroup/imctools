@@ -13,12 +13,12 @@ class McdParserBase(object):
     :return:
     """
 
-    def __init__(self, file_name):
+    def __init__(self, filename):
         """
 
-        :param file_name:
+        :param filename:
         """
-        self._fh = open(file_name, mode='rb')
+        self._fh = open(filename, mode='rb')
         self._xml = None
         self._ns = None
         self._acquisition_dict = None
@@ -54,7 +54,7 @@ class McdParserBase(object):
         """
         ns  = self._ns
         xml = self.get_acquisition_xml(ac_id)
-        description = xml.find(ns+'description')
+        description = xml.find(ns+'Description')
         if description is not None:
             return description.text
         else:
@@ -194,7 +194,7 @@ class McdParserBase(object):
             xml_start = self._reverse_find_in_buffer(f, start_str.encode('utf-8'))
 
         if xml_start == -1:
-            raise ValueError('Invalid MCD: MCD xml start tag not found in file %s' % self.file_name)
+            raise ValueError('Invalid MCD: MCD xml start tag not found in file %s' % self.filename)
         else:
             xml_stop = self._reverse_find_in_buffer(f, stop_str.encode('utf-8'))
             if xml_stop == -1:
@@ -203,7 +203,7 @@ class McdParserBase(object):
                 # xmls = [mm[start:end] for start, end in zip(xml_starts, xml_stops)]
 
         if xml_stop == -1:
-            raise ValueError('Invalid MCD: MCD xml stop tag not found in file %s' % self.file_name)
+            raise ValueError('Invalid MCD: MCD xml stop tag not found in file %s' % self.filename)
         else:
             xml_stop += len(stop_str)
 
