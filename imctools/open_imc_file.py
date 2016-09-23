@@ -1,8 +1,8 @@
 from __future__ import with_statement, division
 
-
 from ij import IJ
 import ij.gui as gui
+import ij.process as process
 from loci.plugins import BF
 from ij.io import OpenDialog
 from ij import ImageStack
@@ -10,6 +10,9 @@ from loci.formats import ImageReader
 from loci.formats import MetadataTools
 import i5d.Image5D
 import i5d
+
+from java.lang import Class
+from jarray import array
 
 
 import os
@@ -28,31 +31,33 @@ def convert_imc_to_image(imc_acquisition):
     :return: an image5d image
     """
 
-    img_data = imc_acquisition.data
+    img_data = imc_acquisition.get_img_stack_cxy()
     img_channels = imc_acquisition.n_channels
     channel_names = imc_acquisition.channel_names
     channel_labels = imc_acquisition.channel_labels
     ac_id = imc_acquisition.image_ID
-
-    x_vec, y_vec = zip(*[tuple(int(row[i]) for i in [0,1]) for row in img_data])
-    max_x = int(max(x_vec) + 1)
-    max_y = int(max(y_vec) + 1)
+    max_x = len(img_data[0])
+    max_y = len(img_data[0][0])
     stack = ImageStack.create(max_x, max_y, img_channels, 32)
 
-    img_processors = [stack.getProcessor(i+1) for i in range(img_channels)]
-    for row in img_data:
-        x = int(row[0])
-        y = int(row[1])
-        for col, val in enumerate(row[3:]):
-            img_processors[col].putPixelValue(x, y, val)
+    # img_processors = [stack.getProcessor(i+1) for i in range(img_channels)]
+    # for row in img_data:
+    #     x = int(row[0])
+    #     y = int(row[1])
+    #     for col, val in enumerate(row[3:]):
+    #         img_processors[col].set(x, y, val)
+    for i in range(img_channels):
+        cur_proc = process.FloatProcessor(img_data[i])
+        stack.setProcessor(cur_proc, i+1)
 
     file_name = imc_acquisition.original_filename.replace('.mcd','')
-    file_name = imc_acquisition.original_filename.replace('.txt', '')
+    file_name = file_name.replace('.txt', '')
     description = imc_acquisition.image_description
     if description is not None:
         file_name = '_'.join((file_name,'a'+ac_id, 'd'+description))
     else:
         file_name = '_'.join((file_name, 'a' + ac_id))
+
     i5d_img = i5d.Image5D(file_name, stack, img_channels, 1, 1)
     for i in range(img_channels):
         name = channel_names[i]

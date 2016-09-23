@@ -20,7 +20,7 @@ class ImcTextAcquisitionBase(ImcAcquisitionBase):
                                                      channel_labels=None)
 
     def parse_csv(self, filename, first_col=3):
-        with open(filename, 'rb') as txtfile:
+        with open(filename, 'r') as txtfile:
             txtreader = csv.reader(txtfile, delimiter='\t')
             header = txtreader.next()
             channel_names = header[first_col:]

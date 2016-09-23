@@ -90,13 +90,35 @@ class ImcAcquisitionBase(object):
 
         return img
 
+    def get_img_stack_cxy(self, channel_idxs=None):
+        """
+        Return the data reshaped as a stack of images
+        :param: channel_idxs
+        :return:
+        """
+        if channel_idxs is None:
+            channel_idxs = range(self.shape[2])
+
+        data = self._data
+        img = self._initialize_empty_listarray([self.shape[1],
+                                                self.shape[0],
+                                                len(channel_idxs)])
+        # will be c, y, x
+        for row in data:
+            x = int(row[0])
+            y = int(row[1])
+            for col, idx in enumerate(channel_idxs):
+                img[col][x][y] = row[idx + 3]
+
+        return img
+
     def get_img_by_channel_nr(self, chan):
         """
 
         :param chan:
         :return:
         """
-        img = self.get_img_stack_cyx(channel_idxs=[chan])
+        img = self.get_img_stack_cxy(channel_idxs=[chan])
 
         return img[0]
 
