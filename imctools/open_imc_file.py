@@ -30,25 +30,21 @@ def convert_imc_to_image(imc_acquisition):
     :param filename: Filename of the MCD
     :return: an image5d image
     """
-
+    ac_id = imc_acquisition.image_ID
+    print('Contstruct image from data: %s' %ac_id)
     img_data = imc_acquisition.get_img_stack_cxy()
     img_channels = imc_acquisition.n_channels
     channel_names = imc_acquisition.channel_names
     channel_labels = imc_acquisition.channel_labels
-    ac_id = imc_acquisition.image_ID
+
     max_x = len(img_data[0])
     max_y = len(img_data[0][0])
-    stack = ImageStack.create(max_x, max_y, img_channels, 32)
+    stack = ImageStack(max_x, max_y)
 
-    # img_processors = [stack.getProcessor(i+1) for i in range(img_channels)]
-    # for row in img_data:
-    #     x = int(row[0])
-    #     y = int(row[1])
-    #     for col, val in enumerate(row[3:]):
-    #         img_processors[col].set(x, y, val)
+    print('Add planes to stack:')
     for i in range(img_channels):
         cur_proc = process.FloatProcessor(img_data[i])
-        stack.setProcessor(cur_proc, i+1)
+        stack.addSlice(cur_proc)
 
     file_name = imc_acquisition.original_filename.replace('.mcd','')
     file_name = file_name.replace('.txt', '')
@@ -69,6 +65,7 @@ def convert_imc_to_image(imc_acquisition):
         i5d_img.getChannelCalibration(i + 1).setLabel(str(cid))
 
     i5d_img.setDefaultColors()
+    print('finished image: %s' %ac_id)
 
     return i5d_img
 
@@ -101,16 +98,15 @@ if __name__ == '__main__':
         with mcdparserbase.McdParserBase(fn) as mcd_parser:
             ac_ids = choose_acquisition_dialog(mcd_parser)
             if len(ac_ids) > 0:
+                print('Load mcd acquisition: %s' %ac_ids)
                 imc_acs = [mcd_parser.get_imc_acquisition(aid) for aid in ac_ids]
 
     if fn[-4:] == '.txt':
+        print('Load txt acquisition:')
         imc_acs = [imctextacquisitionbase.ImcTextAcquisitionBase(filename=fn)]
-        #print('start reshape')
-        #img = imc_acs[0]
-        #imgstack = img.get_img_stack_cyx()
-        #print('end')
 
     for imc_ac in imc_acs:
         i5d_img = convert_imc_to_image(imc_ac)
+        del imc_ac
         i5d_img.show()
 

@@ -1,4 +1,8 @@
 from __future__ import with_statement, division
+try:
+    xrange
+except NameError:
+    xrange = range
 
 """
 This defines the IMC acquisition base class
@@ -6,6 +10,7 @@ This can be extended too e.g. read the data from a text file instead from a prov
 """
 
 import os
+import array
 
 
 class ImcAcquisitionBase(object):
@@ -148,9 +153,13 @@ class ImcAcquisitionBase(object):
 
     @staticmethod
     def _initialize_empty_listarray(shape):
-        img = [[[0. for i in range(shape[0])]
-          for j in range(shape[1])]
-         for k in range(shape[2])]
+        imar = array.array('f')
+        for i in xrange(shape[0]*shape[1]*shape[2]): imar.append(-1.)
+
+        img = [[imar[(k*shape[0]*shape[1]+j*shape[0]):(k*shape[0]*shape[1]+j*shape[0]+shape[0])]
+                for j in range(shape[1])]
+               for k in range(shape[2])]
+
         return img
 
 if __name__ == '__main__':
