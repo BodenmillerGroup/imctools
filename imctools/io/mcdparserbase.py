@@ -90,14 +90,15 @@ class McdParserBase(object):
         f = self._fh
         (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
         buffer = self.get_acquisition_buffer(ac_id)
-        dat = array.array('f')
         f.seek(data_offset_start)
-        dat.fromfile(f, int(n_rows * n_channel))
+        n_rows = int(n_rows)
+        n_channel = int(n_channel)
+        dat = array.array('f')
+        dat.fromfile(f, (n_rows * n_channel))
         if sys.byteorder != 'little':
             dat.byteswap()
-
         data = [[dat[i] for i in range(row*n_channel,(row*n_channel)+n_channel)]
-                     for row in range(n_rows)]
+                for row in range(n_rows)]
         return data
 
     def get_acquisition_dimensions(self, ac_id):
@@ -221,11 +222,11 @@ class McdParserBase(object):
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
         return imcacquisitionbase.ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
-                              data=self.get_acquisition_rawdata(ac_id),
+                              data=data,
                               channel_names=channel_name,
                               channel_labels=channel_label,
-                              original_metadata=str(et.tostring(self._xml, encoding='utf8')),
-                              image_description=self.get_acquisition_description(ac_id))
+                              original_metadata=str(et.tostring(self._xml)),
+                              image_description=self.get_acquisition_description(ac_id), origin='mcd')
 
     def close(self):
         """Close the file handle."""
@@ -261,8 +262,8 @@ class McdParserBase(object):
         buf = None
         overlap = len(s) - 1
         bsize = buffer_size +overlap+1
-        f.seek(0, 2)
-        cur_pos = f.tell() - bsize
+        cur_pos = f.tell() - bsize+1
+        f.seek(cur_pos)
         while cur_pos >=0:
             buf = f.read(bsize)
             if buf:

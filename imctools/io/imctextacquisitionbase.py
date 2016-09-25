@@ -16,7 +16,8 @@ class ImcTextAcquisitionBase(ImcAcquisitionBase):
                                                      original_file= filename,
                                                      data = self._data,
                                                      channel_names= self.channel_names,
-                                                     channel_labels=None)
+                                                     channel_labels=None,
+                                                     origin='txt')
 
     def parse_csv(self, filename, first_col=3):
         with open(filename, 'r') as txtfile:

@@ -37,7 +37,7 @@ class ImcAcquisition(object):
 
         self._channel_names = self.validate_channels(channel_names)
         self._channel_labels = self.validate_channels(channel_labels)
-        self._original_metadata = original_metadata
+        self.original_metadata = original_metadata
 
     @property
     def original_filename(self):
@@ -86,12 +86,6 @@ class ImcAcquisition(object):
         tw = TiffWriter(filename, self.get_img_stack(), channel_name=out_names, original_description=self._original_metadata)
         return tw
 
-
-
-    @staticmethod
-    def _get_position(name, namelist):
-        pos = [i for i, chan in enumerate(namelist) if chan ==name]
-        return pos[0]
 
     @staticmethod
     def _sort_data(data):

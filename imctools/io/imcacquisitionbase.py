@@ -19,7 +19,7 @@ class ImcAcquisitionBase(object):
 
     """
     def __init__(self, image_ID, original_file, data, channel_names, channel_labels,
-                 original_metadata=None, image_description=None):
+                 original_metadata=None, image_description=None, origin=None):
         """
 
         :param image_ID: The acquisition ID
@@ -43,8 +43,9 @@ class ImcAcquisitionBase(object):
 
         self._channel_names = self.validate_channels(channel_names)
         self._channel_labels = self.validate_channels(channel_labels)
-        self._original_metadata = original_metadata
+        self.original_metadata = original_metadata
         self.image_description = image_description
+        self.origin = origin
 
     @property
     def original_filename(self):
@@ -135,7 +136,6 @@ class ImcAcquisitionBase(object):
         chan = self._get_position(label, self._channel_labels)-3
         return self.get_img_by_channel_nr(chan)
 
-
     def _update_shape(self):
         data = self._data
         x_max = max([row[0] for row in data])+1
@@ -161,6 +161,11 @@ class ImcAcquisitionBase(object):
                for k in range(shape[2])]
 
         return img
+
+    @staticmethod
+    def _get_position(name, namelist):
+        pos = [i for i, chan in enumerate(namelist) if chan ==name]
+        return pos[0]
 
 if __name__ == '__main__':
     from mcdparserbase import McdParserBase
