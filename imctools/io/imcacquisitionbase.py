@@ -31,14 +31,13 @@ class ImcAcquisitionBase(object):
         """
         self.image_ID = image_ID
         self.original_file = original_file
+
         self._data = data
         # calculated with update shape
         self._shape = None
         # infered from the xyz
         self._update_shape()
 
-
-        #assert self._shape[0] * self._shape[1] * (self._shape[2]+3) == len(self._data),\
         #    'Dataset not complete!'
 
         self._channel_names = self.validate_channels(channel_names)

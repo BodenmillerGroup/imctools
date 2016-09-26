@@ -14,6 +14,8 @@ import ome.xml.model.primitives.NonNegativeInteger  as NonNegativeInteger
 import ome.xml.model.enums.PixelType as PixelType
 from loci.formats import ImageWriter, ImageReader
 from loci.plugins import BF
+import ome.units.quantity.Length as Length
+import ome.units.UNITS as units
 
 import loci.common.DataTools as DataTools
 
@@ -162,6 +164,11 @@ def generate_ome_fromimc(imc_acquisition):
         metadata.setPixelsSizeC(PositiveInteger(c), 0)
         metadata.setPixelsSizeZ(PositiveInteger(1), 0)
         metadata.setPixelsSizeT(PositiveInteger(1), 0)
+
+        metadata.setPixelsPhysicalSizeX(Length(1, units.MICROM), 0)
+        metadata.setPixelsPhysicalSizeY(Length(1, units.MICROM), 0)
+        metadata.setPixelsPhysicalSizeZ(Length(1, units.MICROM), 0)
+
         metadata.setPixelsID(ac_id, 0)
         metadata.setPixelsType(PixelType.FLOAT, 0)
         metadata.setPixelsInterleaved(False, 0)

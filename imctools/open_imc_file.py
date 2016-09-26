@@ -55,8 +55,7 @@ if __name__ == '__main__':
 
         i5d_img.show()
         meta = lib.generate_ome_fromimc(imc_ac)
-        print(meta.dumpXML())
-        #lib.save_ome_tiff(i5d_img, meta)
+        lib.save_ome_tiff(i5d_img, meta)
 
         del imc_ac
 

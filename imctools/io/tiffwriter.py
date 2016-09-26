@@ -14,7 +14,8 @@ class TiffWriter(object):
 
     """
     pixeltype_dict = ({np.int64().dtype: ome.PT_INT16,
-                       np.float32().dtype: ome.PT_FLOAT})
+                       np.float32().dtype: ome.PT_FLOAT,
+                       np.float64().dtype: ome.PT_FLOAT})
 
     def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None):
         self.file_name = file_name
