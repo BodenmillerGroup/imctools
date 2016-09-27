@@ -105,7 +105,7 @@ class McdParser(McdParserBase):
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
                               data=self.get_acquisition_rawdata(ac_id),
-                              channel_names=channel_name,
+                              channel_metal=channel_name,
                               channel_labels=channel_label,
                               original_metadata= str(et.tostring(self._xml, encoding='utf8', method='xml')))
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         print(testmcd.get_acquisition_channels('0'))
         imc_img = testmcd.get_imc_acquisition('0')
         img = imc_img.get_img_stack()
-        img = imc_img.get_img_by_name('X')
+        img = imc_img.get_img_by_metal('X')
         # plt.figure()
         # plt.imshow(img.squeeze())
         # plt.show()

@@ -4,8 +4,10 @@ import struct
 import array
 import sys
 import imcacquisitionbase
+from imctools.io.abstractparser import AbstractParser
 
-class McdParserBase(object):
+
+class McdParserBase(AbstractParser):
     """Parsing data from Fluidigm MCD files
 
     The McdParser object should be closed using the close
@@ -18,6 +20,8 @@ class McdParserBase(object):
 
         :param filename:
         """
+        super(McdParserBase, self).__init__()
+
         self._fh = open(filename, mode='rb')
         self._xml = None
         self._ns = None
@@ -89,7 +93,6 @@ class McdParserBase(object):
         """
         f = self._fh
         (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
-        buffer = self.get_acquisition_buffer(ac_id)
         f.seek(data_offset_start)
         n_rows = int(n_rows)
         n_channel = int(n_channel)
@@ -97,9 +100,30 @@ class McdParserBase(object):
         dat.fromfile(f, (n_rows * n_channel))
         if sys.byteorder != 'little':
             dat.byteswap()
-        data = [[dat[i] for i in range(row*n_channel,(row*n_channel)+n_channel)]
+        data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
                 for row in range(n_rows)]
         return data
+
+    # def get_acquisition_rawdata2(self, ac_id):
+    #     """
+    #     Get the acquisition XML of the acquisition with the id
+    #     :param ac_id: the acquisition id
+    #     :return: the acquisition XML
+    #     """
+    #     f = self._fh
+    #     (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
+    #     buffer = self.get_acquisition_buffer(ac_id)
+    #     n_rows = int(n_rows)
+    #     n_channel = int(n_channel)
+    #     dat = array.array('f')
+    #
+    #     raw = struct.unpack_from('<'+str(n_rows * n_channel)+'f', buffer)
+    #     for x in raw: dat.append(x)
+    #     if sys.byteorder != 'little':
+    #         dat.byteswap()
+    #     data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
+    #             for row in range(n_rows)]
+    #     return data
 
     def get_acquisition_dimensions(self, ac_id):
         """
@@ -222,11 +246,11 @@ class McdParserBase(object):
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
         return imcacquisitionbase.ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
-                              data=data,
-                              channel_names=channel_name,
-                              channel_labels=channel_label,
-                              original_metadata=str(et.tostring(self._xml)),
-                              image_description=self.get_acquisition_description(ac_id), origin='mcd')
+                                                     data=data,
+                                                     channel_metal=channel_name,
+                                                     channel_labels=channel_label,
+                                                     original_metadata=str(et.tostring(self._xml)),
+                                                     image_description=self.get_acquisition_description(ac_id), origin='mcd')
 
     def close(self):
         """Close the file handle."""
@@ -280,14 +304,21 @@ class McdParserBase(object):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    fn = '/mnt/imls-bod/data_vito/grade1.mcd'
+    fn = '/home/vitoz/temp/grade1.mcd'
     with McdParserBase(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         # print(testmcd.get_acquisition_xml('0'))
         print(testmcd.get_acquisition_channels_xml('0'))
         print(testmcd.get_acquisition_channels('0'))
+
+        import time
+        a= time.time()
         print(len(testmcd.get_acquisition_rawdata('0')))
+        print(time.time()-a)
+        a= time.time()
+        print(len(testmcd.get_acquisition_rawdata2('0')))
+        print(time.time()-a)
         imc_ac = testmcd.get_imc_acquisition('0')
         print(imc_ac.shape)
         #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')

@@ -1,13 +1,13 @@
 from imctools.io.imcacquisition import ImcAcquisition
-from imctools.io.imcacquisitionomebase import ImcAcquisitionOmeBase
+from imctools.io.omeparserbase import OmeParserBase
 import tifffile
 import numpy as np
 import xml.etree.ElementTree as et
 
 
-class ImcAcquisitionOmeTiff(ImcAcquisitionOmeBase):
+class OmetiffParser(OmeParserBase):
     """
-     An Image Acquisition Object representing a single acquisition
+    Parses an ome tiff
 
     """
 
@@ -21,7 +21,24 @@ class ImcAcquisitionOmeTiff(ImcAcquisitionOmeBase):
         # reshape it to the stupid format
         print(self._data.shape)
         self._data = self.reshape_flat(self._data)
-        ImcAcquisitionOmeBase.__init__(self, self._data, self._ome)
+
+        super(OmetiffParser, self).__init__(self._data, self._ome, origin='ome.tiff')
+
+    def get_imc_aquisition(self):
+        """
+        Get Imc Acquisition object
+
+        :return:
+        """
+        meta = self.meta_dict
+        return ImcAcquisition(meta['image_ID'],
+                                                    self.original_file,
+                                                    self.data,
+                                                    meta['channel_metals'],
+                                                    meta['channel_labels'],
+                                                    original_metadata=self.ome ,
+                                                    image_description=None,
+                                                    origin=self.origin)
 
     def read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
@@ -32,6 +49,11 @@ class ImcAcquisitionOmeTiff(ImcAcquisitionOmeBase):
 
     @staticmethod
     def reshape_flat(data):
+        """
+        Reshape the image data into the flat format.
+        :param data:
+        :return:
+        """
         print(data[0,0,:5])
         c, y, x = data.shape
         h = x * y
@@ -45,11 +67,12 @@ class ImcAcquisitionOmeTiff(ImcAcquisitionOmeBase):
 
 if __name__ == '__main__':
     fn = '/home/vitoz/temp/test.ome.tiff'
-    imc_ac = ImcAcquisitionOmeTiff(fn)
+    parser = OmetiffParser(fn)
+    imc_ac = parser.get_imc_aquisition()
     print(imc_ac._data.shape)
     import matplotlib.pyplot as plt
     plt.figure()
     dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
     plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())
     plt.show()
-    print(imc_ac.channel_names)
+    print(imc_ac.channel_metals)

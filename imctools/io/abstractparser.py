@@ -1,18 +1,13 @@
-import abc
+"""
+Creates the basic parser interface
+"""
 
 class AbstractParser(object):
     """
 
     """
-    __metaclass__ = abc.ABCMeta
-
-    @abc.abstractmethod
     def __init__(self):
         pass
 
-    @abc.abstractmethod
-    def get_imc_acquisition(self):
-        return None
-
-
-
+    def get_imc_aquisition(self):
+        pass

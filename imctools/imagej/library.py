@@ -32,7 +32,7 @@ def convert_imc_to_image(imc_acquisition):
     print('Contstruct image from data: %s' %ac_id)
 
     img_channels = imc_acquisition.n_channels
-    channel_names = imc_acquisition.channel_names
+    channel_names = imc_acquisition.channel_metals
     channel_labels = imc_acquisition.channel_labels
 
     img_data = imc_acquisition.get_img_stack_cxy()

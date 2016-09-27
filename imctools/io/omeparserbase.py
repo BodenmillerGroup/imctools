@@ -1,33 +1,39 @@
 from imctools.io.imcacquisition import ImcAcquisitionBase
+from imctools.io.abstractparser import AbstractParser
 import xml.etree.ElementTree as et
 
-class ImcAcquisitionOmeBase(ImcAcquisitionBase):
+class OmeParserBase(AbstractParser):
     def __init__(self, data, ome, original_file=None, origin=None):
         """
 
         :param filename:
         """
+        super(OmeParserBase, self).__init__()
         if origin is None:
             origin = 'ome'
-        self._ome = et.fromstring(ome)
-        self._ns = '{' + self._ome.tag.split('}')[0].strip('{') + '}'
-        self._data = data
+        self.ome = et.fromstring(ome)
+        self.ns = '{' + self.ome.tag.split('}')[0].strip('{') + '}'
+        self.data = data
         self.get_meta_dict()
+        self.original_file = original_file
+        self.origin = origin
+
+    def get_imc_aquisition(self):
         meta = self.meta_dict
-        super(ImcAcquisitionOmeBase, self).__init__( meta['image_ID'],
-                                                    original_file,
-                                                    data,
-                                                    meta['channel_names'],
+        return ImcAcquisitionBase(meta['image_ID'],
+                                                    self.original_file,
+                                                    self.data,
+                                                    meta['channel_metals'],
                                                     meta['channel_labels'],
-                                                    original_metadata=ome,
+                                                    original_metadata=self.ome ,
                                                     image_description=None,
-                                                    origin=origin)
+                                                    origin=self.origin)
 
     def get_meta_dict(self):
         meta_dict = dict()
 
-        xml = self._ome
-        ns = self._ns
+        xml = self.ome
+        ns = self.ns
         img = xml.find(ns+'Image')
         pixels = img.find(ns+'Pixels')
         channels = pixels.findall(ns+'Channel')
@@ -36,7 +42,7 @@ class ImcAcquisitionOmeBase(ImcAcquisitionBase):
                        (chan.attrib['Name'], chan.attrib['Fluor']) for chan in channels}
 
         meta_dict.update({'image_ID': img.attrib['Name'],
-                          'channel_names': [chan_dict[i][1] for i in range(nchan)],
+                          'channel_metals': [chan_dict[i][1] for i in range(nchan)],
                           'channel_labels': [chan_dict[i][0] for i in range(nchan)]})
 
         self.meta_dict = meta_dict

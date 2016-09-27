@@ -14,22 +14,35 @@ class ImcAcquisition(ImcAcquisitionBase):
 
     """
 
-    def __init__(self, image_ID, original_file, data, channel_names, channel_labels,
+    def __init__(self, image_ID, original_file, data, channel_metal, channel_labels,
                  original_metadata=None, image_description=None, origin=None):
         """
 
         :param filename:
         """
-        super(ImcAcquisition, self).__init__(image_ID, original_file, data, channel_names, channel_labels,
-                 original_metadata, image_description, origin)
+        super(ImcAcquisition, self).__init__(image_ID, original_file, data, channel_metal, channel_labels,
+                                             original_metadata, image_description, origin)
 
-    def save_image(self, filename):
-        tw = self.get_image_writer(filename)
+    def save_image(self, filename, metals=None):
+        tw = self.get_image_writer(filename, metals=metals)
         tw.save_image()
 
-    def get_image_writer(self, filename):
-        out_names = [label+'_'+name for label, name in zip(self.channel_labels, self.channel_names)]
-        dat = np.array(self.get_img_stack_cyx(), dtype=np.float32).swapaxes(2,0)
+    def get_image_writer(self, filename, metals=None):
+        """
+        Get an image writer with the right data
+        :param filename:
+        :param metals:
+        :return:
+        """
+
+        if metals is None:
+            order = range(self.n_channels)
+        else:
+            order = self.get_metal_indices(metals)
+
+        out_names = [label +'_' + name for label, name in zip(self.channel_labels, self.channel_metals)]
+        out_names = [out_names[i] for i in order]
+        dat = np.array(self.get_img_stack_cyx(order), dtype=np.float32).swapaxes(2,0)
         tw = TiffWriter(filename, dat, channel_name=out_names, original_description=self.original_metadata)
         return tw
 
@@ -44,8 +57,10 @@ if __name__ == '__main__':
         print(testmcd.get_acquisition_channels_xml('0'))
         print(testmcd.get_acquisition_channels('0'))
         imc_img = testmcd.get_imc_acquisition('0')
-        img = imc_img.get_img_by_name('X')
+        img = imc_img.get_img_by_metal('X')
         plt.figure()
         plt.imshow(np.array(img).squeeze())
         plt.show()
-        imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
+
+        print(imc_img.channel_metals)
+        imc_img.save_image('/mnt/imls-bod/data_vito/test_iridium.tiff', metals=['Ir(191)', 'Ir(193)'])

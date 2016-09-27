@@ -18,14 +18,14 @@ class ImcAcquisitionBase(object):
      An Image Acquisition Object representing a single acquisition
 
     """
-    def __init__(self, image_ID, original_file, data, channel_names, channel_labels,
+    def __init__(self, image_ID, original_file, data, channel_metal, channel_labels,
                  original_metadata=None, image_description=None, origin=None):
         """
 
         :param image_ID: The acquisition ID
         :param original_file: The original filepath
         :param data: the image data in a long format, First 3 rows must be X, Y, Z
-        :param channel_names: the channel name (metal)
+        :param channel_metal: the channel name (metal)
         :param channel_labels: the channel label (meaningful label)
         :param original_metadata: the original metadata, e.g. an MCDPublic XML
         """
@@ -40,7 +40,7 @@ class ImcAcquisitionBase(object):
 
         #    'Dataset not complete!'
 
-        self._channel_names = self.validate_channels(channel_names)
+        self._channel_metal = self.validate_channels(channel_metal)
         self._channel_labels = self.validate_channels(channel_labels)
         self.original_metadata = original_metadata
         self.image_description = image_description
@@ -59,8 +59,8 @@ class ImcAcquisitionBase(object):
         return self._shape
 
     @property
-    def channel_names(self):
-        return self._channel_names[3:]
+    def channel_metals(self):
+        return self._channel_metal[3:]
 
     @property
     def channel_labels(self):
@@ -68,6 +68,18 @@ class ImcAcquisitionBase(object):
             return self._channel_labels[3:]
         else:
             return None
+
+    def get_metal_indices(self, metallist):
+        """
+        Returns a list with the indices in the metals from metallist
+        :param metallist: List of metal names
+        :return:
+        """
+        order_dict = dict()
+        for i, m in enumerate(self.channel_metals):
+            order_dict.update({i: m})
+
+        return [order_dict[m] for m in metallist]
 
     @property
     def data(self):
@@ -127,8 +139,8 @@ class ImcAcquisitionBase(object):
 
         return img[0]
 
-    def get_img_by_name(self, name):
-        chan = self._get_position(name, self._channel_names)-3
+    def get_img_by_metal(self, metal):
+        chan = self._get_position(metal, self._channel_metal) - 3
         return self.get_img_by_channel_nr(chan)
 
     def get_img_by_label(self, label):

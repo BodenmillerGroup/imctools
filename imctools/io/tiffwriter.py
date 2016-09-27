@@ -31,7 +31,7 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='ome', compression=0):
+    def save_image(self, mode='imagej', compression=0):
         #TODO: add original metadata somehow
 
         xml = self.get_xml()
@@ -57,7 +57,7 @@ class TiffWriter(object):
     #     print(img.shape)
     #     javabridge.start_vm(class_path=bioformats.JARS)
     #     bioformats.write_image(self.file_name, pixels=img, pixel_type='uint16', c=0, z=0, t=0,
-    #                            size_z=1, size_t=1, channel_names=self.channel_name)
+    #                            size_z=1, size_t=1, channel_metals=self.channel_name)
     #     javabridge.kill_vm()
 
     @property

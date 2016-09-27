@@ -12,7 +12,7 @@ imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
 sys.path.append(os.path.realpath(imctool_dir))
 
 from io import mcdparserbase
-from io import imctextacquisitionbase
+from io import txtparserbase
 
 
 def choose_acquisition_dialog(mcd_parser):
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     if fn[-4:] == '.txt':
         print('Load txt acquisition:')
-        imc_acs = [imctextacquisitionbase.ImcTextAcquisitionBase(filename=fn)]
+        imc_acs = [txtparserbase.TxtParserBase(filename=fn).get_imc_aquisition()]
 
     for imc_ac in imc_acs:
         i5d_img = lib.convert_imc_to_image(imc_ac)
