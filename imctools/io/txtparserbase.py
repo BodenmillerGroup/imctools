@@ -1,6 +1,7 @@
 from __future__ import with_statement, division
 
 import csv
+import re
 from imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparser import AbstractParser
 import array
@@ -16,6 +17,11 @@ class TxtParserBase(AbstractParser):
         self.parse_csv3(filename)
         self.filename = filename
         self.origin ='txt'
+        self.channel_labels = self.channel_metals[:]
+        print(self.channel_metals)
+        self.channel_metals[3:] = self.clean_channel_metals(self.channel_metals[3:])
+        print(self.channel_metals)
+
 
     def get_imc_aquisition(self):
         """
@@ -25,11 +31,50 @@ class TxtParserBase(AbstractParser):
 
         return ImcAcquisitionBase('0', self.filename,
                                   self.data,
-                                  self.channel_names,
-                                  None,
-                                  original_metadata=None ,
+                                  self.channel_metals,
+                                  self.channel_labels,
+                                  original_metadata=None,
                                   image_description=None,
                                   origin=self.origin)
+
+    @staticmethod
+    def clean_channel_metals(names):
+        """
+        clean the names to be nice
+        :return:
+        """
+
+        # find which version it is
+        last_bracket = re.compile('(?=\()*[^\(\)]*(?=\)$)')
+
+        names = [n.strip("\r") for n in names]
+        names = [n.strip("\n") for n in names]
+        names = [n.strip() for n in names]
+        print(names)
+        # string of sort asbsdf(mn123di)
+        if last_bracket.search(names[0]) is not None:
+            #get m123di
+            names = [last_bracket.search(n).group() for n in names]
+            print(names)
+
+        # string of sort aasbas_mn123
+        elif '_' in names[0]:
+            names = [n.split('_')[-1] for n in names]
+
+        # else do nothing
+        else:
+            return names
+
+        # else there is the bug where (123123di)
+        names = [n.strip('di') for n in names]
+        names = [n.strip('Di') for n in names]
+        if names[0][0].isdigit():
+            names = [n[(int(len(n)/2)):] for n in names]
+
+        return names
+
+
+
 
 
 
@@ -49,7 +94,7 @@ class TxtParserBase(AbstractParser):
                 data.append(rowar)
         print(data[0])
         self.data = data
-        self.channel_names = channel_names
+        self.channel_metals = channel_names
 
     def parse_csv2(self, filename, first_col=3):
         with open(filename, 'r') as txtfile:
@@ -57,7 +102,7 @@ class TxtParserBase(AbstractParser):
             channel_names = header[first_col:]
             data = [[float(v) for v in row.split('\t')[first_col:]] for row in txtfile]
         self.data = data
-        self.channel_names = channel_names
+        self.channel_metals = channel_names
 
 
     def parse_csv3(self, filename, first_col=3):
@@ -79,11 +124,12 @@ class TxtParserBase(AbstractParser):
             print(len(rowar)/nchan)
             data = [rowar[(i*nchan):(i*nchan+nchan)] for i in range(nrow)]
         self.data = data
-        self.channel_names = channel_names
+        self.channel_metals = channel_names
 
 
 if __name__ == '__main__':
-    fn = '/home/vitoz/mnt/imls-bod/Stefanie/2016/20160920/HIER_healthy/HIER_healthy_1_0_HIER1_1.txt'
+    fn = '/mnt/imls-bod/Stefanie/2016/20160920/HIER_healthy/HIER_healthy_1_0_HIER1_1.txt'
+    fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     imc_txt = TxtParserBase(fn)
     imc_ac = imc_txt.get_imc_aquisition()

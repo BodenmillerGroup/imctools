@@ -160,6 +160,9 @@ class ImcAcquisitionBase(object):
             channel = ['X', 'Y', 'Z'] + channel
         elif len(channel) != self.n_channels+3:
             raise ValueError('Incompatible channel names/labels!')
+
+        # remove special characters
+        channel = [c.strip('(').strip(')').strip() for c in channel]
         return channel
 
     @staticmethod

@@ -199,14 +199,45 @@ def generate_ome_fromimc(imc_acquisition):
         #     metadata.setPlaneTheT(NonNegativeInteger(0), 0, i)
 
 
-    return metadata
+        return metadata
+
+    else:
+        ac_id = imc_acquisition.image_ID
+        metadata.setImageID(ac_id, 0)
+        metadata.setImageName(ac_id, 0)
+        metadata.setPixelsDimensionOrder(DimensionOrder.XYCZT, 0)
+        metadata.setPixelsSizeX(PositiveInteger(x), 0)
+        metadata.setPixelsSizeY(PositiveInteger(y), 0)
+        metadata.setPixelsSizeC(PositiveInteger(c), 0)
+        metadata.setPixelsSizeZ(PositiveInteger(1), 0)
+        metadata.setPixelsSizeT(PositiveInteger(1), 0)
+
+        metadata.setPixelsPhysicalSizeX(Length(1, units.MICROM), 0)
+        metadata.setPixelsPhysicalSizeY(Length(1, units.MICROM), 0)
+        metadata.setPixelsPhysicalSizeZ(Length(1, units.MICROM), 0)
+
+        metadata.setPixelsID(ac_id, 0)
+        metadata.setPixelsType(PixelType.FLOAT, 0)
+        metadata.setPixelsInterleaved(False, 0)
+
+        # metadata.setTiffDataFirstC(NonNegativeInteger(0), 0, 0)
+        # metadata.setTiffDataFirstZ(NonNegativeInteger(0), 0, 0)
+        # metadata.setTiffDataFirstT(NonNegativeInteger(0), 0, 0)
+        print(c)
+        for i in range(c):
+            metadata.setChannelSamplesPerPixel(PositiveInteger(1), 0, i)
+        for cnr, metal, label in zip(range(c), imc_acquisition.channel_metals, imc_acquisition.channel_labels):
+            metadata.setChannelFluor(metal, 0, cnr)
+            metadata.setChannelName(label, 0, cnr)
+
+        return metadata
 
 
-def save_ome_tiff(image, metadata):
+def save_ome_tiff(filename, image, metadata):
     reader = ImageReader()
     writer = ImageWriter()
     writer.setMetadataRetrieve(metadata)
-    writer.setId('/home/vitoz/temp/test.ome.tiff')
+    writer.setId(filename)
     nchan = image.getNChannels()
     stack = image.getImageStack()
     print(image.getStackSize())

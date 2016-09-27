@@ -46,6 +46,9 @@ class ImcAcquisition(ImcAcquisitionBase):
         tw = TiffWriter(filename, dat, channel_name=out_names, original_description=self.original_metadata)
         return tw
 
+    def save_analysis_tiff(self, filename, metals=None):
+        pass
+
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from imctools.io.mcdparser import McdParser

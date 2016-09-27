@@ -3,8 +3,9 @@ import xml.etree.ElementTree as et
 import struct
 import array
 import sys
-import imcacquisitionbase
+from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparser import AbstractParser
+
 
 
 class McdParserBase(AbstractParser):
@@ -245,7 +246,7 @@ class McdParserBase(AbstractParser):
         nchan = self.get_nchannels_acquisition(ac_id)
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
-        return imcacquisitionbase.ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
+        return ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
                                                      data=data,
                                                      channel_metal=channel_name,
                                                      channel_labels=channel_label,

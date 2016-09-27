@@ -43,8 +43,6 @@ class OmetiffParser(OmeParserBase):
     def read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
             self._data = tif.asarray()
-            print(tif._ome_series())
-            print(tif.is_ome)
             self._ome = tif.pages[0].tags['image_description'].value
 
     @staticmethod

@@ -55,7 +55,11 @@ if __name__ == '__main__':
 
         i5d_img.show()
         meta = lib.generate_ome_fromimc(imc_ac)
-        lib.save_ome_tiff(i5d_img, meta)
+        name = os.path.basename(imc_ac.original_file)
+        path = os.path.split(imc_ac.original_file)[0]
+        fname = os.path.join(path, name+'.ome.tiff')
+        if not(os.path.exists(fname)):
+            lib.save_ome_tiff(i5d_img, meta, fname)
 
         del imc_ac
 
