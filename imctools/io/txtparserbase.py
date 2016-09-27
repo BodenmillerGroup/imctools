@@ -1,7 +1,6 @@
 from __future__ import with_statement, division
 
 import csv
-import re
 from imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparser import AbstractParser
 import array
@@ -43,18 +42,17 @@ class TxtParserBase(AbstractParser):
         clean the names to be nice
         :return:
         """
-
+        print(names)
         # find which version it is
-        last_bracket = re.compile('(?=\()*[^\(\)]*(?=\)$)')
-
         names = [n.strip("\r") for n in names]
         names = [n.strip("\n") for n in names]
         names = [n.strip() for n in names]
-        print(names)
+        print(1)
         # string of sort asbsdf(mn123di)
-        if last_bracket.search(names[0]) is not None:
+        if names[0].rfind(')') == (len(names[0])-1):
             #get m123di
-            names = [last_bracket.search(n).group() for n in names]
+
+            names = [n[(n.rfind('(')+1):(n.rfind(')'))] for n in names]
             print(names)
 
         # string of sort aasbas_mn123
@@ -129,7 +127,7 @@ class TxtParserBase(AbstractParser):
 
 if __name__ == '__main__':
     fn = '/mnt/imls-bod/Stefanie/2016/20160920/HIER_healthy/HIER_healthy_1_0_HIER1_1.txt'
-    fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
+    #fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     imc_txt = TxtParserBase(fn)
     imc_ac = imc_txt.get_imc_aquisition()

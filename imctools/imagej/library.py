@@ -189,8 +189,8 @@ def generate_ome_fromimc(imc_acquisition):
                 else:
                     label = label.text
                 cid = '_'.join([label, name])
-                cid.replace('(', '')
-                cid.replace(')', '')
+                cid = cid.strip('(').strip(')')
+                name = name.strip('(').strip(')')
                 metadata.setChannelFluor(name, 0, cnr)
                 metadata.setChannelName(cid, 0, cnr)
         # for i in range(c):
