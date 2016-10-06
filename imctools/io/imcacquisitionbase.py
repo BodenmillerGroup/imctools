@@ -11,7 +11,7 @@ This can be extended too e.g. read the data from a text file instead from a prov
 
 import os
 import array
-
+import string
 
 class ImcAcquisitionBase(object):
     """
@@ -40,7 +40,7 @@ class ImcAcquisitionBase(object):
 
         #    'Dataset not complete!'
 
-        self._channel_metal = self.validate_channels(channel_metal)
+        self._channel_metals = self.validate_channels(channel_metal)
         self._channel_labels = self.validate_channels(channel_labels)
         self.original_metadata = original_metadata
         self.image_description = image_description
@@ -60,7 +60,11 @@ class ImcAcquisitionBase(object):
 
     @property
     def channel_metals(self):
-        return self._channel_metal[3:]
+        return self._channel_metals[3:]
+
+    @property
+    def channel_mass(self):
+        return [''.join([m for m in metal if m.isdigit()]) for metal in self._channel_metals[3:]]
 
     @property
     def channel_labels(self):
@@ -77,9 +81,22 @@ class ImcAcquisitionBase(object):
         """
         order_dict = dict()
         for i, m in enumerate(self.channel_metals):
-            order_dict.update({i: m})
+            order_dict.update({m: i})
 
         return [order_dict[m] for m in metallist]
+
+    def get_mass_indices(self, masslist):
+        """
+        Returns the channel indices from the queried mass
+        :param masslist:
+        :return:
+        """
+
+        order_dict = dict()
+        for i, m in enumerate(self.channel_mass):
+            order_dict.update({m: i})
+
+        return [order_dict[m] for m in masslist]
 
     @property
     def data(self):
@@ -140,7 +157,7 @@ class ImcAcquisitionBase(object):
         return img[0]
 
     def get_img_by_metal(self, metal):
-        chan = self._get_position(metal, self._channel_metal) - 3
+        chan = self._get_position(metal, self._channel_metals) - 3
         return self.get_img_by_channel_nr(chan)
 
     def get_img_by_label(self, label):

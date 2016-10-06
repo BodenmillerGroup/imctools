@@ -18,7 +18,7 @@ class OmeParserBase(AbstractParser):
         self.original_file = original_file
         self.origin = origin
 
-    def get_imc_aquisition(self):
+    def get_imc_acquisition(self):
         meta = self.meta_dict
         return ImcAcquisitionBase(meta['image_ID'],
                                                     self.original_file,

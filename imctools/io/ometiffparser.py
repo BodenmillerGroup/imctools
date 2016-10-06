@@ -21,10 +21,12 @@ class OmetiffParser(OmeParserBase):
         # reshape it to the stupid format
         print(self._data.shape)
         self._data = self.reshape_flat(self._data)
+        self.filename = original_file
+        self.n_acquisitions = 1
 
         super(OmetiffParser, self).__init__(self._data, self._ome, origin='ome.tiff')
 
-    def get_imc_aquisition(self):
+    def get_imc_acquisition(self):
         """
         Get Imc Acquisition object
 
@@ -73,4 +75,5 @@ if __name__ == '__main__':
     dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
     plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())
     plt.show()
+    print(imc_ac)
     print(imc_ac.channel_metals)
