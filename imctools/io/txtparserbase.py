@@ -64,8 +64,8 @@ class TxtParserBase(AbstractParser):
             return names
 
         # else there is the bug where (123123di)
-        names = [n.strip('di') for n in names]
-        names = [n.strip('Di') for n in names]
+        names = [n.rstrip('di') for n in names]
+        names = [n.rstrip('Di') for n in names]
         if names[0][0].isdigit():
             names = [n[(int(len(n)/2)):] for n in names]
 

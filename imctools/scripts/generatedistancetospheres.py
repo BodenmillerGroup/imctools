@@ -18,9 +18,9 @@ def generate_distanceto_spheres(fn_label, cur_label, out_file, bg_label=0):
     with tifffile.TiffFile(fn_label) as tif:
         labels = tif.asarray()
 
-    is_cur = labels == cur_label
-    is_bg = labels == bg_label
-    is_other = (is_bg == False) & (is_cur == False)
+    is_cur = (labels != cur_label)
+    is_bg = (labels != bg_label)
+    is_other = (is_bg == False) | (is_cur == False)
 
     with tifffile.TiffWriter(out_file+'.tif', imagej=True) as tif:
         tif.save(distance_transform_edt(is_cur).astype(np.float32))
