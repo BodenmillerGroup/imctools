@@ -46,8 +46,9 @@ class ImcAcquisition(ImcAcquisitionBase):
 
         out_names = [label +'_' + name for label, name in zip(self.channel_labels, self.channel_metals)]
         out_names = [out_names[i] for i in order]
+        out_fluor = [self.channel_metals[i] for i in order]
         dat = np.array(self.get_img_stack_cyx(order), dtype=np.float32).swapaxes(2,0)
-        tw = TiffWriter(filename, dat, channel_name=out_names, original_description=self.original_metadata)
+        tw = TiffWriter(filename, dat, channel_name=out_names, original_description=self.original_metadata, fluor=out_fluor)
         return tw
 
     def save_analysis_tiff(self, filename, metals=None):

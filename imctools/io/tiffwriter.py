@@ -17,10 +17,14 @@ class TiffWriter(object):
                        np.float32().dtype: ome.PT_FLOAT,
                        np.float64().dtype: ome.PT_FLOAT})
 
-    def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None):
+    def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
         self.file_name = file_name
         self.img_stack = img_stack
         self.channel_name = channel_name
+        if fluor is None:
+            self.fluor = channel_name
+        else:
+            self.fluor = fluor
 
         if pixeltype is None:
             pixeltype = self.pixeltype_dict[img_stack.dtype]
@@ -82,6 +86,7 @@ class TiffWriter(object):
             p.Channel(i).set_SamplesPerPixel(1)
             p.Channel(i).set_Name(channel_info)
             p.Channel(i).set_ID('channel' + str(i))
+            p.Channel(i).node.set('Fluor', self.fluor[i])
 
         # omexml.structured_annotations.add_original_metadata(
         #     ome.OM_SAMPLES_PER_PIXEL, str(1))

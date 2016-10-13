@@ -17,10 +17,7 @@ class TxtParserBase(AbstractParser):
         self.filename = filename
         self.origin ='txt'
         self.channel_labels = self.channel_metals[:]
-        print(self.channel_metals)
         self.channel_metals[3:] = self.clean_channel_metals(self.channel_metals[3:])
-        print(self.channel_metals)
-
 
     def get_imc_aquisition(self):
         """
@@ -71,11 +68,6 @@ class TxtParserBase(AbstractParser):
 
         return names
 
-
-
-
-
-
     def parse_csv(self, filename, first_col=3):
         with open(filename, 'r') as txtfile:
             txtreader = csv.reader(txtfile, delimiter='\t')
@@ -90,7 +82,6 @@ class TxtParserBase(AbstractParser):
                 rowar = array.array('f')
                 rowar.fromlist(row[first_col:])
                 data.append(rowar)
-        print(data[0])
         self.data = data
         self.channel_metals = channel_names
 
@@ -119,7 +110,6 @@ class TxtParserBase(AbstractParser):
                 for v in row.split('\t')[first_col:]:
                     rowar.append(float(v))
             nrow = int(len(rowar)/nchan)
-            print(len(rowar)/nchan)
             data = [rowar[(i*nchan):(i*nchan+nchan)] for i in range(nrow)]
         self.data = data
         self.channel_metals = channel_names

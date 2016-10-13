@@ -17,15 +17,13 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome', compres
     :return:
     """
 
-    # parse the arguments
-    args = parser.parse_args()
     if verbose:
         print('Load filename %s' %imc_acquisition)
 
     if outname is None:
         outname = os.path.split(imc_acquisition)[1]
-        outname = outname.replace('.mcd', '')
-
+        outname = outname.rstrip('.mcd').rstrip('.txt')
+        
     if outpath is None:
         outpath = os.path.split(imc_acquisition)[0]
 
