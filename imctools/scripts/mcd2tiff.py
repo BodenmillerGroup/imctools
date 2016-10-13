@@ -2,7 +2,7 @@ from imctools.io import mcdparser
 import argparse
 import os
 
-def save_tiff(mcd_filename, acquisition='all', tifftype='ome', compression=0, outname=None, outpath=0,verbose=False):
+def save_mcd_tiff(mcd_filename, acquisition='all', tifftype='ome', compression=0, outname=None, outpath=0,verbose=False):
     """
 
     :param mcd_filename:
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     # parse the arguments
     args = parser.parse_args()
 
-    save_tiff(mcd_filename=args.mcd_filename, acquisition=args.acquisition, tifftype=args.tifftype,
+    save_mcd_tiff(mcd_filename=args.mcd_filename, acquisition=args.acquisition, tifftype=args.tifftype,
               compression=args.compression, outname=args.outname, outpath=args.outpath, verbose=True)
 
 
