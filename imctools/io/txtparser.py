@@ -74,8 +74,5 @@ if __name__ == '__main__':
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     imc_txt = TxtParser(fn)
     imc_ac = imc_txt.get_imc_aquisition()
-    img = np.array(imc_ac.get_img_by_channel_nr(1))
-    plt.figure()
-    plt.imshow(img)
-    plt.show()
-    print(1)
+    iw = imc_ac.get_image_writer('/home/vitoz/temp/test_iridium.ome.tiff', mass=['191', '193'])
+    iw.save_image(mode='ome')

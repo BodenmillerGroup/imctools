@@ -24,7 +24,7 @@ def resize_image(fn_stack, outfolder, basename, scalefactor):
     if len(stack.shape) == 2:
         stack = stack.reshape([1]+list(stack.shape))
 
-    fn = os.path.join(outfolder, basename+'.tif')
+    fn = os.path.join(outfolder, basename+'.tiff')
     with tifffile.TiffWriter(fn, imagej=True) as tif:
         for chan in range(stack.shape[0]):
             timg = stack[chan, :, :]

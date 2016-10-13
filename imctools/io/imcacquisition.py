@@ -58,7 +58,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from imctools.io.mcdparser import McdParser
     from imctools.io.ometiffparser import OmetiffParser
-    fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.ome.tiff'
+    fn = '/home/vitoz/temp/grade1_0.ome.tiff'
     #with OmetiffParser(fn) as testmcd:
     testmcd = OmetiffParser(fn)
     #print(testmcd.filename)
@@ -75,4 +75,5 @@ if __name__ == '__main__':
 
 
     print(imc_img.channel_metals)
-    imc_img.save_image('/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/test_iridium.tiff', mass=['172', '173', '174', '175', '176', '191', '193'])
+    iw = imc_img.get_image_writer('/home/vitoz/temp/test_iridium.ome.tiff', mass=['191', '193'])
+    iw.save_image(mode='ome')
