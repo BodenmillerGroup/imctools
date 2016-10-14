@@ -1,11 +1,7 @@
 import os
 import numpy as np
 import tifffile
-from bioformats import omexml as ome
-import javabridge as jutil
-import bioformats
-import javabridge as javabridge
-import bioformats.omexml as ome
+import imctools.external.omexml as ome
 
 
 
