@@ -85,7 +85,7 @@ class TiffWriter(object):
             channel_info = self.channel_name[i]
             p.Channel(i).set_SamplesPerPixel(1)
             p.Channel(i).set_Name(channel_info)
-            p.Channel(i).set_ID('channel' + str(i))
+            p.Channel(i).set_ID('Channel:0:' + str(i))
             p.Channel(i).node.set('Fluor', self.fluor[i])
 
         # omexml.structured_annotations.add_original_metadata(

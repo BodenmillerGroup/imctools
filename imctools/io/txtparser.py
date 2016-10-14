@@ -36,18 +36,15 @@ class TxtParser(TxtParserBase):
         clean the names to be nice
         :return:
         """
-        print(names)
         # find which version it is
         names = [n.strip("\r") for n in names]
         names = [n.strip("\n") for n in names]
         names = [n.strip() for n in names]
-        print(1)
         # string of sort asbsdf(mn123di)
         if names[0].rfind(')') == (len(names[0])-1):
             #get m123di
 
             names = [n[(n.rfind('(')+1):(n.rfind(')'))] for n in names]
-            print(names)
 
         # string of sort aasbas_mn123
         elif '_' in names[0]:
