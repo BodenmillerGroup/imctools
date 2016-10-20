@@ -2,17 +2,17 @@ from __future__ import with_statement, division
 
 import csv
 from imcacquisitionbase import ImcAcquisitionBase
-from imctools.io.abstractparser import AbstractParser
+from imctools.io.abstractparserbase import AbstractParserBase
 import array
 
 
-class TxtParserBase(AbstractParser):
+class TxtParserBaseBase(AbstractParserBase):
     """
     Loads and strores an IMC .txt file
     """
 
     def __init__(self, filename):
-        super(TxtParserBase, self).__init__()
+        super(TxtParserBaseBase, self).__init__()
         self.parse_csv3(filename)
         self.filename = filename
         self.origin ='txt'
@@ -31,7 +31,10 @@ class TxtParserBase(AbstractParser):
                                   self.channel_labels,
                                   original_metadata=None,
                                   image_description=None,
-                                  origin=self.origin)
+                                  origin=self.origin,
+                                  is_long=True,
+                                  is_sorted=True,
+                                  offset=3)
 
     @staticmethod
     def clean_channel_metals(names):
@@ -44,7 +47,6 @@ class TxtParserBase(AbstractParser):
         names = [n.strip("\r") for n in names]
         names = [n.strip("\n") for n in names]
         names = [n.strip() for n in names]
-        print(1)
         # string of sort asbsdf(mn123di)
         if names[0].rfind(')') == (len(names[0])-1):
             #get m123di
@@ -119,5 +121,18 @@ if __name__ == '__main__':
     fn = '/mnt/imls-bod/Stefanie/2016/20160920/HIER_healthy/HIER_healthy_1_0_HIER1_1.txt'
     #fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
-    imc_txt = TxtParserBase(fn)
+    imc_txt = TxtParserBaseBase(fn)
     imc_ac = imc_txt.get_imc_aquisition()
+    rowimg = imc_ac._data[1]
+    print(rowimg[0][:3])
+    print(rowimg[1][:3])
+    print(rowimg[2][:3])
+    import numpy as np
+    import matplotlib.pyplot as plt
+    plt.figure()
+    plt.imshow(np.asarray(rowimg))
+    plt.show()
+    print(np.asarray(rowimg))
+
+
+    #print(imc_ac.get_img_by_channel_nr(1))

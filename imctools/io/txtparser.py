@@ -2,12 +2,12 @@ from __future__ import with_statement, division
 
 import csv
 from imcacquisition import ImcAcquisition
-from txtparserbase import TxtParserBase
-from imctools.io.abstractparser import AbstractParser
+from txtparserbase import TxtParserBaseBase
+from imctools.io.abstractparserbase import AbstractParserBase
 import array
 import numpy as np
 
-class TxtParser(TxtParserBase):
+class TxtParser(TxtParserBaseBase):
     """
     Loads and strores an IMC .txt file
     """

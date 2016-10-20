@@ -2,7 +2,7 @@ import numpy as np
 import mmap
 import xml.etree.ElementTree as et
 
-from imctools.io.mcdparserbase import McdParserBase
+from imctools.io.mcdparserbase import McdParserBaseBase
 from imctools.io.imcacquisition import ImcAcquisition
 
 """
@@ -10,7 +10,7 @@ Extends the McdParser to make use of numpy and memorymaps
 """
 
 
-class McdParser(McdParserBase):
+class McdParser(McdParserBaseBase):
     """Parsing data from Fluidigm MCD files
 
     The McdParser object should be closed using the close
@@ -23,7 +23,7 @@ class McdParser(McdParserBase):
 
         :param filename:
         """
-        super(McdParserBase, self).__init__()
+        super(McdParserBaseBase, self).__init__()
         self._fh = open(filename, mode='rb')
         self._xml = None
         self._ns = None

@@ -40,7 +40,7 @@ if __name__ == '__main__':
     fn = os.path.join(op.getDirectory(), op.getFileName())
 
     if fn[-4:] == '.mcd':
-        with mcdparserbase.McdParserBase(fn) as mcd_parser:
+        with mcdparserbase.McdParserBaseBase(fn) as mcd_parser:
             ac_ids = choose_acquisition_dialog(mcd_parser)
             if len(ac_ids) > 0:
                 print('Load mcd acquisition: %s' %ac_ids)
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     if fn[-4:] == '.txt':
         print('Load txt acquisition:')
-        imc_acs = [txtparserbase.TxtParserBase(filename=fn).get_imc_aquisition()]
+        imc_acs = [txtparserbase.TxtParserBaseBase(filename=fn).get_imc_aquisition()]
 
     for imc_ac in imc_acs:
         i5d_img = lib.convert_imc_to_image(imc_ac)

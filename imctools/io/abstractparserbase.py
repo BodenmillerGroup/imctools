@@ -2,7 +2,7 @@
 Creates the basic parser interface
 """
 
-class AbstractParser(object):
+class AbstractParserBase(object):
     """
 
     """

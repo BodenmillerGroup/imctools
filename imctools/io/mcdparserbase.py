@@ -4,11 +4,11 @@ import struct
 import array
 import sys
 from imctools.io.imcacquisitionbase import ImcAcquisitionBase
-from imctools.io.abstractparser import AbstractParser
+from imctools.io.abstractparserbase import AbstractParserBase
 
 
 
-class McdParserBase(AbstractParser):
+class McdParserBaseBase(AbstractParserBase):
     """Parsing data from Fluidigm MCD files
 
     The McdParser object should be closed using the close
@@ -21,7 +21,7 @@ class McdParserBase(AbstractParser):
 
         :param filename:
         """
-        super(McdParserBase, self).__init__()
+        super(McdParserBaseBase, self).__init__()
 
         self._fh = open(filename, mode='rb')
         self._xml = None
@@ -306,7 +306,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     fn = '/home/vitoz/temp/grade1.mcd'
-    with McdParserBase(fn) as testmcd:
+    with McdParserBaseBase(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         # print(testmcd.get_acquisition_xml('0'))

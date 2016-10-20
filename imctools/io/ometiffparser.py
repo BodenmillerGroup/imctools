@@ -1,11 +1,11 @@
 from imctools.io.imcacquisition import ImcAcquisition
-from imctools.io.omeparserbase import OmeParserBase
+from imctools.io.omeparserbase import OmeParserBaseBase
 import tifffile
 import numpy as np
 import xml.etree.ElementTree as et
 
 
-class OmetiffParser(OmeParserBase):
+class OmetiffParser(OmeParserBaseBase):
     """
     Parses an ome tiff
 
@@ -17,10 +17,6 @@ class OmetiffParser(OmeParserBase):
         :param filename:
         """
         self.read_image(original_file)
-
-        # reshape it to the stupid format
-        print(self._data.shape)
-        self._data = self.reshape_flat(self._data)
         self.filename = original_file
         self.n_acquisitions = 1
 
@@ -33,37 +29,35 @@ class OmetiffParser(OmeParserBase):
         :return:
         """
         meta = self.meta_dict
-        return ImcAcquisition(meta['image_ID'],
-                                                    self.original_file,
-                                                    self.data,
-                                                    meta['channel_metals'],
-                                                    meta['channel_labels'],
-                                                    original_metadata=self.ome ,
-                                                    image_description=None,
-                                                    origin=self.origin)
+        return ImcAcquisition(meta['image_ID'],    self.original_file,
+                              self.data,
+                              meta['channel_metals'],
+                              meta['channel_labels'],
+                              original_metadata=self.ome ,
+                              image_description=None,
+                              origin=self.origin)
 
     def read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
             self._data = tif.asarray()
             self._ome = tif.pages[0].tags['image_description'].value
 
-    @staticmethod
-    def reshape_flat(data):
-        """
-        Reshape the image data into the flat format.
-        :param data:
-        :return:
-        """
-        print(data[0,0,:5])
-        c, y, x = data.shape
-        h = x * y
-        data = np.reshape(data.ravel(order='C'),(h, c), order='F')
-        data = np.hstack((np.tile(np.arange(x),y).reshape((h,1)),
-                          np.repeat(np.arange(y),x).reshape((h,1)),
-                          (np.arange(h)+1).reshape((h, 1)),
-                          data))
-        print(data[:5,3])
-        return data
+    # @staticmethod
+    # def reshape_flat(data):
+    #     """
+    #     Reshape the image data into the flat format.
+    #     :param data:
+    #     :return:
+    #     """
+    #     print(data[0,0,:5])
+    #     c, y, x = data.shape
+    #     h = x * y
+    #     data = np.reshape(data.ravel(order='C'),(h, c), order='F')
+    #     data = np.hstack((np.tile(np.arange(x),y).reshape((h,1)),
+    #                       np.repeat(np.arange(y),x).reshape((h,1)),
+    #                       (np.arange(h)+1).reshape((h, 1)),
+    #                       data))
+    #     return data
 
 if __name__ == '__main__':
     fn = '/home/vitoz/temp/test.ome.tiff'

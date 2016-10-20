@@ -1,14 +1,14 @@
 from imctools.io.imcacquisition import ImcAcquisitionBase
-from imctools.io.abstractparser import AbstractParser
+from imctools.io.abstractparserbase import AbstractParserBase
 import xml.etree.ElementTree as et
 
-class OmeParserBase(AbstractParser):
+class OmeParserBaseBase(AbstractParserBase):
     def __init__(self, data, ome, original_file=None, origin=None):
         """
 
         :param filename:
         """
-        super(OmeParserBase, self).__init__()
+        super(OmeParserBaseBase, self).__init__()
         if origin is None:
             origin = 'ome'
         self.ome = et.fromstring(ome)
