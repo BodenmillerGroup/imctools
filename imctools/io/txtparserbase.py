@@ -6,34 +6,33 @@ from imctools.io.abstractparserbase import AbstractParserBase
 import array
 
 
-class TxtParserBaseBase(AbstractParserBase):
+class TxtParserBase(AbstractParserBase):
     """
     Loads and strores an IMC .txt file
     """
 
     def __init__(self, filename):
-        super(TxtParserBaseBase, self).__init__()
+        AbstractParserBase.__init__(self)
         self.parse_csv3(filename)
         self.filename = filename
         self.origin ='txt'
         self.channel_labels = self.channel_metals[:]
         self.channel_metals[3:] = self.clean_channel_metals(self.channel_metals[3:])
 
-    def get_imc_aquisition(self):
+    def get_imc_acquisition(self):
         """
         Returns the imc acquisition object
         :return:
         """
-
+        dat = self.data
+        img = self._reshape_long_2_cxy(dat, is_sorted=True)
         return ImcAcquisitionBase('0', self.filename,
-                                  self.data,
+                                  img,
                                   self.channel_metals,
                                   self.channel_labels,
                                   original_metadata=None,
                                   image_description=None,
                                   origin=self.origin,
-                                  is_long=True,
-                                  is_sorted=True,
                                   offset=3)
 
     @staticmethod
@@ -118,20 +117,17 @@ class TxtParserBaseBase(AbstractParserBase):
 
 
 if __name__ == '__main__':
-    fn = '/mnt/imls-bod/Stefanie/2016/20160920/HIER_healthy/HIER_healthy_1_0_HIER1_1.txt'
+    fn = '/home/vitoz/temp/grade1_1_0_A0_0.txt'
     #fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
-    imc_txt = TxtParserBaseBase(fn)
-    imc_ac = imc_txt.get_imc_aquisition()
+    imc_txt = TxtParserBase(fn)
+    imc_ac = imc_txt.get_imc_acquisition()
     rowimg = imc_ac._data[1]
     print(rowimg[0][:3])
     print(rowimg[1][:3])
     print(rowimg[2][:3])
     import numpy as np
     import matplotlib.pyplot as plt
-    plt.figure()
-    plt.imshow(np.asarray(rowimg))
-    plt.show()
     print(np.asarray(rowimg))
 
 

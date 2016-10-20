@@ -2,13 +2,13 @@ from imctools.io.imcacquisition import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
 import xml.etree.ElementTree as et
 
-class OmeParserBaseBase(AbstractParserBase):
+class OmeParserBase(AbstractParserBase):
     def __init__(self, data, ome, original_file=None, origin=None):
         """
 
         :param filename:
         """
-        super(OmeParserBaseBase, self).__init__()
+        super(OmeParserBase, self).__init__()
         if origin is None:
             origin = 'ome'
         self.ome = et.fromstring(ome)
@@ -25,9 +25,9 @@ class OmeParserBaseBase(AbstractParserBase):
                                                     self.data,
                                                     meta['channel_metals'],
                                                     meta['channel_labels'],
-                                                    original_metadata=self.ome ,
+                                                    original_metadata=self.ome,
                                                     image_description=None,
-                                                    origin=self.origin)
+                                                    origin=self.origin, offset=0)
 
     def get_meta_dict(self):
         meta_dict = dict()

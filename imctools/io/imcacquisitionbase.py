@@ -19,7 +19,7 @@ class ImcAcquisitionBase(object):
 
     """
     def __init__(self, image_ID, original_file, data, channel_metal, channel_labels,
-                 original_metadata=None, image_description=None, origin=None, offset=0, is_long=False, is_sorted=True):
+                 original_metadata=None, image_description=None, origin=None, offset=0):
         """
 
         :param image_ID: The acquisition ID
@@ -32,10 +32,7 @@ class ImcAcquisitionBase(object):
         self.image_ID = image_ID
         self.original_file = original_file
 
-        if is_long == False:
-            self._data = data
-        else:
-            self._data = self._reshape_long_2_cxy(data,is_sorted=is_sorted)
+        self._data = data
 
         self._offset = offset
         # calculated with update shape
@@ -117,66 +114,11 @@ class ImcAcquisitionBase(object):
         if offset is None:
             offset = self._offset
         if channel_idxs is None:
-            channel_idxs = range(self.shape[2])
+            channel_idxs = range(self.n_channels)
 
         data = self._data
 
         img = [data[i+offset] for i in channel_idxs]
-
-        return img
-
-    @classmethod
-    def _reshape_long_2_cxy(self, longdat, is_sorted=True, shape=None, channel_idxs=None):
-        """
-        Helper method to convert to cxy from the long format.
-        Mainly used by during import step
-        :param longdat:
-        :param is_sorted:
-        :param shape:
-        :param channel_idxs:
-        :param channel_offset:
-        :return:
-        """
-        if shape is None:
-            if is_sorted:
-                shape = [int(i+1) for i in longdat[-1][:2]]
-            else:
-                shape = [0,0]
-                for row in longdat:
-                    if row[0] > shape[0]:
-                        row[0] = shape[0]
-
-                    if row[1] > shape[1]:
-                        row[1] = shape[1]
-
-        if channel_idxs is None:
-            channel_idxs = range(len(longdat[0]))
-
-        if is_sorted:
-            nchans = len(channel_idxs)
-            npixels = shape[0] * shape[1]
-            tot_len = npixels * nchans
-            imar = array.array('f')
-
-            for i in xrange(tot_len):
-                row = i % npixels
-                col = channel_idxs[int(i/npixels)]
-                imar.append(longdat[row][col])
-
-            img = [[imar[(k * shape[0] * shape[1] + j * shape[0]):(k * shape[0] * shape[1] + j * shape[0] + shape[0])]
-                    for j in range(shape[1])]
-                   for k in range(nchans)]
-
-        else:
-            img = self._initialize_empty_listarray([shape[1],
-                                                        shape[0],
-                                                        len(channel_idxs)])
-            # will be c, y, x
-            for row in longdat:
-                x = int(row[0])
-                y = int(row[1])
-                for col, idx in enumerate(channel_idxs):
-                    img[col][x][y] = row[idx]
 
         return img
 
@@ -209,7 +151,13 @@ class ImcAcquisitionBase(object):
         if channel is None:
             return None
         elif len(channel) == self.n_channels:
-            channel = ['X', 'Y', 'Z'] + channel
+
+            for i in range(self._offset):
+                if i < 3:
+                    channel = ['X', 'Y', 'Z'][i] + channel
+                else:
+                    channel = [str(i)] + channel
+
         elif len(channel) == self.n_channels + self._offset:
             pass
         else:
@@ -219,16 +167,6 @@ class ImcAcquisitionBase(object):
         channel = [c.strip('(').strip(')').strip() for c in channel]
         return channel
 
-    @staticmethod
-    def _initialize_empty_listarray(shape):
-        imar = array.array('f')
-        for i in xrange(shape[0]*shape[1]*shape[2]): imar.append(-1.)
-
-        img = [[imar[(k*shape[0]*shape[1]+j*shape[0]):(k*shape[0]*shape[1]+j*shape[0]+shape[0])]
-                for j in range(shape[1])]
-               for k in range(shape[2])]
-
-        return img
 
     @staticmethod
     def _get_position(name, namelist):
@@ -236,10 +174,10 @@ class ImcAcquisitionBase(object):
         return pos[0]
 
 if __name__ == '__main__':
-    from mcdparserbase import McdParserBaseBase
+    from mcdparserbase import McdParserBase
     import time
     fn = '/mnt/imls-bod/data_vito/grade1.mcd'
-    with McdParserBaseBase(fn) as testmcd:
+    with McdParserBase(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         # print(testmcd.get_acquisition_xml('0'))

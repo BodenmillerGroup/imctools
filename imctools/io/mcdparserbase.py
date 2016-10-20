@@ -8,7 +8,7 @@ from imctools.io.abstractparserbase import AbstractParserBase
 
 
 
-class McdParserBaseBase(AbstractParserBase):
+class McdParserBase(AbstractParserBase):
     """Parsing data from Fluidigm MCD files
 
     The McdParser object should be closed using the close
@@ -21,7 +21,7 @@ class McdParserBaseBase(AbstractParserBase):
 
         :param filename:
         """
-        super(McdParserBaseBase, self).__init__()
+        AbstractParserBase.__init__(self)
 
         self._fh = open(filename, mode='rb')
         self._xml = None
@@ -246,12 +246,16 @@ class McdParserBaseBase(AbstractParserBase):
         nchan = self.get_nchannels_acquisition(ac_id)
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
+
+        img = self._reshape_long_2_cxy(data, is_sorted=True)
         return ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
-                                                     data=data,
+                                                     data=img,
                                                      channel_metal=channel_name,
                                                      channel_labels=channel_label,
                                                      original_metadata=str(et.tostring(self._xml)),
-                                                     image_description=self.get_acquisition_description(ac_id), origin='mcd')
+                                                     image_description=self.get_acquisition_description(ac_id),
+                                  origin='mcd',
+                                  offset=3)
 
     def close(self):
         """Close the file handle."""
@@ -306,7 +310,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     fn = '/home/vitoz/temp/grade1.mcd'
-    with McdParserBaseBase(fn) as testmcd:
+    with McdParserBase(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         # print(testmcd.get_acquisition_xml('0'))

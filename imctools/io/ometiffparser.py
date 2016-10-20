@@ -1,11 +1,11 @@
 from imctools.io.imcacquisition import ImcAcquisition
-from imctools.io.omeparserbase import OmeParserBaseBase
+from imctools.io.omeparserbase import OmeParserBase
 import tifffile
 import numpy as np
 import xml.etree.ElementTree as et
+from imctools.io.abstractparser import AbstractParser
 
-
-class OmetiffParser(OmeParserBaseBase):
+class OmetiffParser(AbstractParser, OmeParserBase):
     """
     Parses an ome tiff
 
@@ -16,11 +16,13 @@ class OmetiffParser(OmeParserBaseBase):
 
         :param filename:
         """
+        #self._data = None
+        #self._ome = None
+        AbstractParser.__init__(self)
         self.read_image(original_file)
         self.filename = original_file
         self.n_acquisitions = 1
-
-        super(OmetiffParser, self).__init__(self._data, self._ome, origin='ome.tiff')
+        OmeParserBase.__init__(self, self.data, self.ome, origin='ome.tiff')
 
     def get_imc_acquisition(self):
         """
@@ -35,12 +37,13 @@ class OmetiffParser(OmeParserBaseBase):
                               meta['channel_labels'],
                               original_metadata=self.ome ,
                               image_description=None,
-                              origin=self.origin)
+                              origin=self.origin,
+                              offset=0)
 
     def read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
-            self._data = tif.asarray()
-            self._ome = tif.pages[0].tags['image_description'].value
+            self.data = tif.asarray()
+            self.ome = tif.pages[0].tags['image_description'].value
 
     # @staticmethod
     # def reshape_flat(data):
@@ -60,14 +63,13 @@ class OmetiffParser(OmeParserBaseBase):
     #     return data
 
 if __name__ == '__main__':
-    fn = '/home/vitoz/temp/test.ome.tiff'
+    fn = '/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff'
     parser = OmetiffParser(fn)
-    imc_ac = parser.get_imc_aquisition()
-    print(imc_ac._data.shape)
+    imc_ac = parser.get_imc_acquisition()
     import matplotlib.pyplot as plt
     plt.figure()
-    dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
-    plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())
+    dat = np.array(imc_ac.get_img_stack_cxy([0])).squeeze()
+    plt.imshow(np.array(imc_ac.get_img_stack_cxy([0])).squeeze())
     plt.show()
     print(imc_ac)
     print(imc_ac.channel_metals)

@@ -2,15 +2,16 @@ import numpy as np
 import mmap
 import xml.etree.ElementTree as et
 
-from imctools.io.mcdparserbase import McdParserBaseBase
+from imctools.io.mcdparserbase import McdParserBase
 from imctools.io.imcacquisition import ImcAcquisition
+from imctools.io.abstractparser import AbstractParser
 
 """
 Extends the McdParser to make use of numpy and memorymaps
 """
 
 
-class McdParser(McdParserBaseBase):
+class McdParser(AbstractParser, McdParserBase):
     """Parsing data from Fluidigm MCD files
 
     The McdParser object should be closed using the close
@@ -23,7 +24,8 @@ class McdParser(McdParserBaseBase):
 
         :param filename:
         """
-        super(McdParserBaseBase, self).__init__()
+        McdParserBase.__init__(self, filename)
+        AbstractParser.__init__(self)
         self._fh = open(filename, mode='rb')
         self._xml = None
         self._ns = None
@@ -103,11 +105,13 @@ class McdParser(McdParserBaseBase):
         nchan = data.shape[1]
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
+        img = self._reshape_long_2_cxy(data, is_sorted=True)
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
-                              data=self.get_acquisition_rawdata(ac_id),
+                              data=img,
                               channel_metal=channel_name,
                               channel_labels=channel_label,
-                              original_metadata= str(et.tostring(self._xml, encoding='utf8', method='xml')))
+                              original_metadata= str(et.tostring(self._xml, encoding='utf8', method='xml')),
+                              offset=3)
 
 def _add_nullbytes(buffer_str):
     """
@@ -130,7 +134,7 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    fn = '/mnt/imls-bod/data_vito/grade1.mcd'
+    fn = '/home/vitoz/temp/grade1.mcd'
     with McdParser(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
@@ -138,10 +142,10 @@ if __name__ == '__main__':
         print(testmcd.get_acquisition_channels_xml('0'))
         print(testmcd.get_acquisition_channels('0'))
         imc_img = testmcd.get_imc_acquisition('0')
-        img = imc_img.get_img_stack()
+        img = imc_img.get_img_stack_cxy()
         img = imc_img.get_img_by_metal('X')
-        # plt.figure()
-        # plt.imshow(img.squeeze())
-        # plt.show()
+        plt.figure()
+        plt.imshow(img.squeeze())
+        plt.show()
         imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
     #acquisition_dict = get_mcd_data(fn, xml_public)

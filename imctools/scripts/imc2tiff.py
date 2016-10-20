@@ -96,7 +96,7 @@ def _get_txt_acquisition(txt_acquisition, acquisition_name=None, verbose=False):
     txt = txtparser.TxtParser(txt_acquisition)
     if verbose:
         print('containing 1 acquisition')
-    imc_img = txt.get_imc_aquisition()
+    imc_img = txt.get_imc_acquisition()
     acquisition = acquisition_name
     yield (acquisition, imc_img)
 
