@@ -13,7 +13,7 @@ class BasicTestSuite(unittest.TestCase):
         """
 
         abstparsbase = abstractparserbase.AbstractParserBase()
-        self._reshape_tests(abstparsbase._reshape_long_2_cxy)
+        self._reshape_tests(abstparsbase._reshape_long_2_cyx)
 
     def test_reshape_long_2_cxy(self):
         """
@@ -22,7 +22,7 @@ class BasicTestSuite(unittest.TestCase):
         """
 
         abstparser = abstractparser.AbstractParser()
-        self._reshape_tests(abstparser._reshape_long_2_cxy)
+        self._reshape_tests(abstparser._reshape_long_2_cyx)
 
     def _reshape_tests(self, reshape_fkt, nrow=10, ncol=20):
         """

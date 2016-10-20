@@ -105,7 +105,7 @@ class ImcAcquisitionBase(object):
     def data(self):
         return self._data
 
-    def get_img_stack_cxy(self, channel_idxs=None, offset=None):
+    def get_img_stack_cyx(self, channel_idxs=None, offset=None):
         """
         Return the data reshaped as a stack of images
         :param: channel_idxs
@@ -129,7 +129,7 @@ class ImcAcquisitionBase(object):
         :param chan:
         :return:
         """
-        img = self.get_img_stack_cxy(channel_idxs=[chan])
+        img = self.get_img_stack_cyx(channel_idxs=[chan])
 
         return img[0]
 

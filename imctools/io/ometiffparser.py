@@ -68,8 +68,8 @@ if __name__ == '__main__':
     imc_ac = parser.get_imc_acquisition()
     import matplotlib.pyplot as plt
     plt.figure()
-    dat = np.array(imc_ac.get_img_stack_cxy([0])).squeeze()
-    plt.imshow(np.array(imc_ac.get_img_stack_cxy([0])).squeeze())
+    dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
+    plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())
     plt.show()
     print(imc_ac)
     print(imc_ac.channel_metals)

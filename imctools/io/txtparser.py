@@ -23,7 +23,7 @@ class TxtParser(AbstractParser, TxtParserBase):
         Returns the imc acquisition object
         :return:
         """
-        img = self._reshape_long_2_cxy(self.data, is_sorted=True)
+        img = self._reshape_long_2_cyx(self.data, is_sorted=True)
         return ImcAcquisition('0', self.filename,
                                   img,
                                   self.channel_metals,

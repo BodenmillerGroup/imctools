@@ -21,7 +21,7 @@ class AbstractParserBase(object):
         pass
 
     @classmethod
-    def _reshape_long_2_cxy(self, longdat, is_sorted=True, shape=None, channel_idxs=None):
+    def _reshape_long_2_cyx(self, longdat, is_sorted=True, shape=None, channel_idxs=None):
         """
         Helper method to convert to cxy from the long format.
         Mainly used by during import step

@@ -105,7 +105,7 @@ class McdParser(AbstractParser, McdParserBase):
         nchan = data.shape[1]
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
-        img = self._reshape_long_2_cxy(data, is_sorted=True)
+        img = self._reshape_long_2_cyx(data, is_sorted=True)
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
                               data=img,
                               channel_metal=channel_name,
@@ -142,7 +142,7 @@ if __name__ == '__main__':
         print(testmcd.get_acquisition_channels_xml('0'))
         print(testmcd.get_acquisition_channels('0'))
         imc_img = testmcd.get_imc_acquisition('0')
-        img = imc_img.get_img_stack_cxy()
+        img = imc_img.get_img_stack_cyx()
         img = imc_img.get_img_by_metal('X')
         plt.figure()
         plt.imshow(img.squeeze())

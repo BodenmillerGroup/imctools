@@ -247,7 +247,7 @@ class McdParserBase(AbstractParserBase):
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
 
-        img = self._reshape_long_2_cxy(data, is_sorted=True)
+        img = self._reshape_long_2_cyx(data, is_sorted=True)
         return ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
                                                      data=img,
                                                      channel_metal=channel_name,

@@ -25,7 +25,7 @@ class TxtParserBase(AbstractParserBase):
         :return:
         """
         dat = self.data
-        img = self._reshape_long_2_cxy(dat, is_sorted=True)
+        img = self._reshape_long_2_cyx(dat, is_sorted=True)
         return ImcAcquisitionBase('0', self.filename,
                                   img,
                                   self.channel_metals,

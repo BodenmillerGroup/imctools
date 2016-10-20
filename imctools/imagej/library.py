@@ -35,7 +35,7 @@ def convert_imc_to_image(imc_acquisition):
     channel_names = imc_acquisition.channel_metals
     channel_labels = imc_acquisition.channel_labels
 
-    img_data = imc_acquisition.get_img_stack_cxy()
+    img_data = imc_acquisition.get_img_stack_cyx()
 
     print('Add planes to stack:')
     imgstack = stack_to_imagestack(img_data)
