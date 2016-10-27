@@ -1,8 +1,8 @@
 from __future__ import with_statement, division
 
 import csv
-from imcacquisition import ImcAcquisition
-from txtparserbase import TxtParserBase
+from imctools.io.imcacquisition import ImcAcquisition
+from imctools.io.txtparserbase import TxtParserBase
 from imctools.io.abstractparser import AbstractParser
 import array
 import numpy as np
