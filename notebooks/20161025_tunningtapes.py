@@ -48,9 +48,10 @@ for p in txt_parsers:
 imc_acs = [p.get_imc_acquisition() for p in txt_parsers]
 
 
-# In[53]:
+# In[220]:
 
-ac.original_filename
+ac = imc_acs[0]
+ac.original_file
 
 
 # In[97]:

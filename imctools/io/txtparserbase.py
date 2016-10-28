@@ -1,7 +1,7 @@
 from __future__ import with_statement, division
 
 import csv
-from imcacquisitionbase import ImcAcquisitionBase
+from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
 import array
 
