@@ -75,12 +75,16 @@ def stack_to_imagestack(cxy_stack, img_stack=None):
     :param img_stack:
     :return:
     """
+
     c, x, y = (len(cxy_stack), len(cxy_stack[0]), len(cxy_stack[0][0]))
     if img_stack is None:
-        img_stack = ImageStack(x, y)
+        img_stack = ImageStack(y, x)
 
     for i in range(c):
         cur_proc = process.FloatProcessor(cxy_stack[i])
+        cur_proc.flipVertical()
+        cur_proc = cur_proc.rotateRight()
+
         img_stack.addSlice(cur_proc)
 
     return img_stack
@@ -129,7 +133,7 @@ def generate_ome_fromimc(imc_acquisition):
     :return:
     """
 
-    x, y, c = imc_acquisition.shape
+    y, x, c = imc_acquisition.shape
     print(x,y,c)
     metadata = MetadataTools.createOMEXMLMetadata()
     filename= '/home/vitoz/temp/test.ome.tiff'
