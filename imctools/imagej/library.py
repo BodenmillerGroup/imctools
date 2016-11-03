@@ -2,8 +2,13 @@ from __future__ import with_statement, division
 
 import ij.process as process
 from ij import ImageStack
-import sc.fiji.i5d.Image5D
-import sc.fiji.i5d as i5d
+
+try:
+    import sc.fiji.i5d.Image5D
+    import sc.fiji.i5d as i5d
+except:
+    import i5d.Image5D
+    import i5d as i5d
 
 import struct
 

@@ -39,7 +39,8 @@ class AbstractParserBase(object):
                     shape[0] = int(row[0])
                 if row[1] > shape[1]:
                     shape[1] = int(row[1])
-
+            shape[0] += 1
+            shape[1] += 1
             if shape[0]*shape[1] > len(longdat):
                 shape[1] -= 1
 
