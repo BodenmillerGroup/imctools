@@ -16,12 +16,10 @@ class AbstractParser(AbstractParserBase):
         """
 
         if shape is None:
-            if is_sorted:
-                shape = longdat[:, :2].max(axis=0) + 1
-                if np.prod(shape) > longdat.shape[0]:
-                    shape[1] -= 1
-            else:
-                shape = longdat[:,:2].max(axis=0)+1
+            shape = longdat[:, :2].max(axis=0) + 1
+            if np.prod(shape) > longdat.shape[0]:
+                shape[1] -= 1
+
             shape = shape.astype(int)
 
         if channel_idxs is None:

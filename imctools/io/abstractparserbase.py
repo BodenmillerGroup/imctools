@@ -33,16 +33,18 @@ class AbstractParserBase(object):
         :return:
         """
         if shape is None:
-            if is_sorted:
-                shape = [int(i + 1) for i in longdat[-1][:2]]
-            else:
-                shape = [0, 0]
-                for row in longdat:
-                    if row[0] > shape[0]:
-                        row[0] = shape[0]
+            shape = [0, 0]
+            for row in longdat:
+                if row[0] > shape[0]:
+                    shape[0] = int(row[0])
+                if row[1] > shape[1]:
+                    shape[1] = int(row[1])
 
-                    if row[1] > shape[1]:
-                        row[1] = shape[1]
+            if shape[0]*shape[1] > len(longdat):
+                shape[1] -= 1
+
+            import pdb;pdb.set_trace()
+
 
         if channel_idxs is None:
             channel_idxs = range(len(longdat[0]))

@@ -117,8 +117,8 @@ class TxtParserBase(AbstractParserBase):
 
 
 if __name__ == '__main__':
-    fn = '/home/vitoz/temp/grade1_1_0_A0_0.txt'
-    #fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
+    #fn = '/home/vitoz/temp/grade1_1_0_A0_0.txt'
+    fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     imc_txt = TxtParserBase(fn)
     imc_ac = imc_txt.get_imc_acquisition()
