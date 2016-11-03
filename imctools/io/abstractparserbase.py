@@ -42,7 +42,7 @@ class AbstractParserBase(object):
 
             if shape[0]*shape[1] > len(longdat):
                 shape[1] -= 1
-        
+
 
 
         if channel_idxs is None:
