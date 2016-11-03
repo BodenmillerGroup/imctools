@@ -17,9 +17,11 @@ class AbstractParser(AbstractParserBase):
 
         if shape is None:
             if is_sorted:
-                shape = longdat[-1, :2]+1
+                shape = longdat[:, :2].max(axis=0) + 1
+                if np.prod(shape) > longdat.shape[0]:
+                    shape[1] -= 1
             else:
-                shape = longdat[:,:1].max(axis=1)+1
+                shape = longdat[:,:2].max(axis=0)+1
             shape = shape.astype(int)
 
         if channel_idxs is None:
@@ -29,7 +31,7 @@ class AbstractParser(AbstractParserBase):
 
         tdat = longdat[:,channel_idxs]
         if is_sorted:
-            img = np.reshape(tdat, [shape[1], shape[0], nchan], order='C')
+            img = np.reshape(tdat[:(np.prod(shape)),:], [shape[1], shape[0], nchan], order='C')
             img = img.swapaxes(0,2)
             img = img.swapaxes(1, 2)
             return img

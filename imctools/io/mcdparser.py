@@ -105,6 +105,7 @@ class McdParser(AbstractParser, McdParserBase):
         nchan = data.shape[1]
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
+        #import pdb; pdb.set_trace()
         img = self._reshape_long_2_cyx(data, is_sorted=True)
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
                               data=img,
@@ -134,18 +135,19 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    fn = '/home/vitoz/temp/grade1.mcd'
+    fn = '/mnt/imls-bod/Daniel_Data/August/large_CXCL13_CXCL13_UBC_image/CXCL13_CXCL10_UBC.mcd'
+    #fn = '/mnt/imls-bod/Daniel_Data/September/02/Her2_grade0/grade_0.mcd'
     with McdParser(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
-        #print(testmcd.get_acquisition_xml('0'))
-        print(testmcd.get_acquisition_channels_xml('0'))
-        print(testmcd.get_acquisition_channels('0'))
-        imc_img = testmcd.get_imc_acquisition('0')
+        print(testmcd.acquisition_ids)
+        print(testmcd.get_acquisition_channels_xml(testmcd.acquisition_ids[0]))
+        print(testmcd.get_acquisition_channels(testmcd.acquisition_ids[0]))
+        imc_img = testmcd.get_imc_acquisition(testmcd.acquisition_ids[0])
         img = imc_img.get_img_stack_cyx()
         img = imc_img.get_img_by_metal('X')
         plt.figure()
         plt.imshow(img.squeeze())
         plt.show()
-        imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
+        #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
     #acquisition_dict = get_mcd_data(fn, xml_public)
