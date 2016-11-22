@@ -2,10 +2,12 @@ import argparse
 import os
 
 import pandas as pd
+import numpy as np
 
 from imctools.io import ometiffparser
 
-def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolumn=None, masscolumn=None, usedcolumn=None):
+def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolumn=None, masscolumn=None, usedcolumn=None,
+                       addsum=False):
     # read the pannelcsv to find out which channels should be loaded
     selmetals = None
     selmass = None
@@ -25,6 +27,12 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
     imc_img = ome.get_imc_acquisition()
 
     writer = imc_img.get_image_writer(outname + '.tiff', metals=selmetals, mass=selmass)
+
+    if addsum:
+        img_sum = np.sum(writer.img_stack, axis=2)
+        img_sum = np.reshape(img_sum, list(img_sum.shape)+[1])
+        writer.img_stack = np.append(img_sum, writer.img_stack, axis=2)
+
     writer.save_image(mode='imagej')
 
     if selmass is not None:
@@ -35,6 +43,8 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
     else:
         savenames = [s for s in imc_img.channel_metals]
 
+    if addsum:
+        savenames = ['sum'] + savenames
     with open(outname + '.csv', 'w') as f:
         for n in savenames:
             f.write(n + '\n')
@@ -77,6 +87,9 @@ if __name__ == "__main__":
     parser.add_argument('--scale', type=str, default='no', choices=['no', 'max', 'percentile99, percentile99.9, percentile99.99'],
                         help='scale the data?' )
 
+    parser.add_argument('--addsum', type=str, default='no', choices=['no', 'yes'],
+                        help='Add the sum of the data as the first layer.' )
+
     args = parser.parse_args()
 
 
@@ -103,7 +116,7 @@ if __name__ == "__main__":
     outname = os.path.join(outfolder, fn_out)
 
     ometiff_2_analysis(args.ome_filename, outfolder, fn_out, args.pannelcsv, args.metalcolumn, args.masscolumn,
-                       args.usedcolumn)
+                       args.usedcolumn, args.addsum == 'yes')
 
 
 

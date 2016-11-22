@@ -34,17 +34,15 @@ class TiffWriter(object):
     def save_image(self, mode='imagej', compression=0):
         #TODO: add original metadata somehow
 
-        xml = self.get_xml()
         fn_out = self.file_name
-        img = self.img_stack
         img = self.img_stack.swapaxes(2, 0)
-        mode
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
-            tifffile.imsave(fn_out, img, compress=compression, imagej=True)
+            tifffile.imsave(fn_out, img, compress=compression, imagej=True, bigtiff=True)
         elif mode == 'ome':
+            xml = self.get_xml()
             tifffile.imsave(fn_out, img, compress=compression, imagej=False,
-                            description=xml)
+                            description=xml, bigtiff=True)
 
     # def save_xml(self):
     #     xml = self.get_xml()
