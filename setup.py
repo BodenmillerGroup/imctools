@@ -11,13 +11,16 @@ with open('LICENSE') as f:
 
 setup(
     name='imctools',
-    version='0.0.1',
+    version='0.0.2',
     description='Tools to handle IMC data',
     long_description=readme,
     author='Vito Zanotelli',
     author_email='vito.zanotelli@uzh.ch',
     url='https://github.com/bodenmillerlab/imctools',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    install_requires = [
+                       'tifffile', 'scikit-image', 'numpy', 'scipy', 'requests'
+                   ],
 )
 
