@@ -1,6 +1,11 @@
 # read in and display ImagePlus object(s)
 from ij.io import OpenDialog
+from ij import IJ
 import os
+import sys
+
+imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
+sys.path.append(os.path.realpath(imctool_dir))
 
 from imctools.imagej import library as lib
 

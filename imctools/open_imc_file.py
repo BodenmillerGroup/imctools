@@ -4,12 +4,12 @@ from ij import IJ
 import ij.gui as gui
 from ij.io import OpenDialog
 
-from imctools.imagej import library as lib
-
 import os
 import sys
 imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
 sys.path.append(os.path.realpath(imctool_dir))
+
+from imctools.imagej import library as lib
 
 from io import mcdparserbase
 from io import txtparserbase

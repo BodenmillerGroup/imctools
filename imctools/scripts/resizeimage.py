@@ -10,11 +10,12 @@ from skimage import transform
 
 def resize_image(fn_stack, outfolder, basename, scalefactor):
     """
+    Resizes an image
 
-    :param fn_stack:
-    :param outfolder:
-    :param basename:
-    :param scalefactor:
+    :param fn_stack: The filename of the stack
+    :param outfolder: The output folder
+    :param basename: The basename to use for the output filename
+    :param scalefactor: Factor to scale by
     :return:
     """
 
@@ -34,7 +35,7 @@ def resize_image(fn_stack, outfolder, basename, scalefactor):
 if __name__ == "__main__":
     # Setup the command line arguments
     parser = argparse.ArgumentParser(
-        description='Crops a random section out of an image.', prog='croprandomsection')
+        description='Scales image by a factor.', prog='scaleimage')
 
     parser.add_argument('image_filename', type=str,
                         help='The path to the image filename. If the image is a stack it needs to be CXY ordered')
@@ -48,9 +49,9 @@ if __name__ == "__main__":
     parser.add_argument('--basename', type=str, default=None,
                         help='Basename for the output image. Default: image_filename')
 
-    parser.add_argument('--postfix', type=str, default=None,
-                        help='Postfix to append to the basename.'
-                        )
+    # parser.add_argument('--postfix', type=str, default=None,
+    #                     help='Postfix to append to the basename.'
+    #                     )
 
     args = parser.parse_args()
 
