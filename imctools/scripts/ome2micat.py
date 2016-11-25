@@ -16,8 +16,8 @@ def ome2singletiff(path_ome, outfolder):
     imc_img = ome.get_imc_acquisition()
     fn_new = os.path.split(path_ome)[1].rstrip('.ome.tiff')
     for label, metal in zip(imc_img.channel_labels, imc_img.channel_metals):
-        new_path = os.path.join(outfolder, fn_new+'_'+label+'_'+metal+'.tiff')
-        writer = imc_img.get_image_writer(new_path + '.tiff', metals=metal)
+        new_path = os.path.join(outfolder, fn_new+'_'+label+'_'+metal)
+        writer = imc_img.get_image_writer(new_path + '.tiff', metals=[metal])
         writer.save_image(mode='imagej')
 
 def ome2micatfolder(path_ome, basefolder, path_mask=None):
@@ -31,7 +31,8 @@ def ome2micatfolder(path_ome, basefolder, path_mask=None):
     fn = os.path.split(path_ome)[1]
     fn = fn.rstrip('.ome.tiff')
     outfolder = os.path.join(basefolder, fn)
-    os.makedirs(outfolder)
+    if not(os.path.exists(outfolder)):
+        os.makedirs(outfolder)
     ome2singletiff(path_ome, outfolder)
     if path_mask is not None:
         fn_mask_base = os.path.split(path_mask)[1]
@@ -81,6 +82,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--mask_folder', type=str, default=None,
                         help='Folder containing the masks, or single mask file.')
+    parser.add_argument('--mask_suffix', type=str, default='_mask.tiff',
+                        help='suffix of the mask tiffs')
 
     # parser.add_argument('--postfix', type=str, default=None,
     #                     help='Postfix to append to the basename.'
@@ -93,6 +96,7 @@ if __name__ == "__main__":
     ome_folder = args.ome_folder
     mask_folder = args.mask_folder
     out_folder = args.out_folder
+    mask_suffix = args.mask_suffix
 
     if not(os.path.exists(out_folder)):
         os.mkdir(out_folder)
@@ -100,4 +104,4 @@ if __name__ == "__main__":
     if ome_folder.endswith('.ome.tiff'):
         ome2micatfolder(ome_folder, out_folder, mask_folder)
     else:
-        omefolder2micatfolder(ome_folder, out_folder, mask_folder)
+        omefolder2micatfolder(ome_folder, out_folder, mask_folder, mask_suffix=mask_suffix)
