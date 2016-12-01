@@ -42,8 +42,13 @@ def convert_imc_to_image(imc_acquisition):
 
     img_data = imc_acquisition.get_img_stack_cyx()
 
+    if channel_labels is not None:
+        channel_ids = [lab + '_' + name for  name, lab in
+                       zip(channel_names, channel_labels)]
+    else:
+        channel_ids = channel_names
     print('Add planes to stack:')
-    imgstack = stack_to_imagestack(img_data)
+    imgstack = stack_to_imagestack(img_data, channel_ids=channel_ids)
 
     file_name = imc_acquisition.original_filename.replace('.mcd','')
     file_name = file_name.replace('.txt', '')
@@ -53,13 +58,6 @@ def convert_imc_to_image(imc_acquisition):
     else:
         file_name = '_'.join((file_name, 'a' + ac_id))
 
-
-
-    if channel_labels is not None:
-        channel_ids = [lab + '_' + name for  name, lab in
-                       zip(channel_names, channel_labels)]
-    else:
-        channel_ids = channel_names
     i5d_img = get_image5d(file_name, imgstack,  channel_ids)
 
     i5d_img.setDefaultColors()
@@ -68,7 +66,7 @@ def convert_imc_to_image(imc_acquisition):
     return i5d_img
 
 
-def stack_to_imagestack(cxy_stack, img_stack=None):
+def stack_to_imagestack(cxy_stack, img_stack=None, channel_ids=None):
     """
 
     :param cxy_stack:
@@ -84,8 +82,10 @@ def stack_to_imagestack(cxy_stack, img_stack=None):
         cur_proc = process.FloatProcessor(cxy_stack[i])
         cur_proc.flipVertical()
         cur_proc = cur_proc.rotateRight()
-
-        img_stack.addSlice(cur_proc)
+        if channel_ids is None:
+            img_stack.addSlice(cur_proc)
+        else:
+            img_stack.addSlice(channel_ids[i], cur_proc)
 
     return img_stack
 
@@ -100,6 +100,8 @@ def get_image5d(imgName, img_stack, channel_names):
     """
 
     nchannels = len(channel_names)
+    for i, lab in enumerate(channel_names):
+        img_stack.setSliceLabel(lab, i+1)
     i5dimg = i5d.Image5D(imgName, img_stack, nchannels,1,1)
 
     for i,cid in enumerate(channel_names):
@@ -193,15 +195,19 @@ def generate_ome_fromimc(imc_acquisition):
             if cnr >=0:
                 name = cxml.find(ns + 'ChannelName').text
                 label = cxml.find(ns + 'ChannelLabel')
-                if label is None:
+                if label.text is None:
                     label = name
                 else:
+                    print(label.text)
                     label = label.text
+                print(label)
+                print(name)
                 cid = '_'.join([label, name])
                 cid = cid.strip('(').strip(')')
-                name = name.strip('(').strip(')')
+                name = name.replace('(','').strip(')')
                 metadata.setChannelFluor(name, 0, cnr)
                 metadata.setChannelName(cid, 0, cnr)
+                metadata.setChannelID(cid, 0, cnr)
         # for i in range(c):
         #     metadata.setPlaneTheC(NonNegativeInteger(i),0,i)
         #     metadata.setPlaneTheZ(NonNegativeInteger(0), 0, i)
@@ -238,6 +244,7 @@ def generate_ome_fromimc(imc_acquisition):
         for cnr, metal, label in zip(range(c), imc_acquisition.channel_metals, imc_acquisition.channel_labels):
             metadata.setChannelFluor(metal, 0, cnr)
             metadata.setChannelName(label, 0, cnr)
+            metadata.setChannelID(label, 0, cnr)
 
         return metadata
 

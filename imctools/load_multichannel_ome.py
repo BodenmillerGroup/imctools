@@ -18,9 +18,12 @@ def view_image5d_ome(img, ome_meta):
     """
     nchannels = ome_meta.getChannelCount(0)
     channel_names = [ome_meta.getChannelName(0,i) for i in range(nchannels)]
+
     img = lib.get_image5d(imgName=ome_meta.getImageName(0),
                  img_stack=img.getStack(),
                  channel_names = channel_names)
+
+
     img.show()
 
 def load_and_view(file_name):

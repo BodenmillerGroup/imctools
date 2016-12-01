@@ -53,6 +53,30 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome', compres
             print('Finished!')
 
 
+def convert_imcfolders2tiff(folders, output_folder, common_filepart=None):
+    """
+    Converts a list of folders into ome.tiffs
+    :param folder:
+    :param output_folder:
+    :param common_filepart:
+    :return:
+    """
+
+    failed_images = list()
+    for fol in folders:
+        for fn in os.listdir(fol):
+            if (common_filepart in fn) & (fn.endswith('.txt') | fn.endswith('.mcd')):
+                txtname = os.path.join(fol, fn)
+                try:
+                    save_imc_to_tiff(txtname, tifftype='ome', outpath=output_folder)
+                except:
+                    failed_images.append(txtname)
+
+    if len(failed_images) > 0:
+        print('Failed images:\n')
+        print(failed_images)
+
+
 def _get_mcd_acquisition(mcd_acquisition, acquisition='all', verbose=False):
     """
     A generator the returns the acquisitions
