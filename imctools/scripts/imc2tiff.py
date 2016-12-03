@@ -96,7 +96,7 @@ def _get_mcd_acquisition(mcd_acquisition, acquisition='all', verbose=False):
                 print('%s \n' % aid)
             print('Print acquisition: %s' % acquisition)
 
-        if args.acquisition == 'all':
+        if acquisition == 'all':
             acquisitions = ac_ids
         else:
             acquisitions = [acquisition]
