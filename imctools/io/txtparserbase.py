@@ -117,10 +117,16 @@ class TxtParserBase(AbstractParserBase):
 
 
 if __name__ == '__main__':
+    import timeit
     #fn = '/home/vitoz/temp/grade1_1_0_A0_0.txt'
-    fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
+    fn = '/media/vitoz/datahdd/data/site1_0_A0_0 - Copy.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
+    tic = timeit.default_timer()
     imc_txt = TxtParserBase(fn)
+    print(timeit.default_timer()-tic)
+    tic = timeit.default_timer()
+    imc_txt = imc_txt.parse_csv3(fn)
+    print(timeit.default_timer()-tic)
     imc_ac = imc_txt.get_imc_acquisition()
     rowimg = imc_ac._data[1]
     print(rowimg[0][:3])

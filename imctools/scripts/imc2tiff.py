@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from imctools.io import mcdparser
 from imctools.io import txtparser
 import argparse

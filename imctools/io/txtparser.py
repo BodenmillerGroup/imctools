@@ -69,12 +69,15 @@ class TxtParser(AbstractParser, TxtParserBase):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
+    import timeit
     fn = '/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.txt'
     #fn = '/mnt/imls-bod/data_vito/Spheres/20160330_BigInspheroIMC2/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
     #fn = '/home/vitoz/temp/20150330_IS2335_5um_3_site1_ac2_200hz_2200x2200.txt'
+    tic = timeit.default_timer()
     imc_txt = TxtParser(fn)
+    tic = timeit.default_timer();
     imc_ac = imc_txt.get_imc_acquisition()
-    iw = imc_ac.get_image_writer('/home/vitoz/temp/test_iridium.ome.tiff', mass=['191', '193'])
-    iw.save_image(mode='ome')
-    iw = imc_ac.get_image_writer('/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff')
-    iw.save_image(mode='ome')
+    #iw = imc_ac.get_image_writer('/home/vitoz/temp/test_iridium.ome.tiff', mass=['191', '193'])
+    #iw.save_image(mode='ome')
+    #iw = imc_ac.get_image_writer('/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff')
+    #iw.save_image(mode='ome')

@@ -31,11 +31,16 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0):
+    def save_image(self, mode='imagej', compression=0, dtype=None):
         #TODO: add original metadata somehow
+
+
 
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
+        if dtype is not None:
+            dt = np.dtype(dtype)
+            img = img.astype(dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
             tifffile.imsave(fn_out, img, compress=compression, imagej=True, bigtiff=True)

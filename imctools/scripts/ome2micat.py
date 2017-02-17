@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-def ome2singletiff(path_ome, outfolder):
+def ome2singletiff(path_ome, outfolder, dtype=None):
     """
     Saves the planes of an ome stack as a folder
     :param fn_ome:
@@ -18,9 +18,9 @@ def ome2singletiff(path_ome, outfolder):
     for label, metal in zip(imc_img.channel_labels, imc_img.channel_metals):
         new_path = os.path.join(outfolder, fn_new+'_'+label+'_'+metal)
         writer = imc_img.get_image_writer(new_path + '.tiff', metals=[metal])
-        writer.save_image(mode='imagej')
+        writer.save_image(mode='imagej', dtype=dtype)
 
-def ome2micatfolder(path_ome, basefolder, path_mask=None):
+def ome2micatfolder(path_ome, basefolder, path_mask=None, dtype=None):
     """
 
     :param fn_ome:
@@ -33,14 +33,14 @@ def ome2micatfolder(path_ome, basefolder, path_mask=None):
     outfolder = os.path.join(basefolder, fn)
     if not(os.path.exists(outfolder)):
         os.makedirs(outfolder)
-    ome2singletiff(path_ome, outfolder)
+    ome2singletiff(path_ome, outfolder, dtype=dtype)
     if path_mask is not None:
         fn_mask_base = os.path.split(path_mask)[1]
         fn_mask_new = os.path.join(outfolder, fn_mask_base)
         shutil.copy2(path_mask, fn_mask_new)
 
 
-def omefolder2micatfolder(fol_ome, outfolder, fol_masks=None, mask_suffix=None):
+def omefolder2micatfolder(fol_ome, outfolder, fol_masks=None, mask_suffix=None, dtype=None):
     """
 
     :param fol_ome:
@@ -66,7 +66,7 @@ def omefolder2micatfolder(fol_ome, outfolder, fol_masks=None, mask_suffix=None):
         else:
             path_mask = None
         path_ome = os.path.join(fol_ome, fn_ome)
-        ome2micatfolder(path_ome, outfolder, path_mask=path_mask)
+        ome2micatfolder(path_ome, outfolder, path_mask=path_mask, dtype=dtype)
 
 
 if __name__ == "__main__":
@@ -85,6 +85,9 @@ if __name__ == "__main__":
     parser.add_argument('--mask_suffix', type=str, default='_mask.tiff',
                         help='suffix of the mask tiffs')
 
+    parser.add_argument('--imagetype', type=str, default=None,choices=[None, 'uint16', 'int16', 'float'],
+                        help='The output image type')
+
     # parser.add_argument('--postfix', type=str, default=None,
     #                     help='Postfix to append to the basename.'
     #                     )
@@ -102,6 +105,6 @@ if __name__ == "__main__":
         os.mkdir(out_folder)
 
     if ome_folder.endswith('.ome.tiff'):
-        ome2micatfolder(ome_folder, out_folder, mask_folder)
+        ome2micatfolder(ome_folder, out_folder, mask_folder, dtype=args.imagetype)
     else:
-        omefolder2micatfolder(ome_folder, out_folder, mask_folder, mask_suffix=mask_suffix)
+        omefolder2micatfolder(ome_folder, out_folder, mask_folder, mask_suffix=mask_suffix, dtype=args.imagetype)

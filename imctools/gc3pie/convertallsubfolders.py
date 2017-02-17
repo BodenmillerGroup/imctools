@@ -1,8 +1,26 @@
 import gc3libs
 from gc3libs import Application, Run, Task
-from gc3libs.cmdline import SessionBasedScript, _Script
+from gc3libs.cmdline import SessionBasedScript
 from gc3libs.workflow import SequentialTaskCollection, ParallelTaskCollection
 import gc3libs.utils
+
+
+if __name__ == '__main__':
+    ConvertFolder().run()
+
+class
+
+
+
+
+
+
+
+
+
+
+class ConvertFolder(ParallelTaskCollection):
+    def
 
 class GenerateAnalysisStack(Application):
     def __init__(self, img, pannelcsv, metalcolumn):
