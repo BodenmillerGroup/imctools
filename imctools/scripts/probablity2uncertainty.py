@@ -37,7 +37,7 @@ def probability2uncertainty(fn_probability, outfolder, basename=None, suffix=Non
     if stack.dtype == np.float:
         timg = 1-timg
     else:
-        timg = np.iinfo(stack.dtype)-timg
+        timg = np.iinfo(stack.dtype).max-timg
     with tifffile.TiffWriter(fn, imagej=True) as tif:
         tif.save(timg.squeeze())
 

@@ -10,12 +10,7 @@ from imctools.scripts import resizeimage
 from imctools.scripts import generatedistancetospheres
 from imctools.scripts import imc2tiff
 from imctools.scripts import ome2micat
-
-
-
-# In[ ]:
-
-
+from imctools.scripts import probablity2uncertainty
 
 
 # In[ ]:
@@ -55,7 +50,10 @@ analysis_folder = '../testout/analysis_stacks'
 # specify the subfolders
 ilastik_randomfolder = '../testout/ilastik_random'
 cp_folder = '../testout/cpoutput/'
+
+uncertainty_folder =analysis_folder
 micat_folder = '../testout/micat/'
+
 
 pannel_csv = '/home/daniels/Data/Her2_TMA/Her2_TMA_final_for_stack_generation.csv'
 mass_col = None
@@ -83,11 +81,6 @@ failed_images = list()
 re_idfromname = re.compile('_l(?P<Label>[0-9]+)_')
 
 
-# In[ ]:
-
-suffix_ilastik_scale
-
-
 # Specify which steps to run
 
 # In[ ]:
@@ -103,7 +96,7 @@ do_micat = True
 
 # In[ ]:
 
-for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, micat_folder]:
+for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, micat_folder,uncertainty_folder]:
     if not os.path.exists(fol):
         os.makedirs(fol)
 
@@ -194,6 +187,15 @@ fn_ilastik_out = os.path.join(analysis_folder,"{nickname}"+suffix_probablities+'
 # In[ ]:
 
 get_ipython().run_cell_magic('bash', '-s "$bin_ilastik" "$fn_ilastikproject" "$glob_probabilities" "$fn_ilastik_out" ', 'echo $1\necho $2\necho $3\necho $4\nLAZYFLOW_TOTAL_RAM_MB=40000 \\\nLAZYFLOW_THREADS=16\\\n    $1 \\\n    --headless --project=$2 \\\n    --output_format=tiff \\\n    --output_filename_format=$3 \\\n    --export_dtype uint16 --pipeline_result_drange="(0.0, 1.0)" \\\n    --export_drange="(0,65535)" $4')
+
+
+# ## convert probabilities to uncertainties
+
+# In[ ]:
+
+for fn in os.listdir(analysis_folder):
+    if fn.endswith(suffix_probablities+'.tiff'):
+        probablity2uncertainty.probability2uncertainty(os.path.join(analysis_folder,fn), uncertainty_folder)
 
 
 # ## Generate the micat folder
