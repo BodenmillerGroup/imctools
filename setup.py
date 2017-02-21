@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 
 setup(
     name='imctools',
-    version='0.0.2',
+    version='0.0.3',
     description='Tools to handle IMC data',
     long_description=readme,
     author='Vito Zanotelli',
