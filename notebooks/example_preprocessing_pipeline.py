@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 from imctools.scripts import ometiff2analysis
 from imctools.scripts import cropobjects
@@ -18,7 +18,7 @@ from imctools.scripts import ome2micat
 
 
 
-# In[2]:
+# In[ ]:
 
 import os
 import re
@@ -34,7 +34,7 @@ import re
 #  check the uncertainties
 # 
 
-# In[3]:
+# In[ ]:
 
 # the folders with the txt/mcd files for the analysis
 folders = ['/path/to/txt/file/folder']
@@ -69,7 +69,8 @@ suffix_ilastik = '_ilastik'
 suffix_ilastik_scale = '_ilastik'+str(resize_scale)
 suffix_cropmask = 'cropmask'
 suffic_segmentation = 'sphereseg'
-mask_suffix = '_mask.tiff'
+suffix_mask = '_mask.tiff'
+suffix_probablities = '_probabilities'
 
 # size of the random crops
 random_cropsize = 250
@@ -82,9 +83,14 @@ failed_images = list()
 re_idfromname = re.compile('_l(?P<Label>[0-9]+)_')
 
 
+# In[ ]:
+
+suffix_ilastik_scale
+
+
 # Specify which steps to run
 
-# In[4]:
+# In[ ]:
 
 do_convert_txt = True
 do_stacks = True
@@ -95,7 +101,7 @@ do_micat = True
 
 # Generate all the folders if necessary
 
-# In[5]:
+# In[ ]:
 
 for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, micat_folder]:
     if not os.path.exists(fol):
@@ -104,7 +110,7 @@ for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, m
 
 # Convert txt to ome
 
-# In[6]:
+# In[ ]:
 
 if do_convert_txt:
     for fol in folders:
@@ -123,7 +129,7 @@ if do_convert_txt:
 
 # Generate the analysis stacks
 
-# In[7]:
+# In[ ]:
 
 if do_stacks:
     for img in os.listdir(out_tiff_folder):
@@ -134,7 +140,7 @@ if do_stacks:
 
 # Generate the ilastik stacks
 
-# In[8]:
+# In[ ]:
 
 if do_ilastik:
     for img in os.listdir(out_tiff_folder):
@@ -155,7 +161,7 @@ if do_ilastik:
 
 # Generate the ilastik random crops
 
-# In[9]:
+# In[ ]:
 
 if do_ilastik_crop:
     for fn in os.listdir(analysis_folder):
@@ -171,12 +177,31 @@ print(failed_images)
 
 # -> Before the next step run ilastik, then cellprofiler to generate the masks
 
-# Generate the micat folder
+# ## Run the ilastik classification as a batch
 
-# In[13]:
+# In[ ]:
+
+fn_ilastikproject = '/path/to/ilastik_project.ilp'
+bin_ilastik = "/mnt/bbvolume/labcode/ilastik-1.2.0-Linux/run_ilastik.sh" 
+
+
+# In[ ]:
+
+glob_probabilities =os.path.join(analysis_folder,"*"+suffix_ilastik_scale+'.tiff')
+fn_ilastik_out = os.path.join(analysis_folder,"{nickname}"+suffix_probablities+'.tiff')
+
+
+# In[ ]:
+
+get_ipython().run_cell_magic('bash', '-s "$bin_ilastik" "$fn_ilastikproject" "$glob_probabilities" "$fn_ilastik_out" ', 'echo $1\necho $2\necho $3\necho $4\nLAZYFLOW_TOTAL_RAM_MB=40000 \\\nLAZYFLOW_THREADS=16\\\n    $1 \\\n    --headless --project=$2 \\\n    --output_format=tiff \\\n    --output_filename_format=$3 \\\n    --export_dtype uint16 --pipeline_result_drange="(0.0, 1.0)" \\\n    --export_drange="(0,65535)" $4')
+
+
+# ## Generate the micat folder
+
+# In[ ]:
 
 if do_micat:
     if not(os.path.exists(micat_folder)):
         os.makedirs(micat_folder)
-    ome2micat.omefolder2micatfolder(out_tiff_folder, micat_folder, fol_masks=cp_folder,mask_suffix=mask_suffix, dtype='uint16')
+    ome2micat.omefolder2micatfolder(out_tiff_folder, micat_folder, fol_masks=cp_folder,mask_suffix=suffix_mask, dtype='uint16')
 
