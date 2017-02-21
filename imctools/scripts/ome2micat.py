@@ -5,7 +5,7 @@ import os
 import shutil
 
 
-def ome2singletiff(path_ome, outfolder, dtype=None):
+def ome2singletiff(path_ome, outfolder, basename=None, dtype=None):
     """
     Saves the planes of an ome stack as a folder
     :param fn_ome:
@@ -14,9 +14,12 @@ def ome2singletiff(path_ome, outfolder, dtype=None):
     """
     ome = ometiffparser.OmetiffParser(path_ome)
     imc_img = ome.get_imc_acquisition()
-    fn_new = os.path.split(path_ome)[1].rstrip('.ome.tiff')
+    if basename is None:
+        fn_new = os.path.split(path_ome)[1].rstrip('.ome.tiff') + '_'
+    else:
+        fn_new = basename
     for label, metal in zip(imc_img.channel_labels, imc_img.channel_metals):
-        new_path = os.path.join(outfolder, fn_new+'_'+label+'_'+metal)
+        new_path = os.path.join(outfolder, fn_new +label+'_'+metal)
         writer = imc_img.get_image_writer(new_path + '.tiff', metals=[metal])
         writer.save_image(mode='imagej', dtype=dtype)
 
@@ -33,7 +36,7 @@ def ome2micatfolder(path_ome, basefolder, path_mask=None, dtype=None):
     outfolder = os.path.join(basefolder, fn)
     if not(os.path.exists(outfolder)):
         os.makedirs(outfolder)
-    ome2singletiff(path_ome, outfolder, dtype=dtype)
+    ome2singletiff(path_ome, outfolder,basename='', dtype=dtype)
     if path_mask is not None:
         fn_mask_base = os.path.split(path_mask)[1]
         fn_mask_new = os.path.join(outfolder, fn_mask_base)
