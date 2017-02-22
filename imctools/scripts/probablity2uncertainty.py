@@ -32,7 +32,7 @@ def probability2uncertainty(fn_probability, outfolder, basename=None, suffix=Non
         suffix = '_uncertainty'
 
 
-    fn = os.path.join(outfolder, basename+'_'+'suffix'+'.tiff')
+    fn = os.path.join(outfolder, basename+suffix+'.tiff')
     timg = np.max(stack, 2)
     if stack.dtype == np.float:
         timg = 1-timg
