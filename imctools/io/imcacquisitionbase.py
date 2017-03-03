@@ -130,15 +130,14 @@ class ImcAcquisitionBase(object):
         :return:
         """
         img = self.get_img_stack_cyx(channel_idxs=[chan])
-
         return img[0]
 
     def get_img_by_metal(self, metal):
-        chan = self._get_position(metal, self._channel_metals)
+        chan = self._get_position(metal, self._channel_metals[self._offset:])
         return self.get_img_by_channel_nr(chan)
 
     def get_img_by_label(self, label):
-        chan = self._get_position(label, self._channel_labels)
+        chan = self._get_position(label, self._channel_labels[self._offset:])
         return self.get_img_by_channel_nr(chan)
 
     def _update_shape(self):
