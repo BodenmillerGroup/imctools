@@ -4,9 +4,9 @@ from scipy import ndimage as ndi
 from imctools import library as lib
 import argparse
 import os
+import numpy as np
 
-
-def crop_objects(fn_stack, fn_label, outfolder, basename, extend):
+def crop_objects(fn_stack, fn_label, outfolder, basename, extend, order=None):
     """
 
     :param fn_stack:
@@ -17,20 +17,30 @@ def crop_objects(fn_stack, fn_label, outfolder, basename, extend):
     :param extend:
     :return:
     """
+    if order is None:
+        order = 'cxy'
 
     with tifffile.TiffFile(fn_label) as tif:
-        labels = tif.asarray()
+        labelmask = tif.asarray()
+
 
     with tifffile.TiffFile(fn_stack) as tif:
         stack = tif.asarray()
+        if order == 'xyc':
+            stack = np.rollaxis(stack, 2, 0)
+    if np.any(labelmask >0):
+        if len(stack.shape) == 2:
+            stack = stack.reshape([1]+list(stack.shape))
+        slices = ndi.find_objects(labelmask)
+        slices, labels = zip(*[(s, label) for label, s  in enumerate(slices) if s is not None])
+        print(stack.shape)
+        print(labelmask.shape)
+        ext_slices = [lib.extend_slice_touple(sl, extend, [stack.shape[1], stack.shape[2]]) for sl in slices]
 
-    if len(stack.shape) == 2:
-        stack = stack.reshape([1]+list(stack.shape))
-    slices = ndi.find_objects(labels)
-    ext_slices = [lib.extend_slice_touple(sl, extend, [stack.shape[1], stack.shape[2]]) for sl in slices]
-
-    lib.save_object_stack(outfolder, basename, stack, ext_slices)
-
+        lib.save_object_stack(outfolder, basename, stack, ext_slices, labels)
+    else:
+        print('No object in image:' + fn_stack)
+        
 if __name__ == "__main__":
     # Setup the command line arguments
     parser = argparse.ArgumentParser(

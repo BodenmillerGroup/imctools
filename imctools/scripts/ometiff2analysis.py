@@ -15,13 +15,15 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
     if pannelcsv is not None:
 
         pannel = pd.read_csv(pannelcsv)
-        selected = pannel[usedcolumn]
-        if masscolumn is None:
-            metalcolumn = metalcolumn
-            selmetals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
+        if pannel.shape[1] > 1:
+            selected = pannel[usedcolumn]
+            if masscolumn is None:
+                metalcolumn = metalcolumn
+                selmetals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
+            else:
+                selmass = [str(n) for s, n in zip(selected, pannel[masscolumn]) if s]
         else:
-            selmass = [str(n) for s, n in zip(selected, pannel[masscolumn]) if s]
-
+            selmetals = [pannel.columns[0]] + pannel.iloc[:,0].tolist()
     ome = ometiffparser.OmetiffParser(filename)
     imc_img = ome.get_imc_acquisition()
 

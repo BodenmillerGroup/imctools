@@ -551,7 +551,7 @@ def make_neighbourhood_graph(label_mask, uni_edges=True):
     return vertices, edges
 
 
-def save_object_stack(folder, basename, img_stack, slices):
+def save_object_stack(folder, basename, img_stack, slices, labels=None):
     """
     Saves slices from an image stack as.
     :param folder: The folder to save it in
@@ -561,7 +561,9 @@ def save_object_stack(folder, basename, img_stack, slices):
     :return:
     """
 
-    for lab, sl in enumerate(slices):
+    if labels is None:
+        labels = range(slices)
+    for lab, sl in zip(labels, slices):
         if sl is None:
             pass
         x = sl[0].start
@@ -576,4 +578,4 @@ def save_object_stack(folder, basename, img_stack, slices):
 
             for chan in range(timg.shape[0]):
                 tif.save(timg[chan, :, :].squeeze())
-
+                
