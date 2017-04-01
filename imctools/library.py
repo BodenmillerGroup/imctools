@@ -175,6 +175,52 @@ def l2l_corr(img,dim=0):
     return(corrArray)
 
 
+def distance_transform_wrapper(logicarray, maxdist=65535):
+    """
+    wraps scipy distance_transform_edt, but returns 
+    the maximal possible distance in the image as the distance if there are no
+    False in the matrix. 
+    distance_transform_edt default is returning the distance to the top left pixel
+    :logicarray a binary array
+    :maxdist the distance that should be assigned to pixels if no single
+    positive pixel is in the logicarray
+    
+    :returns an array containing the distance to the next False pixel
+    """
+
+    if np.all(logicarray):
+        shape = logicarray.shape
+        out = np.empty(shape)
+        out[:] = maxdist
+        return out
+
+    else:
+        return ndi.morphology.distance_transform_edt(logicarray)
+
+def distance_to_border(logicarray, maxdist=65535):
+    """
+    Returns the eucledian distance to the border of a binary logical array.
+    Positive distances mean distance to the next negative (false) pixel, negative distance
+    the distance to the next positive (true) pixel.
+    :logicarray a binary array
+    :maxdist the distance that should be assigned to pixels if no single
+    positive pixel is in the logicarry. 
+    :returns an array containing the distance to the next False pixel
+    """
+
+    logicarray = logicarray > 0
+    if np.all(logicarray) | np.all(logicarray == False):
+        shape = logicarray.shape
+        out = np.empty(shape)
+        out[:] = maxdist
+        return out
+    else:
+        out = ndi.morphology.distance_transform_edt(logicarray)
+        fil = out == 0
+        out[fil] = -ndi.morphology.distance_transform_edt(logicarray == False)[fil]
+        return out
+
+
 ### tools for dealing with segmentation masks
 
 
