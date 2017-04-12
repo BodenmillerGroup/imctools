@@ -7,6 +7,8 @@ Created on Thu Apr 30 09:17:50 2015
 
 from __future__ import division
 import numpy as np
+
+import numpy.random
 import matplotlib.pyplot as plt
 import skimage as sk
 import scipy as sp
@@ -624,4 +626,33 @@ def save_object_stack(folder, basename, img_stack, slices, labels=None):
 
             for chan in range(timg.shape[0]):
                 tif.save(timg[chan, :, :].squeeze())
-                
+
+def crop_slice(origshape, w, h=None, x=None, y=None, random_seed=None,
+               flipped_axis=False):
+    """
+    Returns a slicer to crop the image provided. If x and y position are not
+    provided, a random slice will be taken.
+
+    """
+    if random_seed is not None:
+        np.random.seed(random_seed)
+
+    if h is None:
+        h= w
+
+    outsize = (w, h)
+    if flipped_axis:
+        outsize = reversed(outsize)
+        x, y = y, x
+    
+    outslices = list()
+    for dmax, dstart, dextend in zip(origshape, (x,y), outsize):
+        if dmax > dextend:
+            if dstart is None:
+                dstart = np.random.randint(0, dmax-dextend)
+            dstart = min(dstart, dmax-dextend)
+            outslices.append(np.s_[dstart:(dstart+dextend)])
+        else:
+            outslices.append(np.s_[0:dmax])
+    outslices = tuple(outslices)
+    return outslices
