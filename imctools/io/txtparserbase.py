@@ -11,14 +11,20 @@ class TxtParserBase(AbstractParserBase):
     Loads and strores an IMC .txt file
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, filehandle=None):
         AbstractParserBase.__init__(self)
-        self.parse_csv3(filename)
         self.filename = filename
+        if filehandle is None:
+            with open(filename, 'r') as txtfile:
+                self.parse_csv3(txtfile)
+        else:
+            filehandle.seek(0)
+            self.parse_csv3(filehandle)
         self.origin ='txt'
         self.channel_labels = self.channel_metals[:]
         self.channel_metals[3:] = self.clean_channel_metals(self.channel_metals[3:])
 
+            
     def get_imc_acquisition(self):
         """
         Returns the imc acquisition object
@@ -69,49 +75,46 @@ class TxtParserBase(AbstractParserBase):
 
         return names
 
-    def parse_csv(self, filename, first_col=3):
-        with open(filename, 'r') as txtfile:
-            txtreader = csv.reader(txtfile, delimiter='\t')
-            header = txtreader.next()
-            channel_names = header[first_col:]
-            nchan = len(channel_names)
-            txtreader = csv.reader(txtfile, delimiter='\t',
-                                   quoting=csv.QUOTE_NONNUMERIC)
-            txtreader.next()
-            data = list()
-            for row in txtreader:
-                rowar = array.array('f')
-                rowar.fromlist(row[first_col:])
-                data.append(rowar)
+    def parse_csv(self, txtfile, first_col=3):
+        txtreader = csv.reader(txtfile, delimiter='\t')
+        header = txtreader.next()
+        channel_names = header[first_col:]
+        nchan = len(channel_names)
+        txtreader = csv.reader(txtfile, delimiter='\t',
+                               quoting=csv.QUOTE_NONNUMERIC)
+        txtreader.next()
+        data = list()
+        for row in txtreader:
+            rowar = array.array('f')
+            rowar.fromlist(row[first_col:])
+            data.append(rowar)
         self.data = data
         self.channel_metals = channel_names
 
-    def parse_csv2(self, filename, first_col=3):
-        with open(filename, 'r') as txtfile:
-            header = txtfile.readline().split('\t')
-            channel_names = header[first_col:]
-            data = [[float(v) for v in row.split('\t')[first_col:]] for row in txtfile]
+    def parse_csv2(self, txtfile, first_col=3):
+        header = txtfile.readline().split('\t')
+        channel_names = header[first_col:]
+        data = [[float(v) for v in row.split('\t')[first_col:]] for row in txtfile]
         self.data = data
         self.channel_metals = channel_names
 
 
-    def parse_csv3(self, filename, first_col=3):
+    def parse_csv3(self, txtfile, first_col=3):
         """
         The fastest  csv parser so far
         :param filename:
         :param first_col: First column to consider
         :return:
         """
-        with open(filename, 'r') as txtfile:
-            header = txtfile.readline().split('\t')
-            channel_names = header[first_col:]
-            nchan = len(channel_names)
-            rowar = array.array('f')
-            for row in txtfile:
-                for v in row.split('\t')[first_col:]:
-                    rowar.append(float(v))
-            nrow = int(len(rowar)/nchan)
-            data = [rowar[(i*nchan):(i*nchan+nchan)] for i in range(nrow)]
+        header = txtfile.readline().split('\t')
+        channel_names = header[first_col:]
+        nchan = len(channel_names)
+        rowar = array.array('f')
+        for row in txtfile:
+            for v in row.split('\t')[first_col:]:
+                rowar.append(float(v))
+        nrow = int(len(rowar)/nchan)
+        data = [rowar[(i*nchan):(i*nchan+nchan)] for i in range(nrow)]
         self.data = data
         self.channel_metals = channel_names
 

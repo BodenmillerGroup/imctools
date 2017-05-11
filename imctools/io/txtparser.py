@@ -12,10 +12,9 @@ class TxtParser(AbstractParser, TxtParserBase):
     Loads and strores an IMC .txt file
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, filehandle=None):
         AbstractParser.__init__(self)
-        TxtParserBase.__init__(self, filename)
-
+        TxtParserBase.__init__(self, filename, filehandle=None)
         self.data = np.array(self.data)
 
     def get_imc_acquisition(self):

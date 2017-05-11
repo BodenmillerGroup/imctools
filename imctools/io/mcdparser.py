@@ -19,19 +19,13 @@ class McdParser(AbstractParser, McdParserBase):
     :return:
     """
     
-    def __init__(self, filename):
+    def __init__(self, filename, filehandle=None):
         """
 
         :param filename:
         """
-        McdParserBase.__init__(self, filename)
+        McdParserBase.__init__(self, filename, filehandle)
         AbstractParser.__init__(self)
-        self._fh = open(filename, mode='rb')
-        self._xml = None
-        self._ns = None
-        self._acquisition_dict = None
-        self.retrieve_mcd_xml()
-        self.get_mcd_data()
 
     def get_acquisition_rawdata(self, ac_id):
         """
@@ -84,16 +78,16 @@ class McdParser(AbstractParser, McdParserBase):
         acquisition_dict = dict()
         xml = self._xml
         ns = self._ns
-        
-        n_channel = int(len(xml.findall(ns+'AcquisitionChannel')))
 
         for acquisition in xml.findall(ns+'Acquisition'):
             ac_id = acquisition.find(ns+'ID').text
+            n_channel = self.get_nchannels_acquisition(ac_id)
             data_offset_start = int(acquisition.find(ns+'DataStartOffset').text)
             data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
             data_size = (data_offset_end - data_offset_start + 1) / 4
             n_rows = data_size / n_channel
-            data = np.memmap(self._fh, dtype='<f', mode='r', offset=data_offset_start,
+            data = np.memmap(self._fh, dtype='<f', mode='r',
+                             offset=data_offset_start,
                              shape=(int(n_rows), n_channel))
             acquisition_dict.update({ac_id: (acquisition, data)})
 
@@ -105,7 +99,6 @@ class McdParser(AbstractParser, McdParserBase):
         nchan = data.shape[1]
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
-        #import pdb; pdb.set_trace()
         img = self._reshape_long_2_cyx(data, is_sorted=True)
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
                               data=img,
