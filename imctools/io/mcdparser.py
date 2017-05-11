@@ -18,7 +18,6 @@ class McdParser(AbstractParser, McdParserBase):
     :param object:
     :return:
     """
-    
     def __init__(self, filename, filehandle=None):
         """
 
@@ -104,7 +103,7 @@ class McdParser(AbstractParser, McdParserBase):
                               data=img,
                               channel_metal=channel_name,
                               channel_labels=channel_label,
-                              original_metadata= str(et.tostring(self._xml, encoding='utf8', method='xml')),
+                              original_metadata= et.tostring(self._xml, encoding='utf8', method='xml'),
                               offset=3)
 
 def _add_nullbytes(buffer_str):
