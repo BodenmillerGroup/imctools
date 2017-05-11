@@ -3,9 +3,19 @@ from imctools.io import mcdparser
 from imctools.io import txtparser
 import argparse
 import os
+from imctools.external import temporarydirectory
+import zipfile
 
+TXT_FILENDING = '.txt'
+MCD_FILENDING = '.mcd'
+TIFF_FILENDING = '.tiff'
+OME_FILENDING = '.ome.tiff'
+ZIP_FILENDING = '.zip'
 
-def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome', compression=0, outname=None, outpath=0,verbose=False):
+IMC_FILENDINGS = (TXT_FILENDING, MCD_FILENDING)
+
+def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome',
+                     compression=0, outname=None, outpath=None, verbose=False):
     """
 
     :param imc_acquisition:
@@ -21,40 +31,50 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome', compres
     if verbose:
         print('Load filename %s' %imc_acquisition)
 
-    if outname is None:
-        outname = os.path.split(imc_acquisition)[1]
-        outname = outname.rstrip('.mcd').rstrip('.txt')
-        
     if outpath is None:
         outpath = os.path.split(imc_acquisition)[0]
 
-    if imc_acquisition.endswith('.mcd'):
-        acquisition_generator = _get_mcd_acquisition(imc_acquisition, acquisition=acquisition, verbose=verbose)
-    elif imc_acquisition.endswith('.txt'):
-        acquisition_generator = _get_txt_acquisition(imc_acquisition, acquisition_name='0', verbose=verbose)
+    if imc_acquisition.endswith(IMC_FILENDINGS):
+        if outname is None:
+            outname = os.path.split(imc_acquisition)[1]
+        for end in IMC_FILENDINGS:
+            outname = outname.rstrip(end)
+        if imc_acquisition.endswith(MCD_FILENDING):
+            acquisition_generator = _get_mcd_acquisition(imc_acquisition,
+                                                         acquisition=acquisition,
+                                                         verbose=verbose)
+        elif imc_acquisition.endswith(TXT_FILENDING):
+            acquisition_generator = _get_txt_acquisition(
+                imc_acquisition, acquisition_name='0', verbose=verbose)
+
+        for aid, imc_img in acquisition_generator:
+            cur_outname = outname+'_a'+aid
+
+            if tifftype == 'ome':
+                cur_outname += OME_FILENDING
+            else:
+                cur_outname += TIFF_FILENDING
+
+            cur_outname = os.path.join(outpath, cur_outname)
+
+            if verbose:
+                print('Save %s as %s' %(aid,cur_outname))
+            iw = imc_img.get_image_writer(cur_outname)
+            iw.save_image(mode=tifftype, compression=compression)
+
+    elif imc_acquisition.endswith(ZIP_FILENDING):
+        convert_imczip2tiff(imc_acquisition, outpath, acquisition=acquisition,
+                            tifftype=tifftype, compression=compression,
+                            outname=outname, verbose=False)
     else:
         raise NameError('%s is not of type .mcd or .txt.' %imc_acquisition)
 
-    for aid, imc_img in acquisition_generator:
-        cur_outname = outname+'_a'+aid
-
-        if tifftype == 'ome':
-            cur_outname += '.ome.tiff'
-        else:
-            cur_outname += '.tiff'
-
-        cur_outname = os.path.join(outpath, cur_outname)
-
-        if verbose:
-            print('Save %s as %s' %(aid,cur_outname))
-        iw = imc_img.get_image_writer(cur_outname)
-        iw.save_image(mode=tifftype, compression=compression)
-
-        if verbose:
-            print('Finished!')
+    if verbose:
+        print('Finished!')
 
 
-def convert_imcfolders2tiff(folders, output_folder, common_filepart=None):
+def convert_imcfolders2tiff(folders, output_folder, common_filepart=None,
+                            **kwargs):
     """
     Converts a list of folders into ome.tiffs
     :param folder:
@@ -64,29 +84,51 @@ def convert_imcfolders2tiff(folders, output_folder, common_filepart=None):
     """
 
     failed_images = list()
+    if common_filepart is None:
+        common_filepart = ''
+
     for fol in folders:
         for fn in os.listdir(fol):
-            if (common_filepart in fn) & (fn.endswith('.txt') | fn.endswith('.mcd')):
+            if (common_filepart in fn) & (fn.endswith(IMC_FILENDINGS) |
+                                          fn.endswith(ZIP_FILENDING)):
                 txtname = os.path.join(fol, fn)
                 try:
-                    save_imc_to_tiff(txtname, tifftype='ome', outpath=output_folder)
+                    save_imc_to_tiff(txtname, tifftype='ome',
+                                     outpath=output_folder, **kwargs)
                 except:
                     failed_images.append(txtname)
+
 
     if len(failed_images) > 0:
         print('Failed images:\n')
         print(failed_images)
 
+def convert_imczip2tiff(zipfn, output_folder, common_filepart=None, **kwargs):
+    """
+    Converts a zip archive containing IMC files to tiff
 
-def _get_mcd_acquisition(mcd_acquisition, acquisition='all', verbose=False):
+    """
+    if common_filepart is None:
+        common_filepart = ''
+    with temporarydirectory.TemporaryDirectory() as tempdir:
+        with zipfile.ZipFile(zipfn) as zipf:
+            for fn in zipf.namelist():
+                if (common_filepart in fn) & fn.endswith(IMC_FILENDINGS):
+                    zipf.extract(fn, tempdir)
+        convert_imcfolders2tiff([tempdir], output_folder,
+                                common_filepart=common_filepart, **kwargs)
+
+
+def _get_mcd_acquisition(mcd_acquisition, acquisition='all', verbose=False,
+                         filehandle=None):
     """
     A generator the returns the acquisitions
     :param mcd_acquisition:
-    :param acquisition:
+    :abstractparseram acquisition:
     :param verbose:
     :return:
     """
-    with mcdparser.McdParser(mcd_acquisition) as mcd:
+    with mcdparser.McdParser(mcd_acquisition, filehandle) as mcd:
         n_ac = mcd.n_acquisitions
         if verbose:
             print('containing %i acquisitions:' % n_ac)
@@ -108,7 +150,8 @@ def _get_mcd_acquisition(mcd_acquisition, acquisition='all', verbose=False):
             yield (acquisition, imc_img)
 
 
-def _get_txt_acquisition(txt_acquisition, acquisition_name=None, verbose=False):
+def _get_txt_acquisition(txt_acquisition, acquisition_name=None,
+                         verbose=False, filehandle=None):
     """
     A generator the returns the acquisitions
     :param mcd_acquisition:
@@ -118,7 +161,7 @@ def _get_txt_acquisition(txt_acquisition, acquisition_name=None, verbose=False):
     """
     if acquisition_name is None:
         acquisition_name='0'
-    txt = txtparser.TxtParser(txt_acquisition)
+    txt = txtparser.TxtParser(txt_acquisition, filehandle)
     if verbose:
         print('containing 1 acquisition')
     imc_img = txt.get_imc_acquisition()
@@ -150,8 +193,12 @@ if __name__ == "__main__":
 
     # parse the arguments
     args = parser.parse_args()
+    imc_filename = args.imc_filename
 
-    save_imc_to_tiff(imc_acquisition=args.imc_filename, acquisition=args.acquisition, tifftype=args.tifftype,
-              compression=args.compression, outname=args.outname, outpath=args.outpath, verbose=True)
+    save_imc_to_tiff(imc_acquisition=args.imc_filename,
+                     acquisition=args.acquisition,
+                    tifftype=args.tifftype,
+                    compression=args.compression, outname=args.outname,
+                     outpath=args.outpath, verbose=True)
 
 
