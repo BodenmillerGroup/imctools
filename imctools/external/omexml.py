@@ -51,7 +51,7 @@ default_xml = """<?xml version="1.0" encoding="UTF-8"?>
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:schemaLocation="http://www.openmicroscopy.org/Schemas/OME/2013-06 http://www.openmicroscopy.org/Schemas/OME/2012-03/ome.xsd">
   <Image ID="Image:0" Name="default.png">
-    <AcquisitionDate>%(DEFAULT_NOW)s</AcquisitionDate>
+    <AcquisitionDate>{DEFAULT_NOW}</AcquisitionDate>
     <Pixels DimensionOrder="XYCTZ"
             ID="Pixels:0"
             SizeC="1"
@@ -63,12 +63,14 @@ default_xml = """<?xml version="1.0" encoding="UTF-8"?>
 <Channel ID="Channel:0:0" SamplesPerPixel="1">
         <LightPath/>
       </Channel>
-      <BinData xmlns="%(NS_BINARY_FILE)s"
+      <BinData xmlns="{NS_BINARY_FILE}s"
        BigEndian="false" Length="0"/>
     </Pixels>
   </Image>
   <StructuredAnnotations xmlns="{ns_sa_default}s"/>
-</OME>""".format(ns_ome_default=NS_DEFAULT.format(ns_key='ome'), ns_sa_default=NS_DEFAULT.format(ns_key='sa'))
+</OME>""".format(ns_ome_default=NS_DEFAULT.format(ns_key='ome'),
+                 ns_sa_default=NS_DEFAULT.format(ns_key='sa'),
+                NS_BINARY_FILE=NS_BINARY_FILE, DEFAULT_NOW=DEFAULT_NOW)
 
 #
 # These are the OME-XML pixel types - not all supported by subimager
