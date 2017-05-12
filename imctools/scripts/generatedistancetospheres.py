@@ -2,23 +2,8 @@
 import tifffile
 import numpy as np
 from scipy.ndimage import distance_transform_edt
+import imctools.library as lib
 
-def _distance_transform_wrapper(logicarray):
-    """
-    wraps scipy distance_transform_edt, but returns 
-    the maximal possible distance in the image as the distance if there are no
-    False in the matrix. 
-    distance_transform_edt defautl is returning the distance to the top left pixel
-    """
-    
-    if np.all(logicarray):
-        shape = logicarray.shape
-        out = np.empty(shape)
-        out[:] = np.max(shape)+1
-        return out
-
-    else:
-        return distance_transform_edt(logicarray)
 
 
 
@@ -42,9 +27,9 @@ def generate_distanceto_spheres(fn_label, cur_label, out_file, bg_label=0):
     is_other = (is_bg == False) | (is_cur == False)
 
     with tifffile.TiffWriter(out_file+'.tif', imagej=True) as tif:
-        tif.save(_distance_transform_wrapper(is_cur).astype(np.float32))
-        tif.save(_distance_transform_wrapper(is_bg).astype(np.float32))
-        tif.save(_distance_transform_wrapper(is_other).astype(np.float32))
+        tif.save(lib.distance_transform_wrapper(is_cur).astype(np.float32))
+        tif.save(lib.distance_transform_wrapper(is_bg).astype(np.float32))
+        tif.save(lib.distance_transform_wrapper(is_other).astype(np.float32))
 
     return 1
 
@@ -71,9 +56,9 @@ def generate_distanceto_binary(fns_binary, out_file, allinverted=False, addinver
                     img = (img > 0) == False
                 else:
                     img = img > 0
-                outtif.save(_distance_transform_wrapper(img).astype(np.float32))
+                outtif.save(lib.distance_transform_wrapper(img).astype(np.float32))
                 if addinverted:
-                   outtif.save(_distance_transform_wrapper(img == False).astype(np.float32))
+                   outtif.save(lib.distance_transform_wrapper(img == False).astype(np.float32))
 
     return 1
 

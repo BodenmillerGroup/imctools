@@ -7,6 +7,8 @@ Created on Thu Apr 30 09:17:50 2015
 
 from __future__ import division
 import numpy as np
+
+import numpy.random
 import matplotlib.pyplot as plt
 import skimage as sk
 import scipy as sp
@@ -173,6 +175,52 @@ def l2l_corr(img,dim=0):
     for i in range(nCol-1):
         corrArray[i] = np.corrcoef(img[:,i], img[:,i+1])[1,0]
     return(corrArray)
+
+
+def distance_transform_wrapper(logicarray, maxdist=65535):
+    """
+    wraps scipy distance_transform_edt, but returns 
+    the maximal possible distance in the image as the distance if there are no
+    False in the matrix. 
+    distance_transform_edt default is returning the distance to the top left pixel
+    :logicarray a binary array
+    :maxdist the distance that should be assigned to pixels if no single
+    positive pixel is in the logicarray
+    
+    :returns an array containing the distance to the next False pixel
+    """
+
+    if np.all(logicarray):
+        shape = logicarray.shape
+        out = np.empty(shape)
+        out[:] = maxdist
+        return out
+
+    else:
+        return ndi.morphology.distance_transform_edt(logicarray)
+
+def distance_to_border(logicarray, maxdist=65535):
+    """
+    Returns the eucledian distance to the border of a binary logical array.
+    Positive distances mean distance to the next negative (false) pixel, negative distance
+    the distance to the next positive (true) pixel.
+    :logicarray a binary array
+    :maxdist the distance that should be assigned to pixels if no single
+    positive pixel is in the logicarry. 
+    :returns an array containing the distance to the next False pixel
+    """
+
+    logicarray = logicarray > 0
+    if np.all(logicarray) | np.all(logicarray == False):
+        shape = logicarray.shape
+        out = np.empty(shape)
+        out[:] = maxdist
+        return out
+    else:
+        out = ndi.morphology.distance_transform_edt(logicarray)
+        fil = out == 0
+        out[fil] = -ndi.morphology.distance_transform_edt(logicarray == False)[fil]
+        return out
 
 
 ### tools for dealing with segmentation masks
@@ -578,4 +626,33 @@ def save_object_stack(folder, basename, img_stack, slices, labels=None):
 
             for chan in range(timg.shape[0]):
                 tif.save(timg[chan, :, :].squeeze())
-                
+
+def crop_slice(origshape, w, h=None, x=None, y=None, random_seed=None,
+               flipped_axis=False):
+    """
+    Returns a slicer to crop the image provided. If x and y position are not
+    provided, a random slice will be taken.
+
+    """
+    if random_seed is not None:
+        np.random.seed(random_seed)
+
+    if h is None:
+        h= w
+
+    outsize = (w, h)
+    if flipped_axis:
+        outsize = reversed(outsize)
+        x, y = y, x
+    
+    outslices = list()
+    for dmax, dstart, dextend in zip(origshape, (x,y), outsize):
+        if dmax > dextend:
+            if dstart is None:
+                dstart = np.random.randint(0, dmax-dextend)
+            dstart = min(dstart, dmax-dextend)
+            outslices.append(np.s_[dstart:(dstart+dextend)])
+        else:
+            outslices.append(np.s_[0:dmax])
+    outslices = tuple(outslices)
+    return outslices
