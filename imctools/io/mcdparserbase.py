@@ -16,14 +16,17 @@ class McdParserBase(AbstractParserBase):
     :return:
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, filehandle = None):
         """
 
         :param filename:
         """
         AbstractParserBase.__init__(self)
 
-        self._fh = open(filename, mode='rb')
+        if filehandle is None:
+            self._fh = open(filename, mode='rb')
+        else:
+            self._fh = filehandle
         self._xml = None
         self._ns = None
         self._acquisition_dict = None

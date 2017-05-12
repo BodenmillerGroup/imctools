@@ -86,9 +86,10 @@ class TiffWriter(object):
             p.Channel(i).set_Name(channel_info)
             p.Channel(i).set_ID('Channel:0:' + str(i))
             p.Channel(i).node.set('Fluor', self.fluor[i])
-
-        # omexml.structured_annotations.add_original_metadata(
-        #     ome.OM_SAMPLES_PER_PIXEL, str(1))
+        # adds original metadata as annotation
+        if self.original_description is not None:
+            omexml.structured_annotations.add_original_metadata(
+                 'MCD-XML', self.original_description)
 
         xml = omexml.to_xml()
         return xml
