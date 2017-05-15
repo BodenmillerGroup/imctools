@@ -15,7 +15,8 @@ ZIP_FILENDING = '.zip'
 IMC_FILENDINGS = (TXT_FILENDING, MCD_FILENDING)
 
 def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome',
-                     compression=0, outname=None, outpath=None, verbose=False):
+                     compression=0, outname=None, outpath=None,
+                     zip_filetype=None, verbose=False):
     """
 
     :param imc_acquisition:
@@ -33,6 +34,9 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome',
 
     if outpath is None:
         outpath = os.path.split(imc_acquisition)[0]
+    
+    if zip_filetype is None:
+        zip_filetype = ''
 
     if imc_acquisition.endswith(IMC_FILENDINGS):
         if outname is None:
@@ -63,11 +67,12 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome',
             iw.save_image(mode=tifftype, compression=compression)
 
     elif imc_acquisition.endswith(ZIP_FILENDING):
-        convert_imczip2tiff(imc_acquisition, outpath, acquisition=acquisition,
+        convert_imczip2tiff(imc_acquisition, outpath, common_filepart=zip_filetype,
+                            acquisition=acquisition,
                             tifftype=tifftype, compression=compression,
                             outname=outname, verbose=False)
     else:
-        raise NameError('%s is not of type .mcd or .txt.' %imc_acquisition)
+        raise NameError('%s is not of type .mcd, .txt or .zip' %imc_acquisition)
 
     if verbose:
         print('Finished!')
@@ -93,7 +98,7 @@ def convert_imcfolders2tiff(folders, output_folder, common_filepart=None,
                                           fn.endswith(ZIP_FILENDING)):
                 txtname = os.path.join(fol, fn)
                 try:
-                    save_imc_to_tiff(txtname, tifftype='ome',
+                    save_imc_to_tiff(txtname, 
                                      outpath=output_folder, **kwargs)
                 except:
                     failed_images.append(txtname)
