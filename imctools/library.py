@@ -29,8 +29,8 @@ import json
 import os
 import tifffile
 
-def remove_outlier_pixels(img, threshold=50, mode='median'):
-    mask = np.ones((3,3))
+def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
+    mask = np.ones((radius, radius))
     mask[1,1] = 0
     img_median = filters.rank.median(img, mask)
 
