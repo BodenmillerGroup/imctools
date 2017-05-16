@@ -295,7 +295,7 @@ class OMEXML(object):
     derived objects. For instance:
 
     >>> o = OMEXML()
-    >>> print o.image().AcquisitionDate
+    >>> #print o.image().AcquisitionDate
 
     will get you the date that image # 0 was acquired.
 
@@ -447,13 +447,6 @@ class OMEXML(object):
         @property
         def Pixels(self):
             '''The OME/Image/Pixels element.
-
-            Example:
-            >>> md = bioformats.omexml.OMEXML(xml)
-            >>> pixels = omemetadata.image(i).Pixels
-            >>> channel_count = pixels.SizeC
-            >>> stack_count = pixels.SizeZ
-            >>> timepoint_count = pixels.SizeT
 
             '''
             return OMEXML.Pixels(self.node.find(qn(self.ns['ome'], "Pixels")))
