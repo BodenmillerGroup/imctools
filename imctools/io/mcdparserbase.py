@@ -278,7 +278,7 @@ class McdParserBase(AbstractParserBase):
         :param buffer_str:
         :return: string with nullbits
 
-        >>> _add_nullbytes('abc')
+        >>> McdParserBase._add_nullbytes('abc')
         'a\\x00b\\x00c\\x00'
         """
         pad_str = ''

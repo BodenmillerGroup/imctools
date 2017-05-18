@@ -30,19 +30,29 @@ import os
 import tifffile
 
 def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
+    """
+
+    >>> a = np.zeros((10, 10))
+    >>> b = a.copy()
+    >>> b[5,5] = 100
+    >>> np.all(a == remove_outlier_pixels(b, threshold=50, mode='max',\
+                                          radius=3))
+    True
+    """
+    if (radius % 2) == 0:
+       radius += 1
     mask = np.ones((radius, radius))
-    mask[1,1] = 0
-    img_median = filters.rank.median(img, mask)
+    mask[int((radius-1)/2),int((radius-1)/2)] = 0
 
     if mode == 'max':
-        img_max = filters.rank.maximum(img, mask)
-        imgfil = (img-img_max) > threshold
+        img_agg = ndi.generic_filter(img, np.max, footprint=mask)
     elif mode == 'median':
-        imgfil = (img-img_median) > threshold
+        img_agg = ndi.generic_filter(img, np.median, footprint=mask)
     else:
         raise('Mode must be: max or median')
     img_out = img.copy()
-    img_out[imgfil] = img_median[imgfil]
+    imgfil = (img-img_agg) > threshold
+    img_out[imgfil] = img_agg[imgfil]
     return img_out
 
 def scale_images(img, cap_percentile=99, rescale = False):
