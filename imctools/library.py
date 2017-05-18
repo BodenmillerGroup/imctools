@@ -42,7 +42,7 @@ def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
     if (radius % 2) == 0:
        radius += 1
     mask = np.ones((radius, radius))
-    mask[(radius-1)/2,(radius-1)/2] = 0
+    mask[int((radius-1)/2),int((radius-1)/2)] = 0
 
     if mode == 'max':
         img_agg = ndi.generic_filter(img, np.max, footprint=mask)
