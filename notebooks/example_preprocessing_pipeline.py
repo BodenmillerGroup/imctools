@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 from imctools.scripts import ometiff2analysis
 from imctools.scripts import cropobjects
@@ -13,7 +13,7 @@ from imctools.scripts import ome2micat
 from imctools.scripts import probablity2uncertainty
 
 
-# In[ ]:
+# In[2]:
 
 import os
 import re
@@ -28,14 +28,15 @@ import re
 #  load the ilatik_random folder in ilastik and do the classifictation
 #  check the uncertainties
 # 
+# The script can also convert mcd files directly or ZIP folders containing MCD or TXT files - please ask Vito how to adapt
 
 # In[ ]:
 
 # the folders with the txt/mcd files for the analysis
-folders = ['/path/to/txt/file/folder']
+folders = ['/home/hartlandj/Data/METABRIC/METABRIC_txt/']
 
 # output for OME tiffs
-out_tiff_folder = 'path/to/output/folder'
+out_tiff_folder = ''
 
 # filename part that all the imc txt files should have, can be set to '' if none
 common_file_part = 'txt'
@@ -48,7 +49,6 @@ ilastik_col = 'ilastik'
 # specify the folder to put the analysis in
 analysis_folder = '../testout/analysis_stacks'
 # specify the subfolders
-ilastik_randomfolder = '../testout/ilastik_random'
 cp_folder = '../testout/cpoutput/'
 
 uncertainty_folder =analysis_folder
@@ -108,7 +108,7 @@ for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, m
 if do_convert_txt:
     for fol in folders:
         for fn in os.listdir(fol):
-            if len([f for f in os.listdir(out_tiff_folder) if (fn.rstrip('.txt') in f)]) == 0:
+            if len([f for f in os.listdir(out_tiff_folder) if (fn.rstrip('.txt').rstrip('.mcd') in f)]) == 0:
                 if common_file_part in fn:
                     print(fn)
                     txtname = os.path.join(fol, fn)
@@ -142,33 +142,24 @@ if do_ilastik:
                                             basename + suffix_ilastik, pannelcsv=pannel_csv, metalcolumn=metal_col,
                                             usedcolumn=ilastik_col)
 
-        # resize the ilastik image
-        fn = os.path.join(analysis_folder, basename + suffix_ilastik + '.tiff')
-        resizeimage.resize_image(fn,
-                                 outfolder=analysis_folder, basename=basename + suffix_ilastik_scale,
-                                 scalefactor=resize_scale)
 
-        os.remove(fn)
-
-
-
-# Generate the ilastik random crops
+# -> Before the next step run the cellprofiler 'prepare_ilastik' pipeline to generate a stacks for ilastik that are scaled and have hot pixels removed
+# 
+# From there run the pixel classification in Ilastik either via X2GO on our server or even better on an image processing virutal machine from the ZMB.
+# 
+# For classification use 3 pixeltypes:
+# - Nuclei
+# - Cytoplasm/Membrane
+# - Background
+# 
+# Usually it is best to label very sparsely to avoid creating a to large but redundant training data set. After initially painting few pixels, check the uncertainty frequently and only paint pixels with high uncertainty.
+# 
+# Once this looks nice for all the cropped sections, batch process the whole images using the code bellow. 
 
 # In[ ]:
 
-if do_ilastik_crop:
-    for fn in os.listdir(analysis_folder):
-        if (fn.endswith(suffix_ilastik_scale + '.tiff')):
-            fn_base = fn.rstrip('.tiff').rstrip('.tif')
-            fn = os.path.join(analysis_folder, fn)
-            for i in range(n_random_crops):
-                croprandomsection.crop_random_section(fn, outfolder=ilastik_randomfolder, basename=fn_base,
-                                                  size=random_cropsize)
-
-print(failed_images)
 
 
-# -> Before the next step run ilastik, then cellprofiler to generate the masks
 
 # ## Run the ilastik classification as a batch
 
