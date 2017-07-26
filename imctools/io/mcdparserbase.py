@@ -239,7 +239,7 @@ class McdParserBase(AbstractParserBase):
         f.seek(xml_start)
         xml = f.read(xml_stop-xml_start).decode('utf-8')
         xml = xml.replace('\x00','')
-        print(xml)
+        #print(xml)
         self._xml = et.fromstring(xml)
         self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
 
