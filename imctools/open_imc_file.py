@@ -9,10 +9,10 @@ import sys
 imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
 sys.path.append(os.path.realpath(imctool_dir))
 
-from imctools.imagej import library as lib
-
-from io import mcdparserbase
-from io import txtparserbase
+import imctools.imagej.library as lib
+print('test')
+import imctools.io.mcdparserbase as mcdparserbase
+import imctools.io.txtparserbase as txtparserbase
 
 
 def choose_acquisition_dialog(mcd_parser):
@@ -35,22 +35,22 @@ def choose_acquisition_dialog(mcd_parser):
     else:
         return []
 
-if __name__ == '__main__':
-    op = OpenDialog('Choose mcd file')
-    fn = os.path.join(op.getDirectory(), op.getFileName())
 
-    if fn[-4:] == '.mcd':
-        with mcdparserbase.McdParserBase(fn) as mcd_parser:
-            ac_ids = choose_acquisition_dialog(mcd_parser)
-            if len(ac_ids) > 0:
-                print('Load mcd acquisition: %s' %ac_ids)
-                imc_acs = [mcd_parser.get_imc_acquisition(aid) for aid in ac_ids]
+print('test2')
+op = OpenDialog('Choose mcd file')
+fn = os.path.join(op.getDirectory(), op.getFileName())
 
-    if fn[-4:] == '.txt':
-        print('Load txt acquisition:')
-        imc_acs = [txtparserbase.TxtParserBase(filename=fn).get_imc_acquisition()]
+if fn[-4:] == '.mcd':
+    with mcdparserbase.McdParserBase(fn) as mcd_parser:
+        ac_ids = choose_acquisition_dialog(mcd_parser)
+        if len(ac_ids) > 0:
+            print('Load mcd acquisition: %s' %ac_ids)
+            imc_acs = [mcd_parser.get_imc_acquisition(aid) for aid in ac_ids]
+if fn[-4:] == '.txt':
+    print('Load txt acquisition:')
+    imc_acs = [txtparserbase.TxtParserBase(filename=fn).get_imc_acquisition()]
 
-    for imc_ac in imc_acs:
+for imc_ac in imc_acs:
         i5d_img = lib.convert_imc_to_image(imc_ac)
 
         i5d_img.show()

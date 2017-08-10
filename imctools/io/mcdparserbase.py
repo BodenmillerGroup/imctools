@@ -309,25 +309,3 @@ class McdParserBase(AbstractParserBase):
                 return -1
 
 
-if __name__ == '__main__':
-    import matplotlib.pyplot as plt
-
-    fn = '/home/vitoz/temp/grade1.mcd'
-    with McdParserBase(fn) as testmcd:
-        print(testmcd.filename)
-        print(testmcd.n_acquisitions)
-        # print(testmcd.get_acquisition_xml('0'))
-        print(testmcd.get_acquisition_channels_xml('0'))
-        print(testmcd.get_acquisition_channels('0'))
-
-        import time
-        a= time.time()
-        print(len(testmcd.get_acquisition_rawdata('0')))
-        print(time.time()-a)
-        a= time.time()
-        print(len(testmcd.get_acquisition_rawdata2('0')))
-        print(time.time()-a)
-        imc_ac = testmcd.get_imc_acquisition('0')
-        print(imc_ac.shape)
-        #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
-        # acquisition_dict = get_mcd_data(fn, xml_public)
