@@ -85,10 +85,11 @@ class McdParser(AbstractParser, McdParserBase):
             data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
             data_size = (data_offset_end - data_offset_start + 1) / 4
             n_rows = data_size / n_channel
-            data = np.memmap(self._fh, dtype='<f', mode='r',
-                             offset=data_offset_start,
-                             shape=(int(n_rows), n_channel))
-            acquisition_dict.update({ac_id: (acquisition, data)})
+            if n_rows >= 1:
+                data = np.memmap(self._fh, dtype='<f', mode='r',
+                                 offset=data_offset_start,
+                                 shape=(int(n_rows), n_channel))
+                acquisition_dict.update({ac_id: (acquisition, data)})
 
         self._acquisition_dict = acquisition_dict
 
@@ -127,7 +128,7 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    fn = '/mnt/imls-bod/Daniel_Data/August/large_CXCL13_CXCL13_UBC_image/CXCL13_CXCL10_UBC.mcd'
+    fn =    '/home/vitoz/Data/spillover/20170707_images/20170706_PBMCforcompensation_SESC.mcd'
     #fn = '/mnt/imls-bod/Daniel_Data/September/02/Her2_grade0/grade_0.mcd'
     with McdParser(fn) as testmcd:
         print(testmcd.filename)
@@ -135,11 +136,9 @@ if __name__ == '__main__':
         print(testmcd.acquisition_ids)
         print(testmcd.get_acquisition_channels_xml(testmcd.acquisition_ids[0]))
         print(testmcd.get_acquisition_channels(testmcd.acquisition_ids[0]))
-        imc_img = testmcd.get_imc_acquisition(testmcd.acquisition_ids[0])
+        print(testmcd.acquisition_ids)
+        for ac in testmcd.acquisition_ids:
+            imc_img = testmcd.get_imc_acquisition(ac)
         img = imc_img.get_img_stack_cyx()
-        img = imc_img.get_img_by_metal('X')
-        plt.figure()
-        plt.imshow(img.squeeze())
-        plt.show()
+        #img = imc_img.get_img_by_metal('X')
         #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
-    #acquisition_dict = get_mcd_data(fn, xml_public)
