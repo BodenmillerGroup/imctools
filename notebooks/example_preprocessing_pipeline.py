@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 from imctools.scripts import ometiff2analysis
 from imctools.scripts import cropobjects
@@ -13,7 +13,7 @@ from imctools.scripts import ome2micat
 from imctools.scripts import probablity2uncertainty
 
 
-# In[2]:
+# In[ ]:
 
 import os
 import re
@@ -36,44 +36,34 @@ import re
 folders = ['/home/hartlandj/Data/METABRIC/METABRIC_txt/']
 
 # output for OME tiffs
-out_tiff_folder = ''
+out_tiff_folder = '/home/jwindh/Data/VitoExample/ometiff'
 
 # filename part that all the imc txt files should have, can be set to '' if none
-common_file_part = 'txt'
+common_file_part = '.txt'
 
 # a csv indicating which columns should be used for ilastik (0, 1) in ilastik column
-pannel_csv = '../example/panel.csv'
+pannel_csv = '/home/jwindh/Data/VitoExample/configfiles/20170626_pannel_METABRICl.csv'
 mass_col = None
-metal_col = 'Metal'
+metal_col = 'Metal Tag'
 ilastik_col = 'ilastik'
+# Explicitly indicates which metals should be used for the full stack
+full_col = 'full'
 # specify the folder to put the analysis in
-analysis_folder = '../testout/analysis_stacks'
+analysis_folder = '/home/jwindh/Data/VitoExample/analysis'
 # specify the subfolders
-cp_folder = '../testout/cpoutput/'
+cp_folder = '/home/jwindh/Data/VitoExample/cpout'
 
-uncertainty_folder =analysis_folder
-micat_folder = '../testout/micat/'
-
-
-pannel_csv = '/home/daniels/Data/Her2_TMA/Her2_TMA_final_for_stack_generation.csv'
-mass_col = None
-metal_col = 'Metal'
-ilastik_col = 'ilastik'
+uncertainty_folder = analysis_folder
+micat_folder = '/home/jwindh/Data/VitoExample/micat'
 
 # parameters for resizing the images for ilastik
-resize_scale = 2
 suffix_full = '_full'
 suffix_ilastik = '_ilastik'
-suffix_ilastik_scale = '_ilastik'+str(resize_scale)
+suffix_ilastik_scale = '_ilastik_s2'
 suffix_cropmask = 'cropmask'
 suffic_segmentation = 'sphereseg'
 suffix_mask = '_mask.tiff'
 suffix_probablities = '_probabilities'
-
-# size of the random crops
-random_cropsize = 250
-# how many random crops should be made
-n_random_crops = 1
 
 
 failed_images = list()
@@ -85,10 +75,9 @@ re_idfromname = re.compile('_l(?P<Label>[0-9]+)_')
 
 # In[ ]:
 
-do_convert_txt = True
+do_convert_txt = False
 do_stacks = True
 do_ilastik = True
-do_ilastik_crop = True
 do_micat = True
 
 
@@ -96,7 +85,7 @@ do_micat = True
 
 # In[ ]:
 
-for fol in [out_tiff_folder, analysis_folder, ilastik_randomfolder, cp_folder, micat_folder,uncertainty_folder]:
+for fol in [out_tiff_folder, analysis_folder, cp_folder, micat_folder,uncertainty_folder]:
     if not os.path.exists(fol):
         os.makedirs(fol)
 
@@ -109,7 +98,7 @@ if do_convert_txt:
     for fol in folders:
         for fn in os.listdir(fol):
             if len([f for f in os.listdir(out_tiff_folder) if (fn.rstrip('.txt').rstrip('.mcd') in f)]) == 0:
-                if common_file_part in fn:
+                if common_file_part in fn: # and 'tuningtape' not in fn:
                     print(fn)
                     txtname = os.path.join(fol, fn)
                     try:
@@ -126,8 +115,12 @@ if do_convert_txt:
 
 if do_stacks:
     for img in os.listdir(out_tiff_folder):
+        if not img.endswith('.ome.tiff'):
+            pass
         basename = img.rstrip('.ome.tiff')
-        ometiff2analysis.ometiff_2_analysis(os.path.join(out_tiff_folder, img), analysis_folder, basename+suffix_full)
+        ometiff2analysis.ometiff_2_analysis(os.path.join(out_tiff_folder, img), analysis_folder, basename+suffix_full,
+                                           pannelcsv=pannel_csv, metalcolumn=metal_col,
+                                            usedcolumn=full_col)
 
 
 
@@ -137,10 +130,12 @@ if do_stacks:
 
 if do_ilastik:
     for img in os.listdir(out_tiff_folder):
+        if not img.endswith('.ome.tiff'):
+            pass
         basename = img.rstrip('.ome.tiff')
         ometiff2analysis.ometiff_2_analysis(os.path.join(out_tiff_folder, img), analysis_folder,
                                             basename + suffix_ilastik, pannelcsv=pannel_csv, metalcolumn=metal_col,
-                                            usedcolumn=ilastik_col)
+                                            usedcolumn=ilastik_col, addsum=True)
 
 
 # -> Before the next step run the cellprofiler 'prepare_ilastik' pipeline to generate a stacks for ilastik that are scaled and have hot pixels removed
@@ -165,19 +160,19 @@ if do_ilastik:
 
 # In[ ]:
 
-fn_ilastikproject = '/path/to/ilastik_project.ilp'
+fn_ilastikproject = '/home/jwindh/Data/VitoExample/pipeline/MyProject.ilp'
 bin_ilastik = "/mnt/bbvolume/labcode/ilastik-1.2.0-Linux/run_ilastik.sh" 
 
 
 # In[ ]:
 
-glob_probabilities =os.path.join(analysis_folder,"*"+suffix_ilastik_scale+'.tiff')
-fn_ilastik_out = os.path.join(analysis_folder,"{nickname}"+suffix_probablities+'.tiff')
+fn_ilastik_input =os.path.join(analysis_folder,"*"+suffix_ilastik_scale+'.tiff')
+glob_probabilities = os.path.join(analysis_folder,"{nickname}"+suffix_probablities+'.tiff')
 
 
 # In[ ]:
 
-get_ipython().run_cell_magic('bash', '-s "$bin_ilastik" "$fn_ilastikproject" "$glob_probabilities" "$fn_ilastik_out" ', 'echo $1\necho $2\necho $3\necho $4\nLAZYFLOW_TOTAL_RAM_MB=40000 \\\nLAZYFLOW_THREADS=16\\\n    $1 \\\n    --headless --project=$2 \\\n    --output_format=tiff \\\n    --output_filename_format=$3 \\\n    --export_dtype uint16 --pipeline_result_drange="(0.0, 1.0)" \\\n    --export_drange="(0,65535)" $4')
+get_ipython().run_cell_magic('bash', '-s "$bin_ilastik" "$fn_ilastikproject" "$glob_probabilities" "$fn_ilastik_input" ', 'echo $1\necho $2\necho $3\necho $4\nLAZYFLOW_TOTAL_RAM_MB=40000 \\\nLAZYFLOW_THREADS=16\\\n    $1 \\\n    --headless --project=$2 \\\n    --output_format=tiff \\\n    --output_filename_format=$3 \\\n    --export_dtype uint16 --pipeline_result_drange="(0.0, 1.0)" \\\n    --export_drange="(0,65535)" $4')
 
 
 # ## convert probabilities to uncertainties

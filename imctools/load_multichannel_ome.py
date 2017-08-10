@@ -7,7 +7,7 @@ import sys
 imctool_dir = os.path.join(IJ.getDirectory('plugins'),'imctools')
 sys.path.append(os.path.realpath(imctool_dir))
 
-from imctools.imagej import library as lib
+import imctools.imagej.library as lib
 
 def view_image5d_ome(img, ome_meta):
     """
@@ -31,7 +31,7 @@ def load_and_view(file_name):
     view_image5d_ome(imag, omeMeta)
 
 
-if __name__ == '__main__':
-    op = OpenDialog('Choose multichannel TIFF')
-    file = os.path.join(op.getDirectory(), op.getFileName())
-    load_and_view(file_name=file)
+
+op = OpenDialog('Choose multichannel TIFF')
+file = os.path.join(op.getDirectory(), op.getFileName())
+load_and_view(file_name=file)
