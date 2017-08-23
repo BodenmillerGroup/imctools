@@ -98,7 +98,7 @@ class TiffWriter(object):
         # adds original metadata as annotation
         if self.original_description is not None:
             if isinstance(self.original_description,
-                          ElementTree.Element):
+                          type(ElementTree.Element(1))):
                 result = StringIO()
                 ElementTree.ElementTree(self.original_description).write(result,
                                                           encoding=uenc, method="xml")
