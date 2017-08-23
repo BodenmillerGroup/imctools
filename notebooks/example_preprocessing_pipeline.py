@@ -19,6 +19,11 @@ import os
 import re
 
 
+# In[ ]:
+
+get_ipython().magic('load_ext rpy2.ipython')
+
+
 # 
 # # This script must be adapted to use
 # Currently it will convert txt in subfolders of the folder base_folder into OME.tiffs
@@ -43,7 +48,6 @@ common_file_part = '.txt'
 
 # a csv indicating which columns should be used for ilastik (0, 1) in ilastik column
 pannel_csv = '/home/jwindh/Data/VitoExample/configfiles/20170626_pannel_METABRICl.csv'
-mass_col = None
 metal_col = 'Metal Tag'
 ilastik_col = 'ilastik'
 # Explicitly indicates which metals should be used for the full stack
@@ -55,6 +59,9 @@ cp_folder = '/home/jwindh/Data/VitoExample/cpout'
 
 uncertainty_folder = analysis_folder
 micat_folder = '/home/jwindh/Data/VitoExample/micat'
+
+sm_csv = '/home/vitoz/Data/spillover/2017007_second_ss_steph/20170707_ss_stef2__spillmat.csv'
+sm_outname = os.path.join(analysis_folder,'sm_full')
 
 # parameters for resizing the images for ilastik
 suffix_full = '_full'
@@ -69,6 +76,11 @@ suffix_probablities = '_probabilities'
 failed_images = list()
 
 re_idfromname = re.compile('_l(?P<Label>[0-9]+)_')
+
+
+# In[ ]:
+
+
 
 
 # Specify which steps to run
@@ -173,6 +185,13 @@ glob_probabilities = os.path.join(analysis_folder,"{nickname}"+suffix_probabliti
 # In[ ]:
 
 get_ipython().run_cell_magic('bash', '-s "$bin_ilastik" "$fn_ilastikproject" "$glob_probabilities" "$fn_ilastik_input" ', 'echo $1\necho $2\necho $3\necho $4\nLAZYFLOW_TOTAL_RAM_MB=40000 \\\nLAZYFLOW_THREADS=16\\\n    $1 \\\n    --headless --project=$2 \\\n    --output_format=tiff \\\n    --output_filename_format=$3 \\\n    --export_dtype uint16 --pipeline_result_drange="(0.0, 1.0)" \\\n    --export_drange="(0,65535)" $4')
+
+
+# ## Generate the spillovermatrix for cellprofiler compensation
+
+# In[ ]:
+
+get_ipython().run_cell_magic('R', '-i pannel_csv -i metal_col -i full_col -i sm_csv -i sm_outname', "metal_col = make.names(metal_col)\nfull_col = make.names(full_col)\n\npannel_dat = read.csv(pannel_csv)\nanalysis_channels = pannel_dat[pannel_dat[,full_col] ==T,metal_col]\n\nanalysis_channels = paste(analysis_channels, 'Di', sep = '')\n\nsm = as.matrix(read.csv(sm_csv, row.names=1))\n\nsm_table = CATALYST::adaptSpillmat(sm, analysis_channels)\n\nwrite.table(sm_table, paste0(sm_outname,'.csv'))\ntiff::writeTIFF(sm_table, paste0(sm_outname,'.tiff'), bits.per.sample = 32, reduce = T)")
 
 
 # ## convert probabilities to uncertainties
