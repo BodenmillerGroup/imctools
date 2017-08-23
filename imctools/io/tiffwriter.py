@@ -3,6 +3,15 @@ import numpy as np
 import tifffile
 import imctools.external.omexml as ome
 
+from xml.etree import cElementTree as ElementTree
+
+import sys
+if sys.version_info.major == 3:
+    from io import StringIO
+    uenc = 'unicode'
+else:
+    from cStringIO import StringIO
+    uenc = 'utf-8'
 
 
 class TiffWriter(object):
@@ -88,8 +97,18 @@ class TiffWriter(object):
             p.Channel(i).node.set('Fluor', self.fluor[i])
         # adds original metadata as annotation
         if self.original_description is not None:
+            if isinstance(self.original_description,
+                          ElementTree.Element):
+                result = StringIO()
+                ElementTree.ElementTree(self.original_description).write(result,
+                                                          encoding=uenc, method="xml")
+                desc = result.getvalue()
+            else:
+                desc = str(self.original_description)
+
             omexml.structured_annotations.add_original_metadata(
-                 'MCD-XML', self.original_description)
+                'MCD-XML',
+                desc)
 
         xml = omexml.to_xml()
         return xml
