@@ -3,10 +3,15 @@ import xml.etree.ElementTree as et
 import struct
 import array
 import sys
+import re
 from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
 
+from collections import defaultdict
 
+"""
+Main class
+"""
 
 class McdParserBase(AbstractParserBase):
     """Parsing data from Fluidigm MCD files
@@ -307,5 +312,3 @@ class McdParserBase(AbstractParserBase):
                 f.seek(cur_pos)
             else:
                 return -1
-
-

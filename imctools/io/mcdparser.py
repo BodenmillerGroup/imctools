@@ -20,8 +20,10 @@ class McdParser(AbstractParser, McdParserBase):
     """
     def __init__(self, filename, filehandle=None):
         """
-
-        :param filename:
+        Initializes the MCDparser object
+        :param filename: a filename of an .mcd file
+        :param filehandle: a filehandle pointing to an open .mcd file
+        :returns: the mcdparser object
         """
         McdParserBase.__init__(self, filename, filehandle)
         AbstractParser.__init__(self)
@@ -30,19 +32,18 @@ class McdParser(AbstractParser, McdParserBase):
         """
         Get the acquisition XML of the acquisition with the id
         :param ac_id: the acquisition id
-        :return: the acquisition XML
+        :returns: the acquisition XML
         """
         return np.array(self._acquisition_dict[ac_id][1])
 
     def retrieve_mcd_xml(self, start_str='<MCDSchema', stop_str='</MCDSchema>'):
         """
-        Finds the MCD metadata XML in the binary.
+        Finds the MCD metadata XML in the binary and updates the mcdparser object.
         As suggested in the specifications the file is parsed from the end.
 
         :param fn:
         :param start_str:
         :param stop_str:
-        :return:
         """
         mm = mmap.mmap(self._fh.fileno(), 0, prot=mmap.PROT_READ)
 
@@ -72,7 +73,8 @@ class McdParser(AbstractParser, McdParserBase):
 
     def get_mcd_data(self):
         """
-        Uses the offsets encoded in the XML to load the raw data from the mcd.
+        Uses the offsets encoded in the XML to load the raw data from the mcd and update the
+        mcdparser object.
         """
         acquisition_dict = dict()
         xml = self._xml
@@ -94,6 +96,11 @@ class McdParser(AbstractParser, McdParserBase):
         self._acquisition_dict = acquisition_dict
 
     def get_imc_acquisition(self, ac_id):
+        """
+        Returns an ImcAcquisition object corresponding to the ac_id
+        :param ac_id: The requested acquisition id
+        :returns: an ImcAcquisition object
+        """
 
         data = self.get_acquisition_rawdata(ac_id)
         nchan = data.shape[1]
