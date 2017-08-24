@@ -15,7 +15,7 @@ Further imctools can directly work as a FIJI plugin, exploiting the Jython langu
 ## Prerequisites
 * The package is written for Python3, but should also work with Python2
 * The core functions have a 'base' pure Python/Jython implementation with no dependencies outside the standard libraries.
-* The fast functions do need standard Python packages, such as numpy, scipy etc. installed.
+* The fast functions do need Python packages, such as numpy, scipy etc. installed.
 
 ## Usage
 imctools is often used from jupyter as aprt of the preprocessing pipeline, mainly using the 'script' wrapper functions. Check 'notebooks/example_preprocessing_pipline.ipynb' as a template
@@ -57,7 +57,5 @@ img.save_image(mode='ome', compression=0, dtype=None, bigtiff=False)
 # as the mcd object is using lazy loading memory maps, it needs to be closed 
 # or used with a context manager.
 mcd.close()
-
-```
 
 ```
