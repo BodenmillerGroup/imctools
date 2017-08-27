@@ -1,5 +1,6 @@
 import xml.etree as et
 import imctools.librarybase as libb
+from collections import OrderedDict
 
 """
 This module should help parsing the MCD xml metadata
@@ -125,6 +126,10 @@ class Panorama(Meta):
 class AcquisitionRoi(Meta):
     def __init__(self, meta, parents):
         super().__init__(ACQUISITIONROI, meta, parents)
+
+class Acquisition(Meta):
+    def __init__(self, meta, parents):
+        super().__init__(ACQUISITION, meta, parents)
         
 class RoiPoint(Meta):
     def __init__(self, meta, parents):
@@ -134,10 +139,24 @@ class Channel(Meta):
     def __init__(self, meta, parents):
         super().__init__(ACQUISITIONCHANNEL, meta, parents)
 
-class Acquisition(Meta):
-    def __init__(self, meta, parents):
-        super().__init__(ACQUISITION, meta, parents)
 
+# A dictionary to map metadata keys to metadata types
+OBJ_DICT = OrderedDict([
+    (SLIDE, Slide),
+    (PANORAMA, Panorama),
+    (ACQUISITIONROI, AcquisitionRoi),
+    (ACQUISITION, Acquisition),
+    (ROIPOINT, RoiPoint),
+    (ACQUISITIONCHANNEL, Channel)
+])
+
+# A dictionary to map id keys to metadata keys
+ID_DICT = {
+    SLIDEID: SLIDE,
+    PANORAMAID: PANORAMA,
+    ACQUISITIONROIID: ACQUISITIONROI,
+    ACQUISITIONID: ACQUISITION
+}
 
 class mcdxmlparser(Meta):
     """
@@ -150,9 +169,24 @@ class mcdxmlparser(Meta):
         meta = meta[MCDSCHEMA]
         
         super().__init__(MCDSCHEMA, meta, [])
-        self._init_slides()
-        self._init_panoramas()
-        self._init_acquisitionroi()
+        self._init_objects()
+
+    def _init_objects(self):
+        obj_keys = [k for k in OBJ_DICT.keys() if k in self.meta.keys()]
+        for k in obj_keys:
+            ObjClass = OBJ_DICT[k]
+            objs = self._get_meta_objects(k)
+            print(k) 
+            idks = [ik for ik in objs[0].keys() if ik in ID_DICT.keys()]
+            for o in objs:
+                parents = [self.get_objects_by_id(ik, o[ik]) for ik in idks]
+                if len(parents) == 0:
+                    parents = [self]
+                ObjClass(o, parents)
+            
+    def get_objects_by_id(self, objidname, objid):
+        mtype = ID_DICT[objidname]
+        return self.get_object(mtype, objid)
         
     def _init_slides(self):
         """
@@ -176,6 +210,16 @@ class mcdxmlparser(Meta):
             panoid = ar[PANORAMAID]
             pano = self.get_object(PANORAMA, panoid)
             AcquisitionRoi(ar, [pano])
+
+    def _init_roipoint(self):
+        rps = self._get_meta_objects(ROIPOINT)
+        for r in rps:
+            acroiid = r[ACQUISITIONROIID]
+            acroi = self.get_object(ACQUISITIONROI, acroiid)
+            ROIPOINT(r, [acroi])
+
+    def _init_acquisition(self):
+        ac = self._get_meta_objects
 
     def get_object(self, mtype, mid):
         """
