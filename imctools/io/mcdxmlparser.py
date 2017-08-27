@@ -6,6 +6,7 @@ from collections import OrderedDict
 This module should help parsing the MCD xml metadata
 """
 
+# Definition of all the vocabulary used
 ABLATIONDISTANCEBETWEENSHOTSX = 'AblationDistanceBetweenShotsX'
 ABLATIONDISTANCEBETWEENSHOTSY = 'AblationDistanceBetweenShotsY'
 ABLATIONFREQUENCY = 'AblationFrequency'
@@ -76,9 +77,31 @@ WIDTHUM = 'WidthUm'
 
 PARSER = 'parser'
 
+"""
+Definition of all the meta objects
+Each entity will have a class corresponding to it, with helpermethods
+that e.g. allow to retrieve images etc.
 
+This is implemented as parent-child relationships where each entry has a list of parents 
+and a nested dictionary of children of the form (child_type: childID: childobject)
+
+Further each object is registered in the global root node, making them easy accessible.
+"""
 class Meta(object):
+    """
+    Represents an abstract metadata object.
+    """
     def __init__(self, mtype, meta, parents):
+        """
+        Initializes the metadata object, generates the
+        parent-child relationships and updates to object list
+        of the root
+
+        :param mtype: the name of the object type
+        :param meta: the metadata dictionary
+        :param parents:  the parents of this object
+
+        """
         self.mtype = mtype
         self.id = meta.get(ID, None)
         self.childs = dict()
@@ -87,8 +110,6 @@ class Meta(object):
         self.parents = parents
         for p in parents:
             self._update_parents(p)
-        
-        self.is_root = len(parents) == 0
 
         if self.is_root:
             self.objects = dict()
@@ -96,6 +117,10 @@ class Meta(object):
             # update the root objects
             root = self.get_root()
             self._update_dict(root.objects)
+
+    @property
+    def is_root(self):
+       return len(self.parents) == 0
     
     def _update_parents(self, p):
         self._update_dict(p.childs)
@@ -104,17 +129,21 @@ class Meta(object):
         mtype = self.mtype
         mdict = d.get(mtype, None)
         if mdict is None:
-            mdict = dict()
+            mdict = OrderedDict()
             d[mtype] = mdict
         mdict.update({self.id: self})
 
     def get_root(self):
+        """
+        Gets the root node of this metadata
+        tree
+        """
         if self.is_root:
             return self
         else:
             return self.parents[0].get_root()
 
-
+# Definition of the subclasses
 class Slide(Meta):
     def __init__(self, meta, parents):
         super().__init__(SLIDE, meta, parents)
@@ -141,6 +170,8 @@ class Channel(Meta):
 
 
 # A dictionary to map metadata keys to metadata types
+# The order reflects the dependency structure of them and the
+# order these objects should be initialized
 OBJ_DICT = OrderedDict([
     (SLIDE, Slide),
     (PANORAMA, Panorama),
@@ -151,6 +182,7 @@ OBJ_DICT = OrderedDict([
 ])
 
 # A dictionary to map id keys to metadata keys
+# Used for initializaiton of the objects
 ID_DICT = {
     SLIDEID: SLIDE,
     PANORAMAID: PANORAMA,
@@ -176,7 +208,6 @@ class mcdxmlparser(Meta):
         for k in obj_keys:
             ObjClass = OBJ_DICT[k]
             objs = self._get_meta_objects(k)
-            print(k) 
             idks = [ik for ik in objs[0].keys() if ik in ID_DICT.keys()]
             for o in objs:
                 parents = [self.get_objects_by_id(ik, o[ik]) for ik in idks]
@@ -184,43 +215,16 @@ class mcdxmlparser(Meta):
                     parents = [self]
                 ObjClass(o, parents)
             
-    def get_objects_by_id(self, objidname, objid):
-        mtype = ID_DICT[objidname]
+    def get_objects_by_id(self, idname, objid):
+        """
+        Gets objects by idname and id
+        :param idname: an name of an id registered in the ID_DICT
+        :param objid: the id of the object
+        :returns: the described object.
+        """
+        mtype = ID_DICT[idname]
         return self.get_object(mtype, objid)
         
-    def _init_slides(self):
-        """
-        gets the slide meta
-        """
-        slides = self._get_meta_objects(SLIDE)
-        for s in slides:
-            # slide has only the root as parent
-            Slide(s, [self])
-
-    def _init_panoramas(self):
-        pano = self._get_meta_objects(PANORAMA)
-        for p in pano:
-            slideid = p[SLIDEID]
-            slide = self.get_object(SLIDE, slideid)
-            Panorama(p, [slide])
-
-    def _init_acquisitionroi(self):
-        acroi = self._get_meta_objects(ACQUISITIONROI)
-        for ar in acroi:
-            panoid = ar[PANORAMAID]
-            pano = self.get_object(PANORAMA, panoid)
-            AcquisitionRoi(ar, [pano])
-
-    def _init_roipoint(self):
-        rps = self._get_meta_objects(ROIPOINT)
-        for r in rps:
-            acroiid = r[ACQUISITIONROIID]
-            acroi = self.get_object(ACQUISITIONROI, acroiid)
-            ROIPOINT(r, [acroi])
-
-    def _init_acquisition(self):
-        ac = self._get_meta_objects
-
     def get_object(self, mtype, mid):
         """
         Return an object defined by type and id
