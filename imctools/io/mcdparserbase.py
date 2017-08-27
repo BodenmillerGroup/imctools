@@ -84,9 +84,9 @@ class McdParserBase(AbstractParserBase):
     
     def get_acquisition_buffer(self, ac_id):
         """
-        Get the acquisition XML of the acquisition with the id
+        Returns the raw buffer for the acquisition
         :param ac_id: the acquisition id
-        :return: the acquisition XML
+        :return: the acquisition buffer
         """
         f = self._fh
         (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
@@ -112,37 +112,6 @@ class McdParserBase(AbstractParserBase):
         data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
                 for row in range(n_rows)]
         return data
-
-    # def get_acquisition_rawdata2(self, ac_id):
-    #     """
-    #     Get the acquisition XML of the acquisition with the id
-    #     :param ac_id: the acquisition id
-    #     :return: the acquisition XML
-    #     """
-    #     f = self._fh
-    #     (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
-    #     buffer = self.get_acquisition_buffer(ac_id)
-    #     n_rows = int(n_rows)
-    #     n_channel = int(n_channel)
-    #     dat = array.array('f')
-    #
-    #     raw = struct.unpack_from('<'+str(n_rows * n_channel)+'f', buffer)
-    #     for x in raw: dat.append(x)
-    #     if sys.byteorder != 'little':
-    #         dat.byteswap()
-    #     data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
-    #             for row in range(n_rows)]
-    #     return data
-
-    def get_acquisition_dimensions(self, ac_id):
-        """
-        Get the number of channels and number of rows
-
-        :return:
-        """
-        (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
-
-        return ( n_rows, n_channel)
 
     def get_acquisition_channels_xml(self, ac_id):
         """
@@ -218,7 +187,6 @@ class McdParserBase(AbstractParserBase):
         :param fn:
         :param start_str:
         :param stop_str:
-        :return:
         """
         f = self._fh
         xml_start = self._reverse_find_in_buffer(f, start_str.encode('utf-8'))

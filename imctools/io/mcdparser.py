@@ -30,9 +30,9 @@ class McdParser(AbstractParser, McdParserBase):
 
     def get_acquisition_rawdata(self, ac_id):
         """
-        Get the acquisition XML of the acquisition with the id
+        Gets the unreshaped image data from the acquisition.
         :param ac_id: the acquisition id
-        :returns: the acquisition XML
+        :returns: the acquisition rawdata 
         """
         return np.array(self._acquisition_dict[ac_id][1])
 
