@@ -16,7 +16,7 @@ def etree_to_dict(t):
         for dc in map(etree_to_dict, children):
             for k, v in dc.items():
                 dd[k].append(v)
-        d = {t.tag: {k:v[0] if len(v) == 1 else v for k, v in dd.items()}}
+        d = {t.tag: {k:v[0] if (len(v) == 1 and ~isinstance(v[0], type(dict()))) else v for k, v in dd.items()}}
     if t.attrib:
         d[t.tag].update(('@' + k, v) for k, v in t.attrib.items())
     if t.text:
