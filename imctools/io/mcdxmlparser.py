@@ -146,27 +146,62 @@ class Meta(object):
 # Definition of the subclasses
 class Slide(Meta):
     def __init__(self, meta, parents):
-        super().__init__(SLIDE, meta, parents)
+        Meta.__init__(self, SLIDE, meta, parents)
 
 class Panorama(Meta):
     def __init__(self, meta, parents):
-        super().__init__(PANORAMA, meta, parents)
+        Meta.__init__(self, PANORAMA, meta, parents)
 
 class AcquisitionRoi(Meta):
     def __init__(self, meta, parents):
-        super().__init__(ACQUISITIONROI, meta, parents)
+        Meta.__init__(self, ACQUISITIONROI, meta, parents)
 
 class Acquisition(Meta):
     def __init__(self, meta, parents):
-        super().__init__(ACQUISITION, meta, parents)
-        
+        Meta.__init__(self, ACQUISITION, meta, parents)
+
+    def get_channels(self):
+        return self.childs[ACQUISITIONCHANNEL]
+    
+    def get_channel_orderdict(self):
+        chan_dic = self.get_channels()
+        out_dic = dict()
+        for k, chan in chan_dic.items():
+            channel_name = chan.meta[CHANNELNAME]
+            channel_label = chan.meta.get(CHANNELLABEL, channel_name)
+            channel_order = int(chan.meta.get(ORDERNUMBER))
+            out_dic.update({channel_order: (channel_name, channel_label)})
+        return out_dic
+
+    @property
+    def data_offset_start(self):
+        return int(self.meta[DATASTARTOFFSET])
+
+    @property
+    def data_offset_end(self):
+        return int(self.meta[DATAENDOFFSET])
+
+    @property
+    def data_size(self):
+        return self.data_offset_end - self.data_offset_start +1
+
+    @property
+    def data_nrows(self):
+        nrow = int(self.data_size/(self.n_channels * int(self.meta[VALUEBYTES])))
+        return nrow
+
+    @property
+    def n_channels(self):
+        return len(self.get_channels())
+
+
 class RoiPoint(Meta):
     def __init__(self, meta, parents):
-        super().__init__(ROIPOINT, meta, parents)
+        Meta.__init__(self, ROIPOINT, meta, parents)
 
 class Channel(Meta):
     def __init__(self, meta, parents):
-        super().__init__(ACQUISITIONCHANNEL, meta, parents)
+        Meta.__init__(self, ACQUISITIONCHANNEL, meta, parents)
 
 
 # A dictionary to map metadata keys to metadata types
@@ -190,7 +225,7 @@ ID_DICT = {
     ACQUISITIONID: ACQUISITION
 }
 
-class mcdxmlparser(Meta):
+class McdXmlParser(Meta):
     """
     Represents the full mcd xml
     """
@@ -199,8 +234,7 @@ class mcdxmlparser(Meta):
         meta = libb.etree_to_dict(xml)
         meta = libb.dict_key_apply(meta, libb.strip_ns)
         meta = meta[MCDSCHEMA]
-        
-        super().__init__(MCDSCHEMA, meta, [])
+        Meta.__init__(self, MCDSCHEMA, meta, [])
         self._init_objects()
 
     def _init_objects(self):
@@ -256,7 +290,14 @@ class mcdxmlparser(Meta):
         """
         gets a list of all acquisitions
         """
-        raise NotImplementedError
+        return self.objects[ACQUISITION]
+
+    def get_acquisition_meta(self, acid):
+        """
+        Returns the acquisition metadata dict
+        """
+        return self.get_object(ACQUISITION, acid).meta
+    
 
     def get_acquisition_rois(self):
         """

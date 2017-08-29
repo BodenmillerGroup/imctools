@@ -1,6 +1,7 @@
 from imctools.io.abstractparserbase import AbstractParserBase
 import numpy as np
 
+
 class AbstractParser(AbstractParserBase):
     def __init__(self):
         AbstractParserBase.__init__(self)

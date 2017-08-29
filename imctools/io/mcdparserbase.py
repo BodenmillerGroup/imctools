@@ -6,6 +6,8 @@ import sys
 import re
 from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
+from imctools.io.mcdxmlparser import McdXmlParser
+import imctools.io.mcdxmlparser as mcdmeta
 
 from collections import defaultdict
 
@@ -36,7 +38,7 @@ class McdParserBase(AbstractParserBase):
         self._ns = None
         self._acquisition_dict = None
         self.retrieve_mcd_xml()
-        self.get_mcd_data()
+        self.parse_mcd_xml()
 
     @property
     def filename(self):
@@ -49,7 +51,7 @@ class McdParserBase(AbstractParserBase):
         Number of acquisitions in the file
         :return:
         """
-        return len(self._acquisition_dict.keys())
+        return len(self.meta.get_acquisitions())
 
     @property
     def acquisition_ids(self):
@@ -57,7 +59,7 @@ class McdParserBase(AbstractParserBase):
         Acquisition IDs
         :return:
         """
-        return list(self._acquisition_dict.keys())
+        return list(self.meta.get_acquisitions().keys())
 
     def get_acquisition_description(self, ac_id, default=None):
         """
@@ -65,23 +67,10 @@ class McdParserBase(AbstractParserBase):
         :param ac_id:
         :return:
         """
-        ns  = self._ns
-        xml = self.get_acquisition_xml(ac_id)
-        description = xml.find(ns+'Description')
-        if description is not None:
-            return description.text
-        else:
-            return default
+        acmeta = self.meta.get_acquisition_meta(ac_id)
+        desc = acmeta.get(mcdmeta.DESCRIPTION, default)
+        return desc
 
-
-    def get_acquisition_xml(self, ac_id):
-        """
-        Get the acquisition XML of the acquisition with the id
-        :param ac_id: the acquisition id
-        :return: the acquisition XML
-        """
-        return self._acquisition_dict[ac_id][0]
-    
     def get_acquisition_buffer(self, ac_id):
         """
         Returns the raw buffer for the acquisition
@@ -89,7 +78,12 @@ class McdParserBase(AbstractParserBase):
         :return: the acquisition buffer
         """
         f = self._fh
-        (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
+        ac = self.meta.get_acquisitions()[ac_id]
+        data_offset_start = ac.data_offset_start
+        data_offset_end = ac.data_offset_end
+        data_size = ac.data_size
+        n_rows = ac.data_nrows
+        n_channel = ac.n_channels
         f.seek(data_offset_start)
         buffer = f.read(data_size)
         return buffer
@@ -101,10 +95,15 @@ class McdParserBase(AbstractParserBase):
         :return: the acquisition XML
         """
         f = self._fh
-        (data_offset_start, data_size, n_rows, n_channel) = self._acquisition_dict[ac_id][1]
+
+        ac = self.meta.get_acquisitions()[ac_id]
+        data_offset_start = ac.data_offset_start
+        data_offset_end = ac.data_offset_end
+        data_size = ac.data_size
+        n_rows = ac.data_nrows
+        n_channel = ac.n_channels
+        
         f.seek(data_offset_start)
-        n_rows = int(n_rows)
-        n_channel = int(n_channel)
         dat = array.array('f')
         dat.fromfile(f, (n_rows * n_channel))
         if sys.byteorder != 'little':
@@ -113,26 +112,14 @@ class McdParserBase(AbstractParserBase):
                 for row in range(n_rows)]
         return data
 
-    def get_acquisition_channels_xml(self, ac_id):
-        """
-        Return the Acquisition channel XMLs corresponding to the ID
-        :param ac_id:
-        :return: acquisition channel xml
-        """
-        ns = self._ns
-        xml = self._xml
-        return [channel_xml for channel_xml in xml.findall(ns+'AcquisitionChannel')
-                if channel_xml.find(ns+'AcquisitionID').text == ac_id]
-
     def get_nchannels_acquisition(self, ac_id):
         """
         Get the number of channels in an acquisition
         :param ac_id:
         :return:
         """
-        channel_xml = self.get_acquisition_channels_xml(ac_id)
-
-        return len(channel_xml)
+        ac = self.meta.get_acquisitions()[ac_id]
+        return ac.n_channels
 
     def get_acquisition_channels(self, ac_id):
         """
@@ -140,40 +127,20 @@ class McdParserBase(AbstractParserBase):
         :param ac_id: acquisition ID
         :return: dict with key: channel_nr, value: (channel_name, channel_label)
         """
-        ns = self._ns
-        channel_xmls = self.get_acquisition_channels_xml(ac_id)
-        channel_dict = dict()
-        for cxml in channel_xmls:
-            channel_name = cxml.find(ns+'ChannelName').text
-            order_nr = int(cxml.find(ns+'OrderNumber').text)
-            channel_lab = cxml.find(ns+'ChannelLabel').text
-
-            if channel_lab is None:
-                channel_lab = channel_name[:]
-            channel_dict.update({order_nr: (channel_name, channel_lab)})
-
+        ac = self.meta.get_acquisitions()[ac_id]
+        channel_dict = ac.get_channel_orderdict()
         return channel_dict
 
-
-
-    def get_mcd_data(self):
+    def parse_mcd_xml(self):
         """
-        Uses the offsets encoded in the XML to load the raw data from the mcd.
+        Parse the mcd xml into a metadata object
         """
-        acquisition_dict = dict()
-        xml = self._xml
-        ns = self._ns
+        self._meta = McdXmlParser(self.xml)
 
-        for acquisition in xml.findall(ns+'Acquisition'):
-            ac_id = acquisition.find(ns+'ID').text
-            n_channel = self.get_nchannels_acquisition(ac_id)
-            data_offset_start = int(acquisition.find(ns+'DataStartOffset').text)
-            data_offset_end = int(acquisition.find(ns+'DataEndOffset').text)
-            data_size = (data_offset_end - data_offset_start + 1)
-            n_rows = data_size/ (n_channel*4)
-            data_param = (data_offset_start, data_size, int(n_rows), int(n_channel))
-            acquisition_dict.update({ac_id: (acquisition, data_param)})
-        self._acquisition_dict = acquisition_dict
+    @property
+    def meta(self):
+        return self._meta
+        
 
     @property
     def xml(self):

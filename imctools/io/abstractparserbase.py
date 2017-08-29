@@ -10,6 +10,9 @@ except NameError:
     xrange = range
 
 
+class AcquisitionError(Exception):
+    """An error with the acquisition"""
+
 class AbstractParserBase(object):
     """
 
