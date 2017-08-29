@@ -2,6 +2,7 @@ import os
 import imctools.io.mcdparser as mcdparser
 import pickle
 import time
+import numpy as np
 
 class ParsingTestMCD(object):
     """
@@ -18,10 +19,13 @@ class ParsingTestMCD(object):
         self.filename = example_fn
         self.testdict = dict()
 
-    def read_mcd(self, path):
-        self.mcd = mcdparser.McdParser(path)
+    def read_mcd(self, path, Parser=None):
+        if Parser is None:
+            Parser = mcdparser.McdParser
+        self.mcd = Parser(path)
         self.populate_testdict()
         self.mcd.close()
+
     
     def read_testdict_pickle(self, path):
         self.load_testdict_pickle(path)
@@ -40,7 +44,7 @@ class ParsingTestMCD(object):
         mcd = self.mcd
 
         tdict['ac_desc'] = mcd.get_acquisition_description(ac)
-        tdict['ac_rawdim'] = mcd.get_acquisition_rawdata(ac).shape
+        tdict['ac_rawdim'] = np.array(mcd.get_acquisition_rawdata(ac)).shape
         tdict['ac_channels'] = mcd.get_acquisition_channels(ac)
         tdict['ac_nchan' ] = mcd.get_nchannels_acquisition(ac)
         return tdict
@@ -55,7 +59,7 @@ class ParsingTestMCD(object):
         fn = sep.join([time.strftime("%Y%m%d"), self.filename])+'.pickle'
 
         with open( os.path.join(path, fn), 'wb') as outfile:
-            pickle.dump(self.testdict, outfile)
+            pickle.dump(self.testdict, outfile, protocol=2)
 
 
 if __name__ == '__main__':
