@@ -1,8 +1,8 @@
 import os
-import imctools.io.mcdparser as mcdparser
+
+import imctools.io.mcdparserbase as mcdparserbase
 import pickle
 import time
-import numpy as np
 
 class ParsingTestMCD(object):
     """
@@ -21,7 +21,7 @@ class ParsingTestMCD(object):
 
     def read_mcd(self, path, Parser=None):
         if Parser is None:
-            Parser = mcdparser.McdParser
+            Parser = mcdparserbase.McdParserBase
         self.mcd = Parser(path)
         self.populate_testdict()
         self.mcd.close()
@@ -44,7 +44,8 @@ class ParsingTestMCD(object):
         mcd = self.mcd
 
         tdict['ac_desc'] = mcd.get_acquisition_description(ac)
-        tdict['ac_rawdim'] = np.array(mcd.get_acquisition_rawdata(ac)).shape
+        tdict['ac_rawdim'] = (len(mcd.get_acquisition_rawdata(ac)),
+                                  len(mcd.get_acquisition_rawdata(ac)[0]))
         tdict['ac_channels'] = mcd.get_acquisition_channels(ac)
         tdict['ac_nchan' ] = mcd.get_nchannels_acquisition(ac)
         return tdict
