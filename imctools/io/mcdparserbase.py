@@ -219,13 +219,13 @@ class McdParserBase(AbstractParserBase):
         pano_postfix = 'pano'
         image_offestfix = 161
         p = self.meta.get_object(mcdmeta.PANORAMA, pid)
-        img_start = int(p.properties[mcdmeta.IMAGESTARTOFFSET]) + image_offestfix
-        img_end = int(p.properties[mcdmeta.IMAGEENDOFFSET]) + image_offestfix
+        img_start = int(p.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
+        img_end = int(p.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
 
         if img_start-img_end == 0:
-            pass
+            return(0)
 
-        file_end = '.'+p.properties.get(mcdmeta.IMAGEFORMAT, 'png').lower()
+        file_end = p.properties.get(mcdmeta.IMAGEFORMAT, '.png').lower()
 
         if fn_out is None:
             fn_out = p.metaname
@@ -243,11 +243,11 @@ class McdParserBase(AbstractParserBase):
         slide_format = '.png'
 
         s = self.meta.get_object(mcdmeta.SLIDE, sid)
-        img_start = int(s.properties[mcdmeta.IMAGESTARTOFFSET]) + image_offestfix
-        img_end = int(s.properties[mcdmeta.IMAGEENDOFFSET]) + image_offestfix
+        img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
+        img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
 
         if img_start-img_end == 0:
-            pass
+            return(0)
 
         if fn_out is None:
             fn_out = s.metaname
@@ -280,10 +280,10 @@ class McdParserBase(AbstractParserBase):
         image_offestfix = 161
         image_format = '.png'
         a = self.meta.get_object(mcdmeta.ACQUISITION, ac_id)
-        img_start = int(a.properties[start_offkey]) + image_offestfix
-        img_end = int(a.properties[end_offkey]) + image_offestfix
+        img_start = int(a.properties.get(start_offkey,0)) + image_offestfix
+        img_end = int(a.properties.get(end_offkey,0)) + image_offestfix
         if img_end-img_start == 0:
-            pass
+            return(0)
 
         if fn_out is None:
             fn_out = a.metaname
@@ -305,9 +305,11 @@ class McdParserBase(AbstractParserBase):
         for ac in self.acquisition_ids:
             try:
                 imcac = self.get_imc_acquisition(ac)
+                imc_acs.append(imcac)
             except AcquisitionError:
                 pass
-            imc_acs.append(imcac)
+            except:
+                print('error in acqisition: '+ac)
         return imc_acs
 
     def _get_buffer(self, start, stop):

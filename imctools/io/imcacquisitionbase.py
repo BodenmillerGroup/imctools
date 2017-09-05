@@ -165,7 +165,7 @@ class ImcAcquisitionBase(object):
             raise ValueError('Incompatible channel names/labels!')
 
         # remove special characters
-        channel = [c.replace('(','').replace(')','').strip() for c in channel]
+        channel = [c.replace('(','').replace(')','').strip() if c is not None else '' for c in channel]
         return channel
 
 
