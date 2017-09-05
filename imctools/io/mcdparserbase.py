@@ -1,13 +1,16 @@
 from __future__ import with_statement, division
 import xml.etree.ElementTree as et
+from xml.dom import minidom
 import struct
 import array
 import sys
 import re
+import os
 from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
 from imctools.io.mcdxmlparser import McdXmlParser
 import imctools.io.mcdxmlparser as mcdmeta
+from imctools.io.abstractparserbase import AcquisitionError
 
 from collections import defaultdict
 
@@ -102,6 +105,8 @@ class McdParserBase(AbstractParserBase):
         data_size = ac.data_size
         n_rows = ac.data_nrows
         n_channel = ac.n_channels
+        if n_rows == 0:
+            raise AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
         
         f.seek(data_offset_start)
         dat = array.array('f')
@@ -183,7 +188,7 @@ class McdParserBase(AbstractParserBase):
         self._xml = et.fromstring(xml)
         self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
 
-    def get_imc_acquisition(self, ac_id):
+    def get_imc_acquisition(self, ac_id, ac_description=None):
 
         data = self.get_acquisition_rawdata(ac_id)
         nchan = self.get_nchannels_acquisition(ac_id)
@@ -191,14 +196,126 @@ class McdParserBase(AbstractParserBase):
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
 
         img = self._reshape_long_2_cyx(data, is_sorted=True)
-        return ImcAcquisitionBase(image_ID=ac_id, original_file=self.filename,
-                                                     data=img,
-                                                     channel_metal=channel_name,
-                                                     channel_labels=channel_label,
-                                                     original_metadata=str(et.tostring(self._xml)),
-                                                     image_description=self.get_acquisition_description(ac_id),
+
+        if ac_description is None:
+           ac_description = self.meta.get_object(mcdmeta.ACQUISITION, ac_id).metaname
+
+        return ImcAcquisitionBase(image_ID=ac_id,
+                                  original_file=self.filename,
+                                  data=img,
+                                  channel_metal=channel_name,
+                                  channel_labels=channel_label,
+                                  original_metadata=str(
+                                                     et.tostring(self._xml)),
+                                  image_description=ac_description,
                                   origin='mcd',
                                   offset=3)
+
+    def save_panorama(self, pid, out_folder, fn_out=None):
+        """
+        Save all the panorma images of the acquisition
+        :param out_folder: the output folder
+        """
+        pano_postfix = 'pano'
+        image_offestfix = 161
+        p = self.meta.get_object(mcdmeta.PANORAMA, pid)
+        img_start = int(p.properties[mcdmeta.IMAGESTARTOFFSET]) + image_offestfix
+        img_end = int(p.properties[mcdmeta.IMAGEENDOFFSET]) + image_offestfix
+
+        if img_start-img_end == 0:
+            pass
+
+        file_end = '.'+p.properties.get(mcdmeta.IMAGEFORMAT, 'png').lower()
+
+        if fn_out is None:
+            fn_out = p.metaname
+
+        if not(fn_out.endswith(file_end)):
+            fn_out += '_'+pano_postfix+'.' + file_end
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(out_folder, fn_out), 'wb') as f:
+            f.write(buf)
+
+    def save_slideimage(self, sid, out_folder, fn_out=None):
+        image_offestfix = 161
+        slide_postfix = 'slide'
+        slide_format = '.png'
+
+        s = self.meta.get_object(mcdmeta.SLIDE, sid)
+        img_start = int(s.properties[mcdmeta.IMAGESTARTOFFSET]) + image_offestfix
+        img_end = int(s.properties[mcdmeta.IMAGEENDOFFSET]) + image_offestfix
+
+        if img_start-img_end == 0:
+            pass
+
+        if fn_out is None:
+            fn_out = s.metaname
+        if not(fn_out.endswith(slide_format)):
+            fn_out += '_'+slide_postfix+slide_format
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(out_folder, fn_out), 'wb') as f:
+            f.write(buf)
+
+
+    def save_acquisition_bfimage_before(self, ac_id, out_folder, fn_out=None):
+        ac_postfix = 'before'
+        start_offkey = mcdmeta.BEFOREABLATIONIMAGESTARTOFFSET
+        end_offkey = mcdmeta.BEFOREABLATIONIMAGEENDOFFSET
+
+        self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix,
+                                       start_offkey, end_offkey, fn_out)
+        
+    def save_acquisition_bfimage_after(self, ac_id, out_folder, fn_out=None):
+        ac_postfix = 'after'
+        start_offkey = mcdmeta.AFTERABLATIONIMAGESTARTOFFSET
+        end_offkey = mcdmeta.AFTERABLATIONIMAGEENDOFFSET
+
+        self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix,
+                                       start_offkey, end_offkey, fn_out)
+
+    def _save_acquisition_bfimage(self, ac_id, out_folder,
+                                 ac_postfix, start_offkey, end_offkey, fn_out=None):
+        image_offestfix = 161
+        image_format = '.png'
+        a = self.meta.get_object(mcdmeta.ACQUISITION, ac_id)
+        img_start = int(a.properties[start_offkey]) + image_offestfix
+        img_end = int(a.properties[end_offkey]) + image_offestfix
+        if img_end-img_start == 0:
+            pass
+
+        if fn_out is None:
+            fn_out = a.metaname
+        buf = self._get_buffer(img_start, img_end)
+        if not(fn_out.endswith(image_format)):
+            fn_out += '_'+ac_postfix+ image_format
+            
+        with open(os.path.join(out_folder, fn_out), 'wb') as f:
+            f.write(buf)
+
+    def save_meta_xml(self, out_folder):
+        self.meta.save_meta_xml(out_folder)
+
+    def get_all_imcacquistions(self):
+        """
+        Returns a list of all nonempty imc_acquisitions
+        """
+        imc_acs = list()
+        for ac in self.acquisition_ids:
+            try:
+                imcac = self.get_imc_acquisition(ac)
+            except AcquisitionError:
+                pass
+            imc_acs.append(imcac)
+        return imc_acs
+
+    def _get_buffer(self, start, stop):
+        f = self._fh
+        f.seek(start)
+        buf = f.read(stop-start)
+        return buf
+
 
     def close(self):
         """Close the file handle."""

@@ -42,9 +42,6 @@ class TiffWriter(object):
 
     def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=True):
         #TODO: add original metadata somehow
-
-
-
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
         if dtype is not None:

@@ -7,6 +7,7 @@ from imctools.io.imcacquisition import ImcAcquisition
 from imctools.io.abstractparser import AbstractParser
 from imctools.io.abstractparserbase import AcquisitionError
 from imctools.io.mcdxmlparser import McdXmlParser
+import imctools.io.mcdxmlparser as mcdmeta
 
 """
 Extends the McdParser to make use of numpy and memorymaps
@@ -86,7 +87,7 @@ class McdParser(AbstractParser, McdParserBase):
         self._xml = et.fromstring(xml)
         self._ns = '{' + self._xml.tag.split('}')[0].strip('{') + '}'
 
-    def get_imc_acquisition(self, ac_id):
+    def get_imc_acquisition(self, ac_id, ac_description=None):
         """
         Returns an ImcAcquisition object corresponding to the ac_id
         :param ac_id: The requested acquisition id
@@ -98,10 +99,14 @@ class McdParser(AbstractParser, McdParserBase):
         channels = self.get_acquisition_channels(ac_id)
         channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
         img = self._reshape_long_2_cyx(data, is_sorted=True)
+        if ac_description is None:
+            ac_description = self.meta.get_object(mcdmeta.ACQUISITION, ac_id).metaname
+
         return ImcAcquisition(image_ID=ac_id, original_file=self.filename,
                               data=img,
                               channel_metal=channel_name,
                               channel_labels=channel_label,
+                              image_description=ac_description,
                               original_metadata= et.tostring(
                                   self._xml, encoding='utf8', method='xml'),
                               offset=3)
@@ -110,14 +115,20 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    fn =    '/home/vitoz/Data/spillover/20170707_images/20170706_PBMCforcompensation_SESC.mcd'
+    #fn =    '/home/vitoz/Data/spillover/20170707_images/20170706_PBMCforcompensation_SESC.mcd'
     #fn = '/mnt/imls-bod/Daniel_Data/September/02/Her2_grade0/grade_0.mcd'
+    fn = '/home/vitoz/temp/20170804_p60-63_slide3_ac1_vz.mcd'
     with McdParser(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         print(testmcd.acquisition_ids)
         print(testmcd.get_acquisition_channels(testmcd.acquisition_ids[1]))
         print(testmcd.acquisition_ids)
+        testmcd.save_panoramas('/home/vitoz/temp')
+        testmcd.save_slideimages('/home/vitoz/temp')
+        testmcd.save_acquisition_bfimages('/home/vitoz/temp')
+        testmcd.save_meta_xml('/home/vitoz/temp')
+        testmcd.save_ome_acquisitions('/home/vitoz/temp')
         for ac in testmcd.acquisition_ids:
             try:
                 imc_img = testmcd.get_imc_acquisition(ac)
@@ -126,3 +137,4 @@ if __name__ == '__main__':
         img = imc_img.get_img_stack_cyx()
         #img = imc_img.get_img_by_metal('X')
         imc_img.save_image('/home/vitoz/temp/test1.tiff')
+        

@@ -1,6 +1,7 @@
 import xml.etree as et
 import imctools.librarybase as libb
 from collections import OrderedDict
+import os
 
 """
 This module should help parsing the MCD xml metadata
@@ -91,7 +92,7 @@ class Meta(object):
     """
     Represents an abstract metadata object.
     """
-    def __init__(self, mtype, meta, parents):
+    def __init__(self, mtype, meta, parents, symbol=None):
         """
         Initializes the metadata object, generates the
         parent-child relationships and updates to object list
@@ -100,13 +101,15 @@ class Meta(object):
         :param mtype: the name of the object type
         :param meta: the metadata dictionary
         :param parents:  the parents of this object
+        :param symbol: the short symbol for this metadata, e.g. 's' for slide
 
         """
         self.mtype = mtype
         self.id = meta.get(ID, None)
         self.childs = dict()
+        self.symbol = symbol
 
-        self.meta = meta
+        self.properties = meta
         self.parents = parents
         for p in parents:
             self._update_parents(p)
@@ -143,22 +146,27 @@ class Meta(object):
         else:
             return self.parents[0].get_root()
 
+    @property
+    def metaname(self):
+        pname = self.parents[0].metaname
+        return '_'.join([pname, self.symbol+self.id])
+
 # Definition of the subclasses
 class Slide(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, SLIDE, meta, parents)
+        Meta.__init__(self, SLIDE, meta, parents, 's')
 
 class Panorama(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, PANORAMA, meta, parents)
+        Meta.__init__(self, PANORAMA, meta, parents, 'p')
 
 class AcquisitionRoi(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITIONROI, meta, parents)
+        Meta.__init__(self, ACQUISITIONROI, meta, parents, 'r')
 
 class Acquisition(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITION, meta, parents)
+        Meta.__init__(self, ACQUISITION, meta, parents, 'a')
 
     def get_channels(self):
         return self.childs[ACQUISITIONCHANNEL]
@@ -167,19 +175,19 @@ class Acquisition(Meta):
         chan_dic = self.get_channels()
         out_dic = dict()
         for k, chan in chan_dic.items():
-            channel_name = chan.meta[CHANNELNAME]
-            channel_label = chan.meta.get(CHANNELLABEL, channel_name)
-            channel_order = int(chan.meta.get(ORDERNUMBER))
+            channel_name = chan.properties[CHANNELNAME]
+            channel_label = chan.properties.get(CHANNELLABEL, channel_name)
+            channel_order = int(chan.properties.get(ORDERNUMBER))
             out_dic.update({channel_order: (channel_name, channel_label)})
         return out_dic
 
     @property
     def data_offset_start(self):
-        return int(self.meta[DATASTARTOFFSET])
+        return int(self.properties[DATASTARTOFFSET])
 
     @property
     def data_offset_end(self):
-        return int(self.meta[DATAENDOFFSET])
+        return int(self.properties[DATAENDOFFSET])
 
     @property
     def data_size(self):
@@ -187,7 +195,7 @@ class Acquisition(Meta):
 
     @property
     def data_nrows(self):
-        nrow = int(self.data_size/(self.n_channels * int(self.meta[VALUEBYTES])))
+        nrow = int(self.data_size/(self.n_channels * int(self.properties[VALUEBYTES])))
         return nrow
 
     @property
@@ -197,11 +205,11 @@ class Acquisition(Meta):
 
 class RoiPoint(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ROIPOINT, meta, parents)
+        Meta.__init__(self, ROIPOINT, meta, parents, 'rp')
 
 class Channel(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITIONCHANNEL, meta, parents)
+        Meta.__init__(self, ACQUISITIONCHANNEL, meta, parents, 'c')
 
 
 # A dictionary to map metadata keys to metadata types
@@ -229,16 +237,28 @@ class McdXmlParser(Meta):
     """
     Represents the full mcd xml
     """
-    def __init__(self, xml):
+    def __init__(self, xml, filename=None):
         self._rawxml = xml
         meta = libb.etree_to_dict(xml)
         meta = libb.dict_key_apply(meta, libb.strip_ns)
         meta = meta[MCDSCHEMA]
         Meta.__init__(self, MCDSCHEMA, meta, [])
         self._init_objects()
+        if filename is None:
+            filename = list(self.childs[SLIDE].values())[0].properties[FILENAME]
+        self.filename = filename
+
+    @property
+    def metaname(self):
+        mcd_fn = self.filename
+        mcd_fn = mcd_fn.replace('\\', '/')
+        mcd_fn = os.path.split(mcd_fn)[1].rstrip('_schema.xml')
+        mcd_fn = os.path.splitext(mcd_fn)[0]
+        return mcd_fn
+
 
     def _init_objects(self):
-        obj_keys = [k for k in OBJ_DICT.keys() if k in self.meta.keys()]
+        obj_keys = [k for k in OBJ_DICT.keys() if k in self.properties.keys()]
         for k in obj_keys:
             ObjClass = OBJ_DICT[k]
             objs = self._get_meta_objects(k)
@@ -275,10 +295,16 @@ class McdXmlParser(Meta):
         only one object is present and thus a dict and not a 
         list of dicts is returned.
         """
-        objs = self.meta.get(mtype)
+        objs = self.properties.get(mtype)
         if isinstance(objs, type(dict())):
             objs = [objs]
         return objs
+
+    def save_meta_xml(self, out_folder):
+        xml = self._rawxml
+        fn = self.metaname + '_schema.xml'
+        et.ElementTree.ElementTree(xml).write(
+            os.path.join(out_folder,fn), encoding='utf-8')
 
     def get_channels(self):
         """
@@ -296,7 +322,7 @@ class McdXmlParser(Meta):
         """
         Returns the acquisition metadata dict
         """
-        return self.get_object(ACQUISITION, acid).meta
+        return self.get_object(ACQUISITION, acid).properties
     
 
     def get_acquisition_rois(self):
