@@ -9,6 +9,7 @@ import argparse
 TXT_FILENDING = '.txt'
 MCD_FILENDING = '.mcd'
 ZIP_FILENDING = '.zip'
+SCHEMA_FILENDING = '.schema'
 
 def convert_folder2imcfolder(fol, out_folder):
     """
@@ -31,8 +32,12 @@ def convert_folder2imcfolder(fol, out_folder):
         mcd_files = [f for f in files
                      if f.endswith(MCD_FILENDING)]
         assert(len(mcd_files) == 1)
-
-        mcd = McdParser(os.path.join(in_fol, mcd_files[0]))
+        schema_files = [f for f in files if f.endswith(SCHEMA_FILENDING)]
+        if len(schema_files) > 0:
+            schema_file = os.path.join(in_fol, schema_files[0])
+        else:
+            schema_file = None
+        mcd = McdParser(os.path.join(in_fol, mcd_files[0]), metafilename=schema_file)
         txt_acids = {_txtfn_to_ac(f): f
                    for f in files if f.endswith(TXT_FILENDING)}
         mcd_acs = mcd.get_all_imcacquistions()

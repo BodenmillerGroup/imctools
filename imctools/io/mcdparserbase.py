@@ -26,7 +26,7 @@ class McdParserBase(AbstractParserBase):
     :return:
     """
 
-    def __init__(self, filename, filehandle = None):
+    def __init__(self, filename, filehandle = None, metafilename=None):
         """
 
         :param filename:
@@ -37,6 +37,11 @@ class McdParserBase(AbstractParserBase):
             self._fh = open(filename, mode='rb')
         else:
             self._fh = filehandle
+
+        if metafilename is None:
+            self._metafh = self._fh
+        else:
+            self._metafh = open(metafilename, mode='rb')
         self._xml = None
         self._ns = None
         self._acquisition_dict = None
@@ -117,7 +122,7 @@ class McdParserBase(AbstractParserBase):
                 for row in range(n_rows)]
         return data
 
-    def inject_imc_datafile(self, filename):
+    def _inject_imc_datafile(self, filename):
         """
         This function is used in cases where the MCD file is corrupted (missing MCD schema)
         but there is a MCD schema file available. In this case the .schema file can
@@ -172,7 +177,7 @@ class McdParserBase(AbstractParserBase):
         :param start_str:
         :param stop_str:
         """
-        f = self._fh
+        f = self._metafh
         xml_start = self._reverse_find_in_buffer(f, start_str.encode('utf-8'))
 
         if xml_start == -1:
@@ -252,11 +257,17 @@ class McdParserBase(AbstractParserBase):
     def save_slideimage(self, sid, out_folder, fn_out=None):
         image_offestfix = 161
         slide_postfix = 'slide'
-        slide_format = '.png'
+        default_format = '.png'
 
         s = self.meta.get_object(mcdmeta.SLIDE, sid)
         img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
         img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
+        slide_format = s.properties.get(mcdmeta.IMAGEFILE, default_format)
+        slide_format = os.path.splitext(slide_format.lower())
+        if slide_format[1] == '':
+            slide_format = slide_format[0]
+        else:
+            slide_format = slide_format[1]
 
         if img_start-img_end == 0:
             return(0)
@@ -334,6 +345,10 @@ class McdParserBase(AbstractParserBase):
     def close(self):
         """Close the file handle."""
         self._fh.close()
+        try:
+            self._metafh.close()
+        except:
+            pass
 
     def __enter__(self):
         return self

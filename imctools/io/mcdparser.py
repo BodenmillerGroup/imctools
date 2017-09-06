@@ -21,14 +21,14 @@ class McdParser(AbstractParser, McdParserBase):
     :param object:
     :return:
     """
-    def __init__(self, filename, filehandle=None):
+    def __init__(self, filename, filehandle=None, metafilename=None):
         """
         Initializes the MCDparser object
         :param filename: a filename of an .mcd file
         :param filehandle: a filehandle pointing to an open .mcd file
         :returns: the mcdparser object
         """
-        McdParserBase.__init__(self, filename, filehandle)
+        McdParserBase.__init__(self, filename, filehandle, metafilename)
         AbstractParser.__init__(self)
 
     def get_acquisition_rawdata(self, ac_id):
@@ -61,7 +61,7 @@ class McdParser(AbstractParser, McdParserBase):
         :param start_str:
         :param stop_str:
         """
-        mm = mmap.mmap(self._fh.fileno(), 0, prot=mmap.PROT_READ)
+        mm = mmap.mmap(self._metafh.fileno(), 0, prot=mmap.PROT_READ)
 
         xml_start = mm.rfind(start_str.encode('utf-8'))
 
