@@ -84,6 +84,8 @@ class McdParser(AbstractParser, McdParserBase):
             xml_stop += len(stop_str)
 
         xml = mm[xml_start:xml_stop].decode('utf-8')
+        # This is for mcd schemas, where the namespace are often messed up.
+        xml = xml.replace('diffgr:','').replace('msdata:','')
         self._xml = et.fromstring(xml)
         self._ns = '{' + self._xml.tag.split('}')[0].strip('{') + '}'
 

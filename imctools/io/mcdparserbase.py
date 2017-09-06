@@ -117,6 +117,18 @@ class McdParserBase(AbstractParserBase):
                 for row in range(n_rows)]
         return data
 
+    def inject_imc_datafile(self, filename):
+        """
+        This function is used in cases where the MCD file is corrupted (missing MCD schema)
+        but there is a MCD schema file available. In this case the .schema file can
+        be loaded with the mcdparser and then the corrupted mcd-data file loaded
+        using this function. This will replace the mcd file data in the backend (containing only
+        the schema data) with the real mcd file (not containing the mcd xml).
+        """
+        self.close()
+        self._fh = open(filename, mode='rb')
+
+
     def get_nchannels_acquisition(self, ac_id):
         """
         Get the number of channels in an acquisition
@@ -354,15 +366,18 @@ class McdParserBase(AbstractParserBase):
         overlap = len(s) - 1
         bsize = buffer_size +overlap+1
         cur_pos = f.tell() - bsize+1
-        f.seek(cur_pos)
-        while cur_pos >=0:
+        offset =  (-2*bsize+overlap)
+        first_start=True
+        while cur_pos >= 0:
+            f.seek(cur_pos)
             buf = f.read(bsize)
             if buf:
                 pos = buf.find(s)
                 if pos >= 0:
                     return f.tell() - (len(buf) - pos)
-            cur_pos = f.tell() - 2 * bsize + overlap
-            if cur_pos > 0:
-                f.seek(cur_pos)
-            else:
-                return -1
+
+            cur_pos = f.tell() +offset
+            if (cur_pos < 0) and first_start:
+                first_start=False
+                cur_pos=0
+        return -1
