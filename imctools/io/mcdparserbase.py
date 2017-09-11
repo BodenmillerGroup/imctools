@@ -263,7 +263,10 @@ class McdParserBase(AbstractParserBase):
         img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
         img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
         slide_format = s.properties.get(mcdmeta.IMAGEFILE, default_format)
-        slide_format = os.path.splitext(slide_format.lower())
+        if slide_format is not Nonce:
+            slide_format = os.path.splitext(slide_format.lower())
+        else:
+            slide_format = default_format
         if slide_format[1] == '':
             slide_format = slide_format[0]
         else:
@@ -313,7 +316,6 @@ class McdParserBase(AbstractParserBase):
         buf = self._get_buffer(img_start, img_end)
         if not(fn_out.endswith(image_format)):
             fn_out += '_'+ac_postfix+ image_format
-            
         with open(os.path.join(out_folder, fn_out), 'wb') as f:
             f.write(buf)
 
