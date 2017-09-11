@@ -263,7 +263,7 @@ class McdParserBase(AbstractParserBase):
         img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
         img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
         slide_format = s.properties.get(mcdmeta.IMAGEFILE, default_format)
-        if slide_format is not Nonce:
+        if slide_format is not None:
             slide_format = os.path.splitext(slide_format.lower())
         else:
             slide_format = default_format
