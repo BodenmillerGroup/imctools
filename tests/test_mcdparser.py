@@ -1,16 +1,15 @@
-from .context import TESTCASES
+from .context import TestMcdParsing
 from .generate_testcase import ParsingTestMCD
+
 import unittest
 
-class TestMCDparsing(unittest.TestCase):
-    """ Compare the current MCD parser results with some stored ones """
+import platform
+if (platform.system()  != 'Java'):
+    from imctools.io.mcdparser import McdParser
 
-    def test_results(self):
-        for fn_mcd, testresults in TESTCASES.items():
-            testpickle= ParsingTestMCD(testresults)
-            testpickle.read_testdict_pickle(testresults)
+    class TestMCDparser(TestMcdParsing):
+        """ Compare the current MCD parser results with some stored ones """
+        def test_parser(self):
+            self.parser_test(McdParser)
 
-            testmcd = ParsingTestMCD(fn_mcd)
-            testmcd.read_mcd(fn_mcd)
 
-            self.assertDictEqual(testmcd.testdict, testpickle.testdict)

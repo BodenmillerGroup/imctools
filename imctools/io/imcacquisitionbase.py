@@ -28,6 +28,8 @@ class ImcAcquisitionBase(object):
         :param channel_metal: the channel name (metal)
         :param channel_labels: the channel label (meaningful label)
         :param original_metadata: the original metadata, e.g. an MCDPublic XML
+        :param image_description: the image description. For MCD acquisitions this is the
+                                 metadata based name.
         """
         self.image_ID = image_ID
         self.original_file = original_file
@@ -163,7 +165,7 @@ class ImcAcquisitionBase(object):
             raise ValueError('Incompatible channel names/labels!')
 
         # remove special characters
-        channel = [c.replace('(','').replace(')','').strip() for c in channel]
+        channel = [c.replace('(','').replace(')','').strip() if c is not None else '' for c in channel]
         return channel
 
 

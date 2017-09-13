@@ -23,7 +23,8 @@ class TxtParser(AbstractParser, TxtParserBase):
         :return:
         """
         img = self._reshape_long_2_cyx(self.data, is_sorted=True)
-        return ImcAcquisition('0', self.filename,
+        ac_id = self.ac_id
+        return ImcAcquisition(ac_id, self.filename,
                                   img,
                                   self.channel_metals,
                                   self.channel_labels,

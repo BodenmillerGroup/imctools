@@ -22,18 +22,13 @@ class McdParserCpp(McdParser):
         """
         self._filename = filename
         mcd = mcdpy.MCDFile(filename)
-        self._mcd = mcd
+        self._cppmcd = mcd
         self.retrieve_mcd_xml()
-        self.get_mcd_data()
+        self.parse_mcd_xml()
 
-    def get_mcd_data(self):
-        ac_dict = {ac.properties['ID']: ac
-         for ac in self._meta.acquisitions}
-        self._acquisition_dict = ac_dict
-    
     def retrieve_mcd_xml(self):
-        meta = self._mcd.readMetadata()
-        self._meta = meta
+        meta = self._cppmcd.readMetadata()
+        self._cppmeta = meta
         self._xml = et.fromstring(meta.schemaXML)
         self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
 
@@ -45,12 +40,10 @@ class McdParserCpp(McdParser):
         raise NotImplementedError('Returning buffer not implemented for this parser')
 
     def get_acquisition_rawdata(self, ac_id):
-        ac_dict = self._acquisition_dict
-        ac = ac_dict[ac_id]
-        acdat = self._mcd.readAcquisitionData(ac)
+        ac = [ac for ac in self._cppmeta.acquisitions if ac.properties['ID'] == ac_id][0]
+        acdat = self._cppmcd.readAcquisitionData(ac)
         dat = np.vstack([c.data for c in acdat.channelData]).T
         return dat
 
-    def get_nchannels_acquisition(self, acid):
-        acdat = self._acquisition_dict(acid)
-        return len(acdat.channels)
+    def close(self):
+        pass
