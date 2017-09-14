@@ -5,7 +5,7 @@ import xml.etree.ElementTree as et
 class OmeParserBase(AbstractParserBase):
     def __init__(self, data, ome, original_file=None, origin=None):
         """
-
+        A parser for the OME xml
         :param filename:
         """
         super(OmeParserBase, self).__init__()

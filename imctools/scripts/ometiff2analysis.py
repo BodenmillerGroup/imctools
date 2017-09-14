@@ -6,7 +6,7 @@ import numpy as np
 from imctools.io import ometiffparser
 
 def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolumn=None, masscolumn=None, usedcolumn=None,
-                       addsum=False):
+                       addsum=False, bigtiff=True):
     # read the pannelcsv to find out which channels should be loaded
     selmetals = None
     selmass = None
@@ -34,7 +34,7 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
         img_sum = np.reshape(img_sum, list(img_sum.shape)+[1])
         writer.img_stack = np.append(img_sum, writer.img_stack, axis=2)
 
-    writer.save_image(mode='imagej')
+    writer.save_image(mode='imagej', bigtiff=bigtiff)
 
     if selmass is not None:
         savenames = selmass
@@ -91,6 +91,8 @@ if __name__ == "__main__":
     parser.add_argument('--addsum', type=str, default='no', choices=['no', 'yes'],
                         help='Add the sum of the data as the first layer.' )
 
+    parser.add_argument('--bigtiff', type=str, default='yes', choices=['no', 'yes'],
+                        help='Add the sum of the data as the first layer.' )
     args = parser.parse_args()
 
 
@@ -117,7 +119,8 @@ if __name__ == "__main__":
     outname = os.path.join(outfolder, fn_out)
 
     ometiff_2_analysis(args.ome_filename, outfolder, fn_out, args.pannelcsv, args.metalcolumn, args.masscolumn,
-                       args.usedcolumn, args.addsum == 'yes')
+                       args.usedcolumn, args.addsum == 'yes',
+                       bigtiff=args.bigtiff == 'yes')
 
 
 

@@ -56,7 +56,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from imctools.io.mcdparser import McdParser
     from imctools.io.ometiffparser import OmetiffParser
-    fn = '/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff'
+    fn = '/home/vitoz/temp/20170508_p52-54_s19_ac1_a12.ome.tiff'
     #with OmetiffParser(fn) as testmcd:
     testmcd = OmetiffParser(fn)
     #print(testmcd.filename)

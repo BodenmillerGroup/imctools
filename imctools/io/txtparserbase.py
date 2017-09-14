@@ -4,7 +4,7 @@ import csv
 from imctools.io.imcacquisitionbase import ImcAcquisitionBase
 from imctools.io.abstractparserbase import AbstractParserBase
 import array
-
+TXT_FILENDING='.txt'
 
 class TxtParserBase(AbstractParserBase):
     """
@@ -24,7 +24,15 @@ class TxtParserBase(AbstractParserBase):
         self.channel_labels = self.channel_metals[:]
         self.channel_metals[3:] = self.clean_channel_metals(self.channel_metals[3:])
 
-            
+    @property
+    def ac_id(self):
+        ac_id = self._txtfn_to_ac(self.filename)
+        return ac_id
+
+    @staticmethod
+    def _txtfn_to_ac(fn):
+        return fn.rstrip(TXT_FILENDING).split('_')[-1]
+
     def get_imc_acquisition(self):
         """
         Returns the imc acquisition object
@@ -32,7 +40,9 @@ class TxtParserBase(AbstractParserBase):
         """
         dat = self.data
         img = self._reshape_long_2_cyx(dat, is_sorted=True)
-        return ImcAcquisitionBase('0', self.filename,
+        ac_id = self.ac_id
+
+        return ImcAcquisitionBase(ac_id, self.filename,
                                   img,
                                   self.channel_metals,
                                   self.channel_labels,

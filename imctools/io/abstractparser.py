@@ -1,6 +1,7 @@
 from imctools.io.abstractparserbase import AbstractParserBase
 import numpy as np
 
+
 class AbstractParser(AbstractParserBase):
     def __init__(self):
         AbstractParserBase.__init__(self)
@@ -24,9 +25,7 @@ class AbstractParser(AbstractParserBase):
         if channel_idxs is None:
             channel_idxs = range(longdat.shape[1])
         nchan = len(channel_idxs)
-
-        tdat = longdat[:,channel_idxs]
-        assert(longdat.shape[0] == np.prod(shape))
+        tdat = longdat[:, channel_idxs]
         if is_sorted:
             img = np.reshape(tdat[:(np.prod(shape)),:], [shape[1], shape[0], nchan], order='C')
             img = img.swapaxes(0,2)

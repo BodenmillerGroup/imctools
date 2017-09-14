@@ -3,6 +3,15 @@ import numpy as np
 import tifffile
 import imctools.external.omexml as ome
 
+from xml.etree import cElementTree as ElementTree
+
+import sys
+if sys.version_info.major == 3:
+    from io import StringIO
+    uenc = 'unicode'
+else:
+    from cStringIO import StringIO
+    uenc = 'utf-8'
 
 
 class TiffWriter(object):
@@ -31,11 +40,8 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0, dtype=None):
+    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=True):
         #TODO: add original metadata somehow
-
-
-
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
         if dtype is not None:
@@ -43,11 +49,12 @@ class TiffWriter(object):
             img = img.astype(dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
-            tifffile.imsave(fn_out, img, compress=compression, imagej=True, bigtiff=True)
+            tifffile.imsave(fn_out, img, compress=compression, imagej=True,
+                            bigtiff=bigtiff)
         elif mode == 'ome':
             xml = self.get_xml()
             tifffile.imsave(fn_out, img, compress=compression, imagej=False,
-                            description=xml, bigtiff=True)
+                            description=xml, bigtiff=bigtiff)
 
     # def save_xml(self):
     #     xml = self.get_xml()
@@ -88,8 +95,18 @@ class TiffWriter(object):
             p.Channel(i).node.set('Fluor', self.fluor[i])
         # adds original metadata as annotation
         if self.original_description is not None:
+            if isinstance(self.original_description,
+                          type(ElementTree.Element(1))):
+                result = StringIO()
+                ElementTree.ElementTree(self.original_description).write(result,
+                                                          encoding=uenc, method="xml")
+                desc = result.getvalue()
+            else:
+                desc = str(self.original_description)
+
             omexml.structured_annotations.add_original_metadata(
-                 'MCD-XML', self.original_description)
+                'MCD-XML',
+                desc)
 
         xml = omexml.to_xml()
         return xml
