@@ -28,6 +28,7 @@ Further imctools can be directly used as a module:
 import imctools.io.mcdparser as mcdparser
 import imctools.io.txtparser as txtparser
 import imctools.io.ometiffparser as omeparser
+import imctools.io.mcdxmlparser as meta
 
 fn_mcd = '/home/vitoz/Data/varia/201708_instrument_comp/mcd/20170815_imccomp_zoidberg_conc5_acm1.mcd'
 
@@ -38,10 +39,9 @@ mcd.acquisition_ids
 mcd.get_acquisition_channels('1')
 mcd.get_acquisition_description('1')
 
-# XML Metadata Access
-mcd.xml
-mcd.get_acquisition_xml('1')
-mcd.get_acquisition_channels_xml('1')
+# a metadata object for comprehensive metadata access
+acmeta = mcd.meta.get_object(meta.ACQUISITION, '1')
+acmeta.properties
 
 # The common class to represent a single IMC acquisition is
 # The IMC acuqisition class.
@@ -59,5 +59,4 @@ img.save_image(mode='ome', compression=0, dtype=None, bigtiff=False)
 # as the mcd object is using lazy loading memory maps, it needs to be closed 
 # or used with a context manager.
 mcd.close()
-
 ```
