@@ -4,10 +4,12 @@ An IMC file conversion tool that aims to convert IMC rawfiles (.mcd, .txt) into 
 
 Further imctools can directly work as a FIJI plugin, exploiting the Jython language. That allows that IMC data can be directly visualized in FIJI.
 
+For a description of the associated segmentation pipline, please visit: https://github.com/BodenmillerGroup/ImcSegmentationPipeline
+
 
 ## Features
 * MCD lazy data access using memorymaps
-* Full MCD metadata access (as ElementTree XML, https://docs.python.org/3/library/xml.etree.elementtree.html)
+* Full MCD metadata access
 * TXT file loading
 * OME-TIFF loading
 * OME-TIFF/TIFF export (including optional compression)
