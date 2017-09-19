@@ -61,7 +61,7 @@ class McdParser(AbstractParser, McdParserBase):
         :param start_str:
         :param stop_str:
         """
-        mm = mmap.mmap(self._metafh.fileno(), 0, prot=mmap.PROT_READ)
+        mm = mmap.mmap(self._metafh.fileno(), 0, access=mmap.ACCESS_READ)
 
         xml_start = mm.rfind(start_str.encode('utf-8'))
 
