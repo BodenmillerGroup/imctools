@@ -45,9 +45,12 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
         txtonly_acs = set(txt_acids.keys()).difference(mcd_acids)
         for txta in txtonly_acs:
             print('Using TXT file for acquisition: '+txta)
-            mcd_acs.append(
-                TxtParser(
+            try:
+                mcd_acs.append(
+                    TxtParser(
                      txt_acids[txta]).get_imc_acquisition())
+            except:
+                print('TXT file was also corrupted.')
         imc_fol = ImcFolderWriter(out_folder,
                         mcddata=mcd,
                  imcacquisitions=mcd_acs)
