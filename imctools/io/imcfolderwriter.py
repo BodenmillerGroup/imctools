@@ -46,7 +46,10 @@ class ImcFolderWriter(object):
             imcacs = self.mcd.get_all_imcacquistions()
             self.add_imcacquisitions(imcacs)
 
-    def write_imc_folder(self, zipfolder=True, remove_folder=True):
+    def write_imc_folder(self, zipfolder=True, remove_folder=None):
+        if remove_folder is None:
+            remove_folder = zipfolder
+
         base_folder = self.out_folder
         foldername = self.foldername
         out_folder = os.path.join(self.out_folder, self.foldername)
