@@ -314,7 +314,7 @@ class McdXmlParser(Meta):
 
         """
         for n, o in self.objects.items():
-            odict = [i.properties for n, i in o.items()]
+            odict = [i.properties for k, i in o.items()]
             fn = '_'.join([self.metaname, n]) + '_meta.csv'
             with open(os.path.join(out_folder, fn), 'w') as csvfile:
                 cols = odict[0].keys()
