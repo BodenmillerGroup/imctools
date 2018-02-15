@@ -44,11 +44,15 @@ class OmetiffParser(AbstractParser, OmeParserBase):
         with tifffile.TiffFile(filename) as tif:
             try:
                 self.data = tif.asarray(out='memmap')
-                self.ome = tif.pages[0].tags['ImageDescription'].value
             except:
                 # this is in an older tifffile version is used
                 self.data = tif.asarray()
+            try:
+                self.ome = tif.pages[0].tags['ImageDescription'].value
+            except:
                 self.ome = tif.pages[0].tags['image_description'].value
+
+
 
     # @staticmethod
     # def reshape_flat(data):
