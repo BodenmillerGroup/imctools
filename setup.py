@@ -20,7 +20,7 @@ setup(
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires = [
-                       'tifffile>=0.13.5', 'scikit-image', 'numpy', 'scipy', 'requests'
-                   ]
+                       'tifffile>=0.13.5', 'scikit-image', 'numpy', 'scipy', 'requests',
+                        'pandas' ]
 )
 
