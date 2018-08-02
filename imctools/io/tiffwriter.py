@@ -46,6 +46,8 @@ class TiffWriter(object):
         img = self.img_stack.swapaxes(2, 0)
         if dtype is not None:
             dt = np.dtype(dtype)
+        else:
+            dt = np.dtype(self.pixeltype)
             img = img.astype(dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
