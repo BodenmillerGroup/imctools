@@ -23,9 +23,6 @@ from skimage import morphology
 
 import pandas as pd
 
-import requests
-import json
-
 import os
 import tifffile
 
@@ -189,14 +186,14 @@ def l2l_corr(img,dim=0):
 
 def distance_transform_wrapper(logicarray, maxdist=65535):
     """
-    wraps scipy distance_transform_edt, but returns 
+    wraps scipy distance_transform_edt, but returns
     the maximal possible distance in the image as the distance if there are no
-    False in the matrix. 
+    False in the matrix.
     distance_transform_edt default is returning the distance to the top left pixel
     :logicarray a binary array
     :maxdist the distance that should be assigned to pixels if no single
     positive pixel is in the logicarray
-    
+
     :returns an array containing the distance to the next False pixel
     """
 
@@ -216,7 +213,7 @@ def distance_to_border(logicarray, maxdist=65535):
     the distance to the next positive (true) pixel.
     :logicarray a binary array
     :maxdist the distance that should be assigned to pixels if no single
-    positive pixel is in the logicarry. 
+    positive pixel is in the logicarry.
     :returns an array containing the distance to the next False pixel
     """
 
@@ -234,92 +231,6 @@ def distance_to_border(logicarray, maxdist=65535):
 
 
 ### tools for dealing with segmentation masks
-
-
-def query_clone_infos_airlab(ids):
-    """
-    Use rauls API to query clone info from clone ids
-    :param ids:
-    :return: dict with the response
-    """
-
-    resp_dict = dict()
-    for id in ids:
-        resp = requests.get('http://airlaboratory.ch/apiLabPad/api/getInfoForClone/'+str(id))
-        resp_entry = json.loads(resp.text)
-        if (resp_entry != '0') & (len(resp_entry) > 0):
-            resp_dict[id] = resp_entry[0]
-
-    return resp_dict
-
-def query_clone_names_airlab(ids, name_fields=['proName', "cloBindingRegion"], sep=' - '):
-    """
-    Queryis Rauls API for the clone name
-    :param ids:
-    :return:
-    """
-    resp_dict = query_clone_infos_airlab(ids)
-
-    out_names = list()
-    for id in ids:
-        entry = resp_dict.get(id)
-
-        try:
-            outlist = [entry[n] for n in name_fields]
-            name = sep.join(outlist)
-            out_names.append(name)
-        except:
-            out_names.append(None)
-
-
-    return  out_names
-
-def get_id_from_name(name):
-    """
-    Retreives an id from an airlab name
-    :param name:
-    :return:
-    """
-
-    newname = name.split('_')[-1]
-    newname = newname.split('(')[0]
-
-    if newname == '':
-        newname = name
-
-    return newname
-
-def get_id_from_airlabname(name):
-    """
-    Directly get the clonenames from raulnames
-    :param name:
-    :return:
-    """
-
-    newname = name.split('_')[-1]
-    newname = newname.split('(')[0]
-
-    if newname == '':
-        newname = name
-
-    return newname
-
-def get_names_from_airlabnames(names):
-    """
-    Tries to query a nice airlab name based on the id in the name.
-    If query not successfull the old name is returned.
-    :param names:
-    :return:
-    """
-    ids = [get_id_from_airlabname(n) for n in names]
-
-    al_names = query_clone_names_airlab(ids)
-
-    namedict = {name: al_name for name, al_name in zip(names, al_names) if al_name is not None}
-
-    newnames = [namedict.get(n,n) for n in names]
-
-    return newnames
 
 
 ## working with masks
@@ -654,7 +565,7 @@ def crop_slice(origshape, w, h=None, x=None, y=None, random_seed=None,
     if flipped_axis:
         outsize = reversed(outsize)
         x, y = y, x
-    
+
     outslices = list()
     for dmax, dstart, dextend in zip(origshape, (x,y), outsize):
         if dmax > dextend:
