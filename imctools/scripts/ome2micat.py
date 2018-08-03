@@ -3,6 +3,7 @@ from imctools.io import ometiffparser
 import argparse
 import os
 import shutil
+import re
 
 
 def ome2singletiff(path_ome, outfolder, basename=None, dtype=None):
@@ -19,6 +20,7 @@ def ome2singletiff(path_ome, outfolder, basename=None, dtype=None):
     else:
         fn_new = basename
     for label, metal in zip(imc_img.channel_labels, imc_img.channel_metals):
+        label = re.sub('[^a-zA-Z0-9]', '-', label)
         new_path = os.path.join(outfolder, fn_new +label+'_'+metal)
         writer = imc_img.get_image_writer(new_path + '.tiff', metals=[metal])
         writer.save_image(mode='imagej', dtype=dtype)
