@@ -34,7 +34,7 @@ def export_acquisition_csv(fol_ome, fol_out, outname=None):
     if outname is None:
         outname=AC_META
     dat_meta = read_acmeta(fol_ome)
-    dat_meta.to_csv(os.path.join(fol_out, outname+SUF_CSV))
+    dat_meta.to_csv(os.path.join(fol_out, outname+SUF_CSV), index=False)
 
 
 if __name__ == "__main__":
