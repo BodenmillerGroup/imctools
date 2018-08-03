@@ -30,7 +30,16 @@ class TiffWriter(object):
                        np.float32().dtype: ome.PT_FLOAT,
                        np.float64().dtype: ome.PT_FLOAT
                        })
-
+    pixeltype_np = {
+            ome.PT_FLOAT: np.dtype('float32'),
+            ome.PT_DOUBLE: np.dtype('float64'),
+            ome.PT_UINT8: np.dtype('uint8'),
+            ome.PT_UINT16: np.dtype('uint16'),
+            ome.PT_UINT32: np.dtype('uint32'),
+            ome.PT_INT8: np.dtype('int8'),
+            ome.PT_INT16: np.dtype('int16'),
+            ome.PT_INT32: np.dtype('int32')
+        }
     def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
         self.file_name = file_name
         self.img_stack = img_stack
@@ -56,7 +65,7 @@ class TiffWriter(object):
         if dtype is not None:
             dt = np.dtype(dtype)
         else:
-            dt = np.dtype(self.pixeltype)
+            dt = self.pixeltype_np[self.pixeltype]
         img = change_dtype(img, dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
@@ -131,12 +140,11 @@ def change_dtype(a, dtype):
         dinf = np.iinfo(dtype)
         mina = a.min()
         maxa = a.max()
+        a = np.around(a)
         if mina < dinf.min:
-            a = a.copy()
             a[a < dinf.min] = dinf.min
             warnings.warn('Data minimum trunkated as outside dtype range')
         if maxa > dinf.max:
-            a = a.copy()
             a[a > dinf.max] = dinf.max
             warnings.warn('Data max trunkated as outside dtype range')
     a = a.astype(dtype)
