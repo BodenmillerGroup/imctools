@@ -6,6 +6,9 @@ import imctools.external.omexml as ome
 from xml.etree import cElementTree as ElementTree
 
 import sys
+
+import warnings
+
 if sys.version_info.major == 3:
     from io import StringIO
     uenc = 'unicode'
@@ -54,7 +57,7 @@ class TiffWriter(object):
             dt = np.dtype(dtype)
         else:
             dt = np.dtype(self.pixeltype)
-            img = img.astype(dt)
+        img = change_dtype(img, dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
             tifffile.imsave(fn_out, img, compress=compression, imagej=True,
@@ -83,7 +86,7 @@ class TiffWriter(object):
         return self.img_stack.shape[2]
 
     def get_xml(self, dtype=None):
-        if dtype is None:
+        if dtype is not None:
             pixeltype = self.pixeltype_dict[dtype]
         else:
             pixeltype = self.pixeltype
@@ -122,3 +125,19 @@ class TiffWriter(object):
 
         xml = omexml.to_xml()
         return xml
+
+def change_dtype(a, dtype):
+    if dtype.kind in ['i', 'u']:
+        dinf = np.iinfo(dtype)
+        mina = a.min()
+        maxa = a.max()
+        if mina < dinf.min:
+            a = a.copy()
+            a[a < dinf.min] = dinf.min
+            warnings.warn('Data minimum trunkated as outside dtype range')
+        if maxa > dinf.max:
+            a = a.copy()
+            a[a > dinf.max] = dinf.max
+            warnings.warn('Data max trunkated as outside dtype range')
+    a = a.astype(dtype)
+    return a
