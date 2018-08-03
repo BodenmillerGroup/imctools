@@ -3,6 +3,7 @@ from imctools.io import ometiffparser
 import argparse
 import os
 import shutil
+import re
 
 
 def ome2singletiff(path_ome, outfolder, basename=None, dtype=None):
