@@ -18,14 +18,14 @@ class TiffWriter(object):
     """
 
     """
-    pixeltype_dict = ({np.int64().dtype: ome.PT_INT32,
+    pixeltype_dict = ({np.int64().dtype: ome.PT_FLOAT,
                        np.int32().dtype: ome.PT_INT32,
                        np.int16().dtype: ome.PT_INT16,
                        np.uint16().dtype: ome.PT_UINT16,
                        np.uint32().dtype: ome.PT_UINT32,
                        np.uint8().dtype: ome.PT_UINT8,
                        np.float32().dtype: ome.PT_FLOAT,
-                       np.float64().dtype: ome.PT_DOUBLE
+                       np.float64().dtype: ome.PT_FLOAT
                        })
 
     def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
