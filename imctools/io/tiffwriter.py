@@ -18,9 +18,15 @@ class TiffWriter(object):
     """
 
     """
-    pixeltype_dict = ({np.int64().dtype: ome.PT_INT16,
+    pixeltype_dict = ({np.int64().dtype: ome.PT_INT32,
+                       np.int32().dtype: ome.PT_INT32,
+                       np.int16().dtype: ome.PT_INT16,
+                       np.uint16().dtype: ome.PT_UINT16,
+                       np.uint32().dtype: ome.PT_UINT32,
+                       np.uint8().dtype: ome.PT_UINT8,
                        np.float32().dtype: ome.PT_FLOAT,
-                       np.float64().dtype: ome.PT_FLOAT})
+                       np.float64().dtype: ome.PT_DOUBLE
+                       })
 
     def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
         self.file_name = file_name
@@ -54,7 +60,7 @@ class TiffWriter(object):
             tifffile.imsave(fn_out, img, compress=compression, imagej=True,
                             bigtiff=bigtiff)
         elif mode == 'ome':
-            xml = self.get_xml()
+            xml = self.get_xml(dtype=dtype)
             tifffile.imsave(fn_out, img, compress=compression, imagej=False,
                             description=xml, bigtiff=bigtiff)
 
@@ -76,7 +82,11 @@ class TiffWriter(object):
     def nchannels(self):
         return self.img_stack.shape[2]
 
-    def get_xml(self):
+    def get_xml(self, dtype=None):
+        if dtype is None:
+            pixeltype = self.pixeltype_dict[dtype]
+        else:
+            pixeltype = self.pixeltype
         img = self.img_stack
         omexml = ome.OMEXML()
         omexml.image(0).Name = os.path.basename(self.file_name)
@@ -87,7 +97,7 @@ class TiffWriter(object):
         p.SizeT = 1
         p.SizeZ = 1
         p.DimensionOrder = ome.DO_XYCZT
-        p.PixelType = self.pixeltype
+        p.PixelType = pixeltype
         p.channel_count = self.nchannels
         for i in range(self.nchannels):
             channel_info = self.channel_name[i]
