@@ -11,7 +11,6 @@ COL_ACSESSION = 'AcSession'
 SUF_CSV = '.csv'
 AC_META = 'acquisition_metadata'
 
-VAL_TEMP = 'temp'
 """
 Reads all the acquisition metadata from the ome folders and concatenates them
 to a csv that contains all the metadata.
@@ -20,9 +19,8 @@ to a csv that contains all the metadata.
 def _read_and_concat(fol_ome, suffix, idname):
     ac_names = os.listdir(fol_ome)
     dat = pd.concat([pd.read_csv(os.path.join(fol_ome, a, a+suffix)) for a in ac_names],
-                           keys=ac_names, names=[COL_ACSESSION, VAL_TEMP])
-    dat = dat.reset_index(VAL_TEMP, drop=True)
-    dat = dat.reset_index()
+                           keys=ac_names, names=COL_ACSESSION)
+    dat = dat.reset_index(VAL_ACSESSION, drop=False)
     dat = dat.rename(columns={COL_MCD_ID: COL_ACID})
     return dat
 
