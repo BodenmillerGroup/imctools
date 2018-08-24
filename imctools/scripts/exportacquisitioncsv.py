@@ -19,8 +19,8 @@ to a csv that contains all the metadata.
 def _read_and_concat(fol_ome, suffix, idname):
     ac_names = os.listdir(fol_ome)
     dat = pd.concat([pd.read_csv(os.path.join(fol_ome, a, a+suffix)) for a in ac_names],
-                           keys=ac_names, names=COL_ACSESSION)
-    dat = dat.reset_index(VAL_ACSESSION, drop=False)
+                           keys=ac_names, names=[COL_ACSESSION])
+    dat = dat.reset_index(COL_ACSESSION, drop=False)
     dat = dat.rename(columns={COL_MCD_ID: COL_ACID})
     return dat
 
@@ -51,5 +51,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    export_acquisitionmeta(args.fol_ome, args.out_folder,
+    export_acquisition_csv(args.fol_ome, args.out_folder,
                  args.outname)
