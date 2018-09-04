@@ -9,6 +9,9 @@ import sys
 
 import warnings
 
+CHANGE_DTYPE_LB_WARNING = 'Data minimum trunkated as outside dtype range'
+CHANGE_DTYPE_UB_WARNING = 'Data max trunkated as outside dtype range'
+
 if sys.version_info.major == 3:
     from io import StringIO
     uenc = 'unicode'
@@ -138,14 +141,20 @@ class TiffWriter(object):
 def change_dtype(a, dtype):
     if dtype.kind in ['i', 'u']:
         dinf = np.iinfo(dtype)
+        a = np.around(a)
         mina = a.min()
         maxa = a.max()
-        a = np.around(a)
+        t_min = None
+        t_max = None
         if mina < dinf.min:
-            a[a < dinf.min] = dinf.min
-            warnings.warn('Data minimum trunkated as outside dtype range')
+            t_min = dinf.min
+            warnings.warn(CHANGE_DTYPE_LB_WARNING)
+
         if maxa > dinf.max:
-            a[a > dinf.max] = dinf.max
-            warnings.warn('Data max trunkated as outside dtype range')
+            t_max = dinf.max
+            warnings.warn(CHANGE_DTYPE_UB_WARNING)
+        if (t_min is not None) | (t_max is not None):
+            # this can be done inplace, as np.around returns a new object.
+            np.clip(a, a_min=t_min, a_max=t_max, out=a)
     a = a.astype(dtype)
     return a
