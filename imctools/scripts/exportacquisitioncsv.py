@@ -28,9 +28,7 @@ def read_acmeta(fol_ome):
     dat_acmeta = _read_and_concat(fol_ome, SUFFIX_ACMETA, COL_ACID)
     return dat_acmeta
 
-def export_acquisition_csv(fol_ome, fol_out, outname=None):
-    if outname is None:
-        outname=AC_META
+def export_acquisition_csv(fol_ome, fol_out, outname=AC_META):
     dat_meta = read_acmeta(fol_ome)
     dat_meta.to_csv(os.path.join(fol_out, outname+SUF_CSV), index=False)
 
@@ -46,7 +44,7 @@ if __name__ == "__main__":
     parser.add_argument('out_folder', type=str,
                         help='Folder where the metadata csv should be stored in.')
 
-    parser.add_argument('--outname', type=str, default=None,
+    parser.add_argument('--outname', type=str, default=AC_META,
                         help='Filename of the acquisition metadata csv')
 
     args = parser.parse_args()
