@@ -5,7 +5,7 @@ import warnings
 
 import platform
 if (platform.system()  != 'Java'):
-    import imctools.io.tiffwriter as tiffwriter
+    import imctools.io as imcio
     import numpy as np
 
     class TestChangeDtype(unittest.TestCase):
@@ -21,14 +21,10 @@ if (platform.system()  != 'Java'):
             target_dtype = np.dtype(np.uint16)
             exp_outarr = np.array([0, (2**16)-1, 0, 1], dtype=target_dtype)
             with warnings.catch_warnings(record=True) as w:
-                outarr = tiffwriter.change_dtype(testarr, target_dtype)
+                outarr = imcio.change_dtype(testarr, target_dtype)
                 self.assertEqual(len(w), 2, msg='Two truncation warnings should be thrown')
-                self.assertEqual(str(w[0].message), tiffwriter.CHANGE_DTYPE_LB_WARNING)
-                self.assertEqual(str(w[1].message), tiffwriter.CHANGE_DTYPE_UB_WARNING)
+                self.assertEqual(str(w[0].message), imcio.CHANGE_DTYPE_LB_WARNING)
+                self.assertEqual(str(w[1].message), imcio.CHANGE_DTYPE_UB_WARNING)
             self.assertEqual(outarr.dtype, target_dtype, msg='Dtype is correctly adapted')
             np.testing.assert_equal(outarr, exp_outarr, err_msg='Trunkating uint16 works')
             np.testing.assert_equal(testarr, testarr_orig, err_msg='The original array is not modified')
-
-
-
-
