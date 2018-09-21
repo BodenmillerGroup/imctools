@@ -11,7 +11,6 @@ COL_ACSESSION = 'AcSession'
 SUF_CSV = '.csv'
 AC_META = 'acquisition_metadata'
 
-VAL_TEMP = 'temp'
 """
 Reads all the acquisition metadata from the ome folders and concatenates them
 to a csv that contains all the metadata.
@@ -20,9 +19,8 @@ to a csv that contains all the metadata.
 def _read_and_concat(fol_ome, suffix, idname):
     ac_names = os.listdir(fol_ome)
     dat = pd.concat([pd.read_csv(os.path.join(fol_ome, a, a+suffix)) for a in ac_names],
-                           keys=ac_names, names=[COL_ACSESSION, VAL_TEMP])
-    dat = dat.reset_index(VAL_TEMP, drop=True)
-    dat = dat.reset_index()
+                           keys=ac_names, names=[COL_ACSESSION])
+    dat = dat.reset_index(COL_ACSESSION, drop=False)
     dat = dat.rename(columns={COL_MCD_ID: COL_ACID})
     return dat
 
@@ -30,9 +28,7 @@ def read_acmeta(fol_ome):
     dat_acmeta = _read_and_concat(fol_ome, SUFFIX_ACMETA, COL_ACID)
     return dat_acmeta
 
-def export_acquisition_csv(fol_ome, fol_out, outname=None):
-    if outname is None:
-        outname=AC_META
+def export_acquisition_csv(fol_ome, fol_out, outname=AC_META):
     dat_meta = read_acmeta(fol_ome)
     dat_meta.to_csv(os.path.join(fol_out, outname+SUF_CSV), index=False)
 
@@ -48,10 +44,10 @@ if __name__ == "__main__":
     parser.add_argument('out_folder', type=str,
                         help='Folder where the metadata csv should be stored in.')
 
-    parser.add_argument('--outname', type=str, default=None,
+    parser.add_argument('--outname', type=str, default=AC_META,
                         help='Filename of the acquisition metadata csv')
 
     args = parser.parse_args()
 
-    export_acquisitionmeta(args.fol_ome, args.out_folder,
+    export_acquisition_csv(args.fol_ome, args.out_folder,
                  args.outname)

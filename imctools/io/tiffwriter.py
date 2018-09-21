@@ -2,12 +2,12 @@ import os
 import numpy as np
 import tifffile
 import imctools.external.omexml as ome
-
 from xml.etree import cElementTree as ElementTree
-
 import sys
 
 import warnings
+
+from imctools.io import change_dtype, CHANGE_DTYPE_LB_WARNING, CHANGE_DTYPE_UB_WARNING
 
 if sys.version_info.major == 3:
     from io import StringIO
@@ -134,18 +134,3 @@ class TiffWriter(object):
 
         xml = omexml.to_xml()
         return xml
-
-def change_dtype(a, dtype):
-    if dtype.kind in ['i', 'u']:
-        dinf = np.iinfo(dtype)
-        mina = a.min()
-        maxa = a.max()
-        a = np.around(a)
-        if mina < dinf.min:
-            a[a < dinf.min] = dinf.min
-            warnings.warn('Data minimum trunkated as outside dtype range')
-        if maxa > dinf.max:
-            a[a > dinf.max] = dinf.max
-            warnings.warn('Data max trunkated as outside dtype range')
-    a = a.astype(dtype)
-    return a
