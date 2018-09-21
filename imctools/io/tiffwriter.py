@@ -4,10 +4,10 @@ import tifffile
 import imctools.external.omexml as ome
 from xml.etree import cElementTree as ElementTree
 import sys
+
 import warnings
 
 from imctools.io import change_dtype, CHANGE_DTYPE_LB_WARNING, CHANGE_DTYPE_UB_WARNING
-
 
 if sys.version_info.major == 3:
     from io import StringIO
@@ -58,7 +58,7 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=True):
+    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=False):
         #TODO: add original metadata somehow
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
@@ -134,4 +134,3 @@ class TiffWriter(object):
 
         xml = omexml.to_xml()
         return xml
-
