@@ -78,7 +78,7 @@ VALUEBYTES = 'ValueBytes'
 WIDTHUM = 'WidthUm'
 
 PARSER = 'parser'
-
+META_CSV = '_meta.csv'
 """
 Definition of all the meta objects
 Each entity will have a class corresponding to it, with helpermethods
@@ -315,7 +315,7 @@ class McdXmlParser(Meta):
         """
         for n, o in self.objects.items():
             odict = [i.properties for k, i in o.items()]
-            fn = '_'.join([self.metaname, n]) + '_meta.csv'
+            fn = '_'.join([self.metaname, n]) + META_CSV
             with open(os.path.join(out_folder, fn), 'w') as csvfile:
                 cols = odict[0].keys()
                 writer = csv.DictWriter(csvfile, sorted(cols))
