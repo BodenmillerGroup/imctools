@@ -41,9 +41,10 @@ def dict_key_apply(iterable, str_fkt):
     """
     if type(iterable) is dict:
         for key in iterable.keys():
-            iterable[strip_ns(key)] = iterable.pop(key)
-            if type(iterable[strip_ns(key)]) is dict or type(iterable[strip_ns(key)]) is list:
-                iterable[strip_ns(key)] = dict_key_apply(iterable[strip_ns(key)], str_fkt)
+            new_key = str_fkt(key)
+            iterable[new_key] = iterable.pop(key)
+            if type(iterable[new_key]) is dict or type(iterable[new_key]) is list:
+                iterable[new_key] = dict_key_apply(iterable[new_key], str_fkt)
     elif type(iterable) is list:
         for item in iterable:
             item = dict_key_apply(item, str_fkt)

@@ -19,8 +19,15 @@ For a description of the associated segmentation pipline, please visit: https://
 * The core functions have a 'base' pure Python/Jython implementation with no dependencies outside the standard libraries.
 * The fast functions do need Python packages, such as numpy, scipy etc. installed.
 
+## Installation
+Use the pip installation manger to directly install the package from Github:
+
+```
+pip install git+https://github.com/BodenmillerGroup/imctools.git
+```
+
 ## Usage
-imctools is often used from jupyter as aprt of the preprocessing pipeline, mainly using the 'script' wrapper functions. Check 'notebooks/example_preprocessing_pipline.ipynb' as a template
+imctools is often used from jupyter as part of the preprocessing pipeline, mainly using the 'script' wrapper functions. Check 'notebooks/example_preprocessing_pipline.ipynb' as a template
 
 Further imctools can be directly used as a module:
 

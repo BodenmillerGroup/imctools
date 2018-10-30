@@ -11,7 +11,7 @@ MCD_FILENDING = '.mcd'
 ZIP_FILENDING = '.zip'
 SCHEMA_FILENDING = '.schema'
 
-def convert_folder2imcfolder(fol, out_folder):
+def convert_folder2imcfolder(fol, out_folder, dozip=True):
     """
     Convert a folder containing IMC acquisitions
     (mcd and tiff)
@@ -28,16 +28,16 @@ def convert_folder2imcfolder(fol, out_folder):
         istmp = False
     
     try:
-        files = os.listdir(in_fol)
+        files = [os.path.join(root, fn) for root, dirs, files in os.walk(in_fol) for fn in files]
         mcd_files = [f for f in files
                      if f.endswith(MCD_FILENDING)]
         assert(len(mcd_files) == 1)
         schema_files = [f for f in files if f.endswith(SCHEMA_FILENDING)]
         if len(schema_files) > 0:
-            schema_file = os.path.join(in_fol, schema_files[0])
+            schema_file = schema_files[0]
         else:
             schema_file = None
-        mcd = McdParser(os.path.join(in_fol, mcd_files[0]), metafilename=schema_file)
+        mcd = McdParser(mcd_files[0], metafilename=schema_file)
         txt_acids = {_txtfn_to_ac(f): f
                    for f in files if f.endswith(TXT_FILENDING)}
         mcd_acs = mcd.get_all_imcacquistions()
@@ -45,13 +45,16 @@ def convert_folder2imcfolder(fol, out_folder):
         txtonly_acs = set(txt_acids.keys()).difference(mcd_acids)
         for txta in txtonly_acs:
             print('Using TXT file for acquisition: '+txta)
-            mcd_acs.append(
-                TxtParser(
-                    os.path.join(in_fol, txt_acids[txta])).get_imc_acquisition())
+            try:
+                mcd_acs.append(
+                    TxtParser(
+                     txt_acids[txta]).get_imc_acquisition())
+            except:
+                print('TXT file was also corrupted.')
         imc_fol = ImcFolderWriter(out_folder,
                         mcddata=mcd,
                  imcacquisitions=mcd_acs)
-        imc_fol.write_imc_folder()
+        imc_fol.write_imc_folder(zipfolder=dozip)
         if istmp:
             tmpdir.cleanup()
     finally:

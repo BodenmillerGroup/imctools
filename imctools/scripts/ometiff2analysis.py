@@ -6,7 +6,7 @@ import numpy as np
 from imctools.io import ometiffparser
 
 def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolumn=None, masscolumn=None, usedcolumn=None,
-                       addsum=False, bigtiff=True):
+                       addsum=False, bigtiff=True, sort_channels=True, pixeltype=None):
     # read the pannelcsv to find out which channels should be loaded
     selmetals = None
     selmass = None
@@ -27,6 +27,14 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
     ome = ometiffparser.OmetiffParser(filename)
     imc_img = ome.get_imc_acquisition()
 
+    if sort_channels:
+        if selmetals is not None:
+            def mass_from_met(x):
+                return (''.join([m for m in x if m.isdigit()]), x)
+            selmetals = sorted(selmetals, key=mass_from_met)
+        if selmass is not None:
+            selmass = sorted(selmass)
+
     writer = imc_img.get_image_writer(outname + '.tiff', metals=selmetals, mass=selmass)
 
     if addsum:
@@ -34,7 +42,7 @@ def ometiff_2_analysis(filename, outfolder, basename, pannelcsv=None, metalcolum
         img_sum = np.reshape(img_sum, list(img_sum.shape)+[1])
         writer.img_stack = np.append(img_sum, writer.img_stack, axis=2)
 
-    writer.save_image(mode='imagej', bigtiff=bigtiff)
+    writer.save_image(mode='imagej', bigtiff=bigtiff, dtype=pixeltype)
 
     if selmass is not None:
         savenames = selmass
@@ -82,8 +90,9 @@ if __name__ == "__main__":
     parser.add_argument('--usedcolumn', type=str, default='ilastik',
                         help='Column that should contain booleans (0, 1) if the channel should be used.'
                         )
-    parser.add_argument('--outformat', type=str, default='original', choices=['original', 'f', 'uint16', 'uint8', 'uint32'],
-                        help='original or f, uint32, uint16, unit8')
+    parser.add_argument('--outformat', type=str, default=None, choices=['float', 'uint16', 'uint8', 'uint32'],
+                        help='''original or float, uint32, uint16, unit8\n
+                                Per default the original pixeltype is taken''')
 
     parser.add_argument('--scale', type=str, default='no', choices=['no', 'max', 'percentile99, percentile99.9, percentile99.99'],
                         help='scale the data?' )
@@ -93,6 +102,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--bigtiff', type=str, default='yes', choices=['no', 'yes'],
                         help='Add the sum of the data as the first layer.' )
+    parser.add_argument('--sort_channels', type=str, default='yes', choices=['no', 'yes'],
+                        help='Should the channels be sorted by mass?')
     args = parser.parse_args()
 
 
@@ -120,7 +131,9 @@ if __name__ == "__main__":
 
     ometiff_2_analysis(args.ome_filename, outfolder, fn_out, args.pannelcsv, args.metalcolumn, args.masscolumn,
                        args.usedcolumn, args.addsum == 'yes',
-                       bigtiff=args.bigtiff == 'yes')
+                       bigtiff=args.bigtiff == 'yes',
+                       sort_channels=args.sort_channels == 'yes',
+                       pixeltype=outformat)
 
 
 

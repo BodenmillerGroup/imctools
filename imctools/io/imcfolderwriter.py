@@ -26,7 +26,7 @@ class ImcFolderWriter(object):
 
         if mcddata is not None:
             self.add_mcddata(mcddata, add_acquisitions=add_ac)
-        
+
         if self.meta is None:
             raise ValueError('At least mcdata or mcdmeta need to be specified!')
 
@@ -46,7 +46,10 @@ class ImcFolderWriter(object):
             imcacs = self.mcd.get_all_imcacquistions()
             self.add_imcacquisitions(imcacs)
 
-    def write_imc_folder(self, zipfolder=True, remove_folder=True):
+    def write_imc_folder(self, zipfolder=True, remove_folder=None):
+        if remove_folder is None:
+            remove_folder = zipfolder
+
         base_folder = self.out_folder
         foldername = self.foldername
         out_folder = os.path.join(self.out_folder, self.foldername)
@@ -57,6 +60,7 @@ class ImcFolderWriter(object):
             self._write_acquisition(ac, out_folder)
         if self.meta:
             self.meta.save_meta_xml(out_folder)
+            self.meta.save_meta_csv(out_folder)
 
         if self.mcd:
             slide_ids = self.meta.objects.get(mcdmeta.SLIDE, dict()).keys()
@@ -102,7 +106,7 @@ class ImcFolderWriter(object):
 
 if __name__ == '__main__':
     import imctools.io.mcdparser as mcdp
-    #fn_mcd = '/home/vitoz/temp/txtvsmcd/20170805_p60-63_slide6_ac1_vz.mcd' 
+    #fn_mcd = '/home/vitoz/temp/txtvsmcd/20170805_p60-63_slide6_ac1_vz.mcd'
     #fn_mcd = '/mnt/imls-bod/VitoZ/Spheres/20161130_p25_slide2_ac1/20161130_p25_slide2_ac1.mcd'
     #fn_mcd='/mnt/imls-bod/VitoZ/Spheres/20161005_IS2362_4_site1_ac1/20161005_IS2362_4_site1_ac1.mcd'
     # an example of not functional mcd but working txt
@@ -113,4 +117,4 @@ if __name__ == '__main__':
     ifw = ImcFolderWriter('/home/vitoz/temp/', mcddata=mcd)
     ifw.write_imc_folder()
 
-    
+

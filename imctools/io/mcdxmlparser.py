@@ -2,6 +2,7 @@ import xml.etree as et
 import imctools.librarybase as libb
 from collections import OrderedDict
 import os
+import csv
 
 """
 This module should help parsing the MCD xml metadata
@@ -77,13 +78,13 @@ VALUEBYTES = 'ValueBytes'
 WIDTHUM = 'WidthUm'
 
 PARSER = 'parser'
-
+META_CSV = '_meta.csv'
 """
 Definition of all the meta objects
 Each entity will have a class corresponding to it, with helpermethods
 that e.g. allow to retrieve images etc.
 
-This is implemented as parent-child relationships where each entry has a list of parents 
+This is implemented as parent-child relationships where each entry has a list of parents
 and a nested dictionary of children of the form (child_type: childID: childobject)
 
 Further each object is registered in the global root node, making them easy accessible.
@@ -124,7 +125,7 @@ class Meta(object):
     @property
     def is_root(self):
        return len(self.parents) == 0
-    
+
     def _update_parents(self, p):
         self._update_dict(p.childs)
 
@@ -170,7 +171,7 @@ class Acquisition(Meta):
 
     def get_channels(self):
         return self.childs[ACQUISITIONCHANNEL]
-    
+
     def get_channel_orderdict(self):
         chan_dic = self.get_channels()
         out_dic = dict()
@@ -268,7 +269,8 @@ class McdXmlParser(Meta):
                 if len(parents) == 0:
                     parents = [self]
                 ObjClass(o, parents)
-            
+
+
     def get_objects_by_id(self, idname, objid):
         """
         Gets objects by idname and id
@@ -278,7 +280,7 @@ class McdXmlParser(Meta):
         """
         mtype = ID_DICT[idname]
         return self.get_object(mtype, objid)
-        
+
     def get_object(self, mtype, mid):
         """
         Return an object defined by type and id
@@ -292,7 +294,7 @@ class McdXmlParser(Meta):
         """
         A helper to get objects, e.g. slides etc. metadata
         from the metadata dict. takes care of the case where
-        only one object is present and thus a dict and not a 
+        only one object is present and thus a dict and not a
         list of dicts is returned.
         """
         objs = self.properties.get(mtype)
@@ -305,6 +307,21 @@ class McdXmlParser(Meta):
         fn = self.metaname + '_schema.xml'
         et.ElementTree.ElementTree(xml).write(
             os.path.join(out_folder,fn), encoding='utf-8')
+
+    def save_meta_csv(self, out_folder):
+        """
+        Writes the xml data as csv tables
+
+        """
+        for n, o in self.objects.items():
+            odict = [i.properties for k, i in o.items()]
+            fn = '_'.join([self.metaname, n]) + META_CSV
+            with open(os.path.join(out_folder, fn), 'w') as csvfile:
+                cols = odict[0].keys()
+                writer = csv.DictWriter(csvfile, sorted(cols))
+                writer.writeheader()
+                for row in odict:
+                    writer.writerow(row)
 
     def get_channels(self):
         """
@@ -323,7 +340,7 @@ class McdXmlParser(Meta):
         Returns the acquisition metadata dict
         """
         return self.get_object(ACQUISITION, acid).properties
-    
+
 
     def get_acquisition_rois(self):
         """

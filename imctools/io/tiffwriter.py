@@ -2,10 +2,13 @@ import os
 import numpy as np
 import tifffile
 import imctools.external.omexml as ome
-
 from xml.etree import cElementTree as ElementTree
-
 import sys
+
+import warnings
+
+from imctools.io import change_dtype, CHANGE_DTYPE_LB_WARNING, CHANGE_DTYPE_UB_WARNING
+
 if sys.version_info.major == 3:
     from io import StringIO
     uenc = 'unicode'
@@ -18,10 +21,25 @@ class TiffWriter(object):
     """
 
     """
-    pixeltype_dict = ({np.int64().dtype: ome.PT_INT16,
+    pixeltype_dict = ({np.int64().dtype: ome.PT_FLOAT,
+                       np.int32().dtype: ome.PT_INT32,
+                       np.int16().dtype: ome.PT_INT16,
+                       np.uint16().dtype: ome.PT_UINT16,
+                       np.uint32().dtype: ome.PT_UINT32,
+                       np.uint8().dtype: ome.PT_UINT8,
                        np.float32().dtype: ome.PT_FLOAT,
-                       np.float64().dtype: ome.PT_FLOAT})
-
+                       np.float64().dtype: ome.PT_DOUBLE
+                       })
+    pixeltype_np = {
+            ome.PT_FLOAT: np.dtype('float32'),
+            ome.PT_DOUBLE: np.dtype('float64'),
+            ome.PT_UINT8: np.dtype('uint8'),
+            ome.PT_UINT16: np.dtype('uint16'),
+            ome.PT_UINT32: np.dtype('uint32'),
+            ome.PT_INT8: np.dtype('int8'),
+            ome.PT_INT16: np.dtype('int16'),
+            ome.PT_INT32: np.dtype('int32')
+        }
     def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
         self.file_name = file_name
         self.img_stack = img_stack
@@ -40,19 +58,21 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=True):
+    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=False):
         #TODO: add original metadata somehow
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
         if dtype is not None:
             dt = np.dtype(dtype)
-            img = img.astype(dt)
+        else:
+            dt = self.pixeltype_np[self.pixeltype]
+        img = change_dtype(img, dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
             tifffile.imsave(fn_out, img, compress=compression, imagej=True,
                             bigtiff=bigtiff)
         elif mode == 'ome':
-            xml = self.get_xml()
+            xml = self.get_xml(dtype=dtype)
             tifffile.imsave(fn_out, img, compress=compression, imagej=False,
                             description=xml, bigtiff=bigtiff)
 
@@ -74,7 +94,11 @@ class TiffWriter(object):
     def nchannels(self):
         return self.img_stack.shape[2]
 
-    def get_xml(self):
+    def get_xml(self, dtype=None):
+        if dtype is not None:
+            pixeltype = self.pixeltype_dict[dtype]
+        else:
+            pixeltype = self.pixeltype
         img = self.img_stack
         omexml = ome.OMEXML()
         omexml.image(0).Name = os.path.basename(self.file_name)
@@ -85,7 +109,7 @@ class TiffWriter(object):
         p.SizeT = 1
         p.SizeZ = 1
         p.DimensionOrder = ome.DO_XYCZT
-        p.PixelType = self.pixeltype
+        p.PixelType = pixeltype
         p.channel_count = self.nchannels
         for i in range(self.nchannels):
             channel_info = self.channel_name[i]
