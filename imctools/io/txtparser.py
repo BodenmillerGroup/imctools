@@ -2,7 +2,6 @@ from __future__ import with_statement, division
 
 import csv
 from imctools.io.imcacquisition import ImcAcquisition
-from imctools.io.txtparserbase import TxtParserBase
 from imctools.io.abstractparser import AbstractParser
 import array
 
@@ -15,7 +14,7 @@ except ImportError as ix:
 TXT_FILENDING='.txt'
 
 
-class TxtParser(AbstractParser, TxtParserBase):
+class TxtParser(AbstractParser):
     """
     Loads and strores an IMC .txt file
     """
@@ -37,30 +36,12 @@ class TxtParser(AbstractParser, TxtParserBase):
 
     @property
     def ac_id(self):
-        ac_id = self._txtfn_to_ac(self.filename)
+        ac_id = self.txtfn_to_ac(self.filename)
         return ac_id
 
     @staticmethod
-    def _txtfn_to_ac(fn):
+    def txtfn_to_ac(fn):
         return fn.rstrip(TXT_FILENDING).split('_')[-1]
-
-    def get_imc_acquisition(self):
-        """
-        Returns the imc acquisition object
-        :return:
-        """
-        dat = self.data
-        img = self._reshape_long_2_cyx(dat, is_sorted=True)
-        ac_id = self.ac_id
-
-        return ImcAcquisition(ac_id, self.filename,
-                              img,
-                              self.channel_metals,
-                              self.channel_labels,
-                              original_metadata=None,
-                              image_description=None,
-                              origin=self.origin,
-                              offset=3)
 
     @staticmethod
     def clean_channel_metals(names):
@@ -96,6 +77,24 @@ class TxtParser(AbstractParser, TxtParserBase):
 
         return names
 
+    def get_imc_acquisition(self):
+        """
+        Returns the imc acquisition object
+        :return:
+        """
+        dat = self.data
+        img = self._reshape_long_2_cyx(dat, is_sorted=True)
+        ac_id = self.ac_id
+
+        return ImcAcquisition(ac_id, self.filename,
+                              img,
+                              self.channel_metals,
+                              self.channel_labels,
+                              original_metadata=None,
+                              image_description=None,
+                              origin=self.origin,
+                              offset=3)
+
     def parse_csv(self, txtfile, first_col=3):
         txtreader = csv.reader(txtfile, delimiter='\t')
         header = txtreader.next()
@@ -122,7 +121,7 @@ class TxtParser(AbstractParser, TxtParserBase):
 
     def parse_csv3(self, txtfile, first_col=3):
         """
-        The fastest  csv parser so far
+        The fastest csv parser so far
         :param filename:
         :param first_col: First column to consider
         :return:
