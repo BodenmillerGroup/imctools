@@ -1,28 +1,32 @@
-from imctools.io.imcacquisition import ImcAcquisition
-from imctools.io.omeparserbase import OmeParserBase
 import tifffile
-import numpy as np
 import xml.etree.ElementTree as et
-from imctools.io.abstractparser import AbstractParser
 
-class OmetiffParser(AbstractParser, OmeParserBase):
+from imctools.io.abstractparser import AbstractParser
+from imctools.io.imcacquisition import ImcAcquisition
+
+
+class OmetiffParser(AbstractParser):
     """
     Parses an ome tiff
-
     """
 
-    def __init__(self, original_file):
+    def __init__(self, original_file, origin='ome.tiff'):
         """
 
         :param filename:
         """
-        #self._data = None
-        #self._ome = None
         AbstractParser.__init__(self)
-        self.read_image(original_file)
+
+        (data,ome) = self._read_image(original_file)
+        self.data = data
+        self.ome = et.fromstring(ome)
+
         self.filename = original_file
         self.n_acquisitions = 1
-        OmeParserBase.__init__(self, self.data, self.ome, origin='ome.tiff')
+        self.origin = origin
+
+        self.ns = '{' + self.ome.tag.split('}')[0].strip('{') + '}'
+        self.get_meta_dict()
 
     def get_imc_acquisition(self):
         """
@@ -31,7 +35,8 @@ class OmetiffParser(AbstractParser, OmeParserBase):
         :return:
         """
         meta = self.meta_dict
-        return ImcAcquisition(meta['image_ID'],    self.original_file,
+        return ImcAcquisition(meta['image_ID'],
+                              self.original_file,
                               self.data,
                               meta['channel_metals'],
                               meta['channel_labels'],
@@ -40,45 +45,34 @@ class OmetiffParser(AbstractParser, OmeParserBase):
                               origin=self.origin,
                               offset=0)
 
-    def read_image(self, filename):
+    def get_meta_dict(self):
+        meta_dict = dict()
+
+        xml = self.ome
+        ns = self.ns
+        img = xml.find(ns+'Image')
+        pixels = img.find(ns+'Pixels')
+        channels = pixels.findall(ns+'Channel')
+        nchan = len(channels)
+        chan_dict={int(chan.attrib['ID'].split(':')[2]) :
+                       (chan.attrib['Name'], chan.attrib['Fluor']) for chan in channels}
+
+        meta_dict.update({'image_ID': img.attrib['Name'],
+                          'channel_metals': [chan_dict[i][1] for i in range(nchan)],
+                          'channel_labels': [chan_dict[i][0] for i in range(nchan)]})
+
+        self.meta_dict = meta_dict
+
+    
+    def _read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
             try:
-                self.data = tif.asarray(out='memmap')
+                data = tif.asarray(out='memmap')
             except:
                 # this is in an older tifffile version is used
-                self.data = tif.asarray()
+                data = tif.asarray()
             try:
-                self.ome = tif.pages[0].tags['ImageDescription'].value
+                ome = tif.pages[0].tags['ImageDescription'].value
             except:
-                self.ome = tif.pages[0].tags['image_description'].value
-
-
-
-    # @staticmethod
-    # def reshape_flat(data):
-    #     """
-    #     Reshape the image data into the flat format.
-    #     :param data:
-    #     :return:
-    #     """
-    #     print(data[0,0,:5])
-    #     c, y, x = data.shape
-    #     h = x * y
-    #     data = np.reshape(data.ravel(order='C'),(h, c), order='F')
-    #     data = np.hstack((np.tile(np.arange(x),y).reshape((h,1)),
-    #                       np.repeat(np.arange(y),x).reshape((h,1)),
-    #                       (np.arange(h)+1).reshape((h, 1)),
-    #                       data))
-    #     return data
-
-if __name__ == '__main__':
-    fn = '/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff'
-    parser = OmetiffParser(fn)
-    imc_ac = parser.get_imc_acquisition()
-    import matplotlib.pyplot as plt
-    plt.figure()
-    dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
-    plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())
-    plt.show()
-    print(imc_ac)
-    print(imc_ac.channel_metals)
+                ome = tif.pages[0].tags['image_description'].value
+            return(data,ome)
