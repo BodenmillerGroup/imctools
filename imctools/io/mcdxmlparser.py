@@ -1,5 +1,5 @@
 import xml.etree as et
-import imctools.librarybase as libb
+import imctools.libraryxml as lxml
 from collections import OrderedDict
 import os
 import csv
@@ -240,8 +240,8 @@ class McdXmlParser(Meta):
     """
     def __init__(self, xml, filename=None):
         self._rawxml = xml
-        meta = libb.etree_to_dict(xml)
-        meta = libb.dict_key_apply(meta, libb.strip_ns)
+        meta = lxml.etree_to_dict(xml)
+        meta = lxml.dict_key_apply(meta, lxml.strip_ns)
         meta = meta[MCDSCHEMA]
         Meta.__init__(self, MCDSCHEMA, meta, [])
         self._init_objects()
