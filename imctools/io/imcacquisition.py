@@ -1,7 +1,11 @@
+from __future__ import with_statement, division
+
 """
 This defines the IMC acquisition base class
 """
 import os
+import array
+import string
 
 try:
     import numpy as np
@@ -31,8 +35,7 @@ class ImcAcquisition(object):
         :param channel_metal: the channel name (metal)
         :param channel_labels: the channel label (meaningful label)
         :param original_metadata: the original metadata, e.g. an MCDPublic XML
-        :param image_description: the image description. For MCD acquisitions this is the
-                                 metadata based name.
+        :param image_description: the image description. For MCD acquisitions this is the metadata based name.
 
         """
         self.image_ID = image_ID
@@ -47,7 +50,6 @@ class ImcAcquisition(object):
         self._update_shape()
 
         #    'Dataset not complete!'
-
         self._channel_metals = self.validate_channels(channel_metal)
         self._channel_labels = self.validate_channels(channel_labels)
         self.original_metadata = original_metadata
@@ -81,6 +83,10 @@ class ImcAcquisition(object):
         else:
             return None
 
+    @property
+    def data(self):
+        return self._data
+
     def get_metal_indices(self, metallist):
         """
         Returns a list with the indices in the metals from metallist
@@ -105,10 +111,6 @@ class ImcAcquisition(object):
             order_dict.update({m: i})
 
         return [order_dict[m] for m in masslist]
-
-    @property
-    def data(self):
-        return self._data
 
     def get_img_stack_cyx(self, channel_idxs=None, offset=None):
         """
@@ -171,8 +173,6 @@ class ImcAcquisition(object):
         channel = [c.replace('(','').replace(')','').strip() if c is not None else '' for c in channel]
         return channel
 
-
-    @staticmethod
     def _get_position(name, namelist):
         pos = [i for i, chan in enumerate(namelist) if chan ==name]
         return pos[0]
