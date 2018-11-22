@@ -16,8 +16,6 @@ except ImportError as ix:
 import xml.etree.ElementTree as et
 
 from imctools.io.tiffwriter import TiffWriter
-from imctools.io.imcacquisitionbase import ImcAcquisitionBase
-
 
 class ImcAcquisition(object):
     """
