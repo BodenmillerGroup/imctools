@@ -28,7 +28,7 @@ try:
 except ImportError as ix:
     _have_numpy = False
 
-class AbstractParserBase(object):
+class AbstractParser(object):
     """
 
     """
