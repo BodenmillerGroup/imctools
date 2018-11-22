@@ -6,13 +6,13 @@ CHANGE_DTYPE_UB_WARNING = 'Data max trunkated as outside dtype range'
 # Checks if numpy is available in the
 # Python implementation
 
-_is_base = False
 try:
     import numpy as np
+    _have_np = True
 except ImportError:
-    _is_base = True
+    _have_np = False
 
-if _is_base == False:
+if _have_np:
     def change_dtype(array, dtype):
         """
         Changes the dtype of an array
