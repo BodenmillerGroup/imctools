@@ -104,17 +104,3 @@ class ImcFolderWriter(object):
     def _find_ac_metaname_from_txt_fn(self, ac):
         raise NotImplementedError
 
-if __name__ == '__main__':
-    import imctools.io.mcdparser as mcdp
-    #fn_mcd = '/home/vitoz/temp/txtvsmcd/20170805_p60-63_slide6_ac1_vz.mcd'
-    #fn_mcd = '/mnt/imls-bod/VitoZ/Spheres/20161130_p25_slide2_ac1/20161130_p25_slide2_ac1.mcd'
-    #fn_mcd='/mnt/imls-bod/VitoZ/Spheres/20161005_IS2362_4_site1_ac1/20161005_IS2362_4_site1_ac1.mcd'
-    # an example of not functional mcd but working txt
-    # fn_mcd = /mnt/imls-bod/DanielS/ACD/IMC\ 2.06/Her2_grade3
-    fn_mcd ='/mnt/imls-bod/VitoZ/Spheres/20161018_OCT1_slide4_ac1/20161018_OCT1_slide4_ac1.mcd'
-    mcd = mcdp.McdParser(fn_mcd)
-    mcd.save_meta_xml('/home/vitoz/temp/')
-    ifw = ImcFolderWriter('/home/vitoz/temp/', mcddata=mcd)
-    ifw.write_imc_folder()
-
-

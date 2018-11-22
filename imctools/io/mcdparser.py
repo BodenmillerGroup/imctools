@@ -38,17 +38,10 @@ from xml.dom import minidom
 # from imctools.io.mcdparserbase import McdParserBase
 from imctools.io.imcacquisition import ImcAcquisition
 from imctools.io.abstractparser import AbstractParser
-# from imctools.io.abstractparserbase import AcquisitionError
 from imctools.io.mcdxmlparser import McdXmlParser
 import imctools.io.mcdxmlparser as mcdmeta
 
 import imctools.exceptions
-
-from imctools.io.imcacquisitionbase import ImcAcquisitionBase
-from imctools.io.abstractparserbase import AbstractParserBase
-from imctools.io.mcdxmlparser import McdXmlParser
-import imctools.io.mcdxmlparser as mcdmeta
-from imctools.io.abstractparserbase import AcquisitionError
 
 from collections import defaultdict
 
