@@ -1,7 +1,25 @@
 #!/usr/bin/env python
+# Copyright (C) 2018-2019 University of Zurich. All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+__docformat__ = 'reStructuredText'
+
+
 import tifffile
-from scipy import ndimage as ndi
-from imctools import library as lib
+# from scipy import ndimage as ndi
+# from imctools import library as lib
 import argparse
 import os
 import numpy as np
@@ -32,6 +50,7 @@ def resize_image(fn_stack, outfolder, basename, scalefactor):
             timg = transform.rescale(timg, scalefactor, preserve_range=True, order=3)
             tif.save(timg.astype(np.float32).squeeze())
 
+
 if __name__ == "__main__":
     # Setup the command line arguments
     parser = argparse.ArgumentParser(
@@ -48,10 +67,6 @@ if __name__ == "__main__":
 
     parser.add_argument('--basename', type=str, default=None,
                         help='Basename for the output image. Default: image_filename')
-
-    # parser.add_argument('--postfix', type=str, default=None,
-    #                     help='Postfix to append to the basename.'
-    #                     )
 
     args = parser.parse_args()
 

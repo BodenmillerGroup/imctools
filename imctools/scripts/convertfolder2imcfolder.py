@@ -1,4 +1,19 @@
 #! /usr/bin/env python
+# Copyright (C) 2018-2019 University of Zurich. All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 from imctools.io.mcdparser import McdParser
 from imctools.io.txtparser import TxtParser
 from imctools.external import temporarydirectory
@@ -11,31 +26,49 @@ MCD_FILENDING = '.mcd'
 ZIP_FILENDING = '.zip'
 SCHEMA_FILENDING = '.schema'
 
-def convert_folder2imcfolder(fol, out_folder, dozip=True):
+def unzip_dataset(dataset):
+    """
+    Creates tmp folder where dataset
+    gets unzipped.
+    Returns location of unzipped folder.
+    Raise Exception if fails.
+    """
+
+    tmpdir = temporarydirectory.TemporaryDirectory()
+    with zipfile.ZipFile(dataset) as zipf:
+        zipf.extractall(tmpdir.name)
+    return (tmpdir.name,tmpdir)
+
+def convert_folder2imcfolder(dataset_ref, out_folder, dozip=True):
     """
     Convert a folder containing IMC acquisitions
     (mcd and tiff)
     to a zipfolder containing standardized names files.
+    Note: `dozip` should be dropped.
     """
-    if fol.endswith(ZIP_FILENDING):
-        tmpdir = temporarydirectory.TemporaryDirectory()
-        with zipfile.ZipFile(fol) as zipf:
-            zipf.extractall(tmpdir.name)
-        in_fol = tmpdir.name
-        istmp = True
-    else:
-        in_fol = fol
-        istmp = False
     
-    try:
-        files = [os.path.join(root, fn) for root, dirs, files in os.walk(in_fol) for fn in files]
-        mcd_files = [f for f in files
-                     if f.endswith(MCD_FILENDING)]
-        assert(len(mcd_files) == 1)
-        schema_files = [f for f in files if f.endswith(SCHEMA_FILENDING)]
-        if len(schema_files) > 0:
-            schema_file = schema_files[0]
-        else:
+    if fol.endswith(ZIP_FILENDING):
+        try:
+            (dataset_loc,tmpdir) = _unzip_dataset(dataset_ref)
+            return _convert2imc_folder(dataset_loc)
+        finally:
+            tmpdir.cleanup()
+    else:
+        return _convert2imc_folder(dataset_ref)
+
+def _convert2imc_folder(dataset_loc):
+    """
+    """
+    files = [os.path.join(root, fn) for root, dirs, files in os.walk(dataset_loc) for fn in files]
+    mcd_files = [f for f in files
+                 if f.endswith(MCD_FILENDING)]
+
+    assert(len(mcd_files) == 1), "FATAL: Found more than 1 {0} files".format(MCD_FILENDING)
+
+    schema_files = [f for f in files if f.endswith(SCHEMA_FILENDING)]
+    if len(schema_files) > 0:
+        schema_file = schema_files[0]
+    else:
             schema_file = None
         mcd = McdParser(mcd_files[0], metafilename=schema_file)
         txt_acids = {_txtfn_to_ac(f): f
@@ -63,7 +96,7 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
 
 
 def _txtfn_to_ac(fn):
-    return TxtParser._txtfn_to_ac(fn)
+    return TxtParser.txtfn_to_ac(fn)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
