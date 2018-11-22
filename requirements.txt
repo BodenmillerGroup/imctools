@@ -1,3 +1,7 @@
 nose
 sphinx
 numpy
+scipy
+matplotlib
+scikit-image
+pandas
