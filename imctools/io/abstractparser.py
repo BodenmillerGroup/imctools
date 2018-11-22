@@ -17,7 +17,6 @@ Creates the basic parser interface
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-__docformat__ = 'reStructuredText'
 
 from __future__ import with_statement, division
 import array
@@ -27,6 +26,8 @@ try:
     _have_numpy = True
 except ImportError as ix:
     _have_numpy = False
+
+__docformat__ = 'reStructuredText'
 
 class AbstractParser(object):
     """

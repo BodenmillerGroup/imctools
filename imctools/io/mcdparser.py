@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-__docformat__ = 'reStructuredText'
-
 from __future__ import with_statement, division
 
 import struct
@@ -44,6 +42,9 @@ import imctools.io.mcdxmlparser as mcdmeta
 import imctools.exceptions
 
 from collections import defaultdict
+
+__docformat__ = 'reStructuredText'
+
 
 class McdSchema():
     """
