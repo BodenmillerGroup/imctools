@@ -1,6 +1,6 @@
 import os
 
-import imctools.io.mcdparserbase as mcdparserbase
+import imctools.io.mcdparser as mcdparser
 import pickle
 import time
 
@@ -12,7 +12,7 @@ class ParsingTestMCD(object):
 
     Thus the testcase can be reloaded for testing and compared to an
     the results from changed implementation. This should help to find
-    unwanted changes in the outhe results from changed implementation. 
+    unwanted changes in the outhe results from changed implementation.
     This should help to find unwanted changes in the output/api.
     """
     def __init__(self, example_fn):
@@ -21,12 +21,12 @@ class ParsingTestMCD(object):
 
     def read_mcd(self, path, Parser=None):
         if Parser is None:
-            Parser = mcdparserbase.McdParserBase
+            Parser = mcdparser.McdParser
         self.mcd = Parser(path)
         self.populate_testdict()
         self.mcd.close()
 
-    
+
     def read_testdict_pickle(self, path):
         self.load_testdict_pickle(path)
 
@@ -53,7 +53,7 @@ class ParsingTestMCD(object):
     def load_testdict_pickle(self, path):
         with open(path, 'rb') as f:
             self.testdict = pickle.load(f)
-        
+
 
     def dump_testdict_pickle(self, path):
         sep = '_'
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         args.out_folder = os.path.split(args.imc_filename)[0]
 
     filename = os.path.split(args.imc_filename)[1]
-    
+
     test = ParsingTestMCD(filename)
     test.read_mcd(args.imc_filename)
     test.dump_testdict_pickle(args.out_folder)

@@ -2,22 +2,11 @@ import unittest
 import platform
 
 if (platform.system()  != 'Java'):
-    from imctools.io import abstractparserbase
     from imctools.io import abstractparser
     import numpy as np
 
     class BasicTestSuite(unittest.TestCase):
         """Basic test cases."""
-
-        def test_reshape_long_2_cxy_base(self):
-            """
-            Assert that the reshaping from long to cxy image goes correctly in the base reshaping
-            :return:
-            """
-
-            abstparsbase = abstractparserbase.AbstractParserBase()
-            self._reshape_tests(abstparsbase._reshape_long_2_cyx)
-
         def test_reshape_long_2_cxy(self):
             """
             Assert that the reshaping from long to cxy image goes correctly in the numpy based reshaping
