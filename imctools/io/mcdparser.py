@@ -28,7 +28,11 @@ try:
 except ImportError as ix:
     _have_numpy = False
 
-import mmap
+try:
+    import mmap
+    _have_mmap = True
+except ImportError as ix:
+    _have_mmap = False
 
 import xml.etree.ElementTree as et
 from xml.dom import minidom
@@ -52,24 +56,24 @@ class McdSchema():
     """
 
     def __init__(self, schema_file):
-        self.schema = schema_file
+        self.schema_file = schema_file
 
     def get_xml(self, start_str='<MCDSchema', stop_str='</MCDSchema>'):
         if _have_mmap:
-            return self._get_xml_delimiters_with_mmap(start_str,stop_str)
+            return self._get_xml_with_mmap(start_str,stop_str)
         else:
-            return self._get_xml_delimiters_without_mmap(start_str,stop_str)
+            return self._get_xml_without_mmap(start_str,stop_str)
 
 
     def _get_xml_without_mmap(self, start_str, stop_str):
-        with open(schema_file) as f:
+        with open(self.schema_file) as f:
             xml_start = self._reverse_find_in_buffer(f, start_str.encode('utf-8'))
             if xml_start:
                 start_str = self._add_nullbytes(start_str)
                 xml_start = self._reverse_find_in_buffer(f, start_str.encode('utf-8'))
-                
+
             assert xml_start, "Invalid MCD file {0}: xml start tag not found".format(self.schema_file)
-                
+
             xml_stop = self._reverse_find_in_buffer(f, stop_str.encode('utf-8'))
             if xml_stop:
                 stop_str = self._add_nullbytes(stop_str)
@@ -84,7 +88,7 @@ class McdSchema():
             return et.fromstring(xml)
 
     def _get_xml_with_mmap(self, start_str, stop_str):
-        with open(schema_file) as f:
+        with open(self.schema_file) as f:
             mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
 
             xml_start = mm.rfind(start_str.encode('utf-8'))
@@ -106,7 +110,7 @@ class McdSchema():
             # This is for mcd schemas, where the namespace are often messed up.
             xml = xml.replace('diffgr:','').replace('msdata:','')
             return et.fromstring(xml)
-        
+
     def _add_nullbytes(self, buffer_str):
         """
         Adds nullbits between letters.
@@ -177,13 +181,13 @@ class McdParser(AbstractParser):
             # self._metafh = open(metafilename, mode='rb')
             self._metafh = metafilename
 
-        self.schema = Schema(self._metafh)
+        self.schema = McdSchema(self._metafh)
         self._xml = None
         self._ns = None
         self._acquisition_dict = None
         self.retrieve_mcd_xml()
         self.parse_mcd_xml()
-        
+
     @property
     def filename(self):
         "Return the name of the open file"
@@ -231,24 +235,24 @@ class McdParser(AbstractParser):
         f.seek(data_offset_start)
         buffer = f.read(data_size)
         return buffer
-        
 
-    def get_acquisition_rawdata_with_np(self, ac_id):
+
+    def get_acquisition_rawdata(self, ac_id):
         """
         Gets the unreshaped image data from the acquisition.
         :param ac_id: the acquisition id
-        :returns: the acquisition rawdata 
+        :returns: the acquisition rawdata
         """
         if _have_numpy:
             return self._get_acquisition_rawdata_with_np(ac_id)
         else:
-            return sel._get_acquisition_rawdata_without_np(ac_id)
+            return self._get_acquisition_rawdata_without_np(ac_id)
 
     def _get_acquisition_rawdata_with_np(self, ac_id):
         """
         Gets the unreshaped image data from the acquisition.
         :param ac_id: the acquisition id
-        :returns: the acquisition rawdata 
+        :returns: the acquisition rawdata
         """
         ac = self.meta.get_acquisitions()[ac_id]
         data_offset_start = ac.data_offset_start
@@ -259,7 +263,7 @@ class McdParser(AbstractParser):
 
         if n_rows == 0:
             raise imctools.exceptions.AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
-        
+
         data = np.memmap(self._fh, dtype='<f', mode='r',
                              offset=data_offset_start,
                              shape=(int(n_rows), n_channel))
@@ -281,7 +285,7 @@ class McdParser(AbstractParser):
         n_channel = ac.n_channels
         if n_rows == 0:
             raise AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
-        
+
         f.seek(data_offset_start)
         dat = array.array('f')
         dat.fromfile(f, (n_rows * n_channel))
@@ -300,7 +304,7 @@ class McdParser(AbstractParser):
         the schema data) with the real mcd file (not containing the mcd xml).
         """
         self.close()
-        self._fh = open(filename, mode='rb')
+        self._fh = filename
 
 
     def get_nchannels_acquisition(self, ac_id):
@@ -331,7 +335,7 @@ class McdParser(AbstractParser):
     @property
     def meta(self):
         return self._meta
-        
+
 
     @property
     def xml(self):
@@ -346,8 +350,7 @@ class McdParser(AbstractParser):
         :param start_str:
         :param stop_str:
         """
-        xml = self.schema.get_xml(start_str, stop_str)
-        self._xml = et.fromstring(xml)
+        self._xml = self.schema.get_xml(start_str, stop_str)
         self._ns = '{' + self._xml.tag.split('}')[0].strip('{')+'}'
 
     def get_imc_acquisition(self, ac_id, ac_description=None):
@@ -411,7 +414,7 @@ class McdParser(AbstractParser):
         slide_format = s.properties.get(mcdmeta.IMAGEFILE, default_format)
         if slide_format is None:
             slide_format = default_format
-            
+
         slide_format = os.path.splitext(slide_format.lower())
         if slide_format[1] == '':
             slide_format = slide_format[0]
@@ -438,7 +441,7 @@ class McdParser(AbstractParser):
 
         self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix,
                                        start_offkey, end_offkey, fn_out)
-        
+
     def save_acquisition_bfimage_after(self, ac_id, out_folder, fn_out=None):
         ac_postfix = 'after'
         start_offkey = mcdmeta.AFTERABLATIONIMAGESTARTOFFSET
@@ -491,16 +494,11 @@ class McdParser(AbstractParser):
 
 
     def close(self):
-        """Close the file handle."""
-        self._fh.close()
-        try:
-            self._metafh.close()
-        except:
-            pass
+        pass
 
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, traceback):
         self.close()
-        
+
