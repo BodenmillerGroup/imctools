@@ -1,9 +1,14 @@
 import unittest
 import platform
 
-if (platform.system()  != 'Java'):
-    from imctools.io import abstractparser
+try:
     import numpy as np
+    _have_numpy = True
+except ImportError as ix:
+    _have_numpy = False
+
+if _have_numpy:
+    from imctools.io import abstractparser
 
     class BasicTestSuite(unittest.TestCase):
         """Basic test cases."""

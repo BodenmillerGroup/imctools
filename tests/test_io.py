@@ -3,8 +3,13 @@ from .context import TestMcdParsing
 import unittest
 import warnings
 
-import platform
-if (platform.system()  != 'Java'):
+try:
+    import numpy as np
+    _have_numpy = True
+except ImportError as ix:
+    _have_numpy = False
+
+if _have_numpy:
     import imctools.io as imcio
     import numpy as np
 
