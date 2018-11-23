@@ -85,7 +85,7 @@ class McdSchema():
             f.seek(xml_start)
             xml = f.read(xml_stop-xml_start).decode('utf-8')
             xml = xml.replace('\x00','')
-            return et.fromstring(xml)
+        return et.fromstring(xml)
 
     def _get_xml_with_mmap(self, start_str, stop_str):
         with open(self.schema_file) as f:
@@ -275,24 +275,23 @@ class McdParser(AbstractParser):
         :param ac_id: the acquisition id
         :return: the acquisition XML
         """
-        f = self._fh
+        with open(self._fh, 'rb') as f:
+            ac = self.meta.get_acquisitions()[ac_id]
+            data_offset_start = ac.data_offset_start
+            data_offset_end = ac.data_offset_end
+            data_size = ac.data_size
+            n_rows = ac.data_nrows
+            n_channel = ac.n_channels
+            if n_rows == 0:
+                raise AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
 
-        ac = self.meta.get_acquisitions()[ac_id]
-        data_offset_start = ac.data_offset_start
-        data_offset_end = ac.data_offset_end
-        data_size = ac.data_size
-        n_rows = ac.data_nrows
-        n_channel = ac.n_channels
-        if n_rows == 0:
-            raise AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
-
-        f.seek(data_offset_start)
-        dat = array.array('f')
-        dat.fromfile(f, (n_rows * n_channel))
-        if sys.byteorder != 'little':
-            dat.byteswap()
-        data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
-                for row in range(n_rows)]
+            f.seek(data_offset_start)
+            dat = array.array('f')
+            dat.fromfile(f, (n_rows * n_channel))
+            if sys.byteorder != 'little':
+                dat.byteswap()
+            data = [dat[(row * n_channel):((row * n_channel) + n_channel)]
+                    for row in range(n_rows)]
         return data
 
     def _inject_imc_datafile(self, filename):
