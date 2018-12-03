@@ -95,7 +95,7 @@ def generate_analysisstacks(config):
                 continue
             basename = img.rstrip('.ome.tiff')
             print(img)
-            for stackconf in conf_stacks:
+            for stackconf in conf_stacks.values():
                 col = stackconf[c.ANALYSISSTACKS_STACKS_COLUMN]
                 suffix = stackconf[c.ANALYSISSTACKS_STACKS_SUFFIX]
                 kwargs = stackconf.get(c.ANALYSISSTACKS_STACKS_PARAMETERS, {})

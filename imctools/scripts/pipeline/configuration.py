@@ -11,15 +11,22 @@ OUTPUTFOLDERS_SUBFOLDERS = 'subfolders'
 OUTPUTFOLDERS_SUBFOLDERS_OME = 'ome'
 OUTPUTFOLDERS_SUBFOLDERS_CP = 'cpout'
 OUTPUTFOLDERS_SUBFOLDERS_ANALYSIS = 'analysis'
+OUTPUTFOLDERS_SUBFOLDERS_ILASTIK = 'ilastik'
+OUTPUTFOLDERS_SUBFOLDERS_HISTOCAT = 'histocat'
+OUTPUTFOLDERS_SUBFOLDERS_uncertainty = 'uncertainty'
 ANALYSISSTACKS = 'analysis_stack_generation'
 ANALYSISSTACKS_PANNEL = 'pannel'
 ANALYSISSTACKS_PANNEL_FN = 'csv_filename'
 ANALYSISSTACKS_PANNEL_METALCOL = 'metal_column'
 ANALYSISSTACKS_STACKS = 'stacks'
-ANALYSISSTACKS_STACKS_NAME = 'stack_name'
+ANALYSISSTACKS_STACKS_FULL = 'full'
+ANALYSISSTACKS_STACKS_ILASTIKCELL = 'ilastik_cell'
+
 ANALYSISSTACKS_STACKS_COLUMN = 'csv_column'
 ANALYSISSTACKS_STACKS_SUFFIX = 'suffix'
 ANALYSISSTACKS_STACKS_PARAMETERS = 'additional_parameters'
+
+FLAG_OPTIONAL = '# optional'
 
 conf_str = f"""
 # This section specifies the input files.
@@ -44,12 +51,12 @@ conf_str = f"""
         # The analysis subfolder will contain all the .zip files that are used for analysis.
         {OUTPUTFOLDERS_SUBFOLDERS_ANALYSIS}: 'analysis'
         # The ilastik folder will contain all the .hd5 files used for Ilastik Pixel classification.
-        ilastik: 'ilastik'
+        {OUTPUTFOLDERS_SUBFOLDERS_ILASTIK}: 'ilastik'
         # The uncertainty folder can contain the uncertainties that can be generated from the
         # probabiprobabilities from the Ilastik pixel classification.
-        uncertainty: 'uncertainty'
+        uncertainty: 'uncertainty' {FLAG_OPTIONAL}
         # The Histocat folder will contain the images in the HistoCat folder structure.
-        histocat: 'histocat'
+        {OUTPUTFOLDERS_SUBFOLDERS_HISTOCAT}: 'histocat' {FLAG_OPTIONAL}
 
 # This configuration saves different substacks of the acquired images in a format compatible for
 # analanalysis with CellProfiler and Ilastik.
@@ -66,8 +73,10 @@ conf_str = f"""
     # an 'ilastik' stack, containing only a subset of channels that contain information for the
     # pixelpixel classification used for segmentation.
     {ANALYSISSTACKS_STACKS}:
-        # The stack name indicated the name of the stack to be generated
-        - {ANALYSISSTACKS_STACKS_NAME}: 'full'
+        # This name indicates the name of the stack to be generated
+        # The "{ANALYSISSTACKS_STACKS_FULL}" stack is allways the stack that
+        # contains all the channels that should be measured for this experiment.
+        {ANALYSISSTACKS_STACKS_FULL}:
           # The stack column is the column that contains the boolean selection for the channels to
           # be used for this stack
           {ANALYSISSTACKS_STACKS_COLUMN}: 'full'
@@ -75,11 +84,13 @@ conf_str = f"""
           # stack in the later analysis.
           {ANALYSISSTACKS_STACKS_SUFFIX}: '_full'
 
-        - {ANALYSISSTACKS_STACKS_NAME}: 'ilastik'
+        # The "{ANALYSISSTACKS_STACKS_ILASTIKCELL}" stack contains all the channels that might help
+        # for cell segmentation pixel classification.
+        {ANALYSISSTACKS_STACKS_ILASTIKCELL}:
           {ANALYSISSTACKS_STACKS_COLUMN}: 'ilastik'
           {ANALYSISSTACKS_STACKS_SUFFIX}: '_ilastik'
           # With aditional stack parameters, keyword arguments used by the ometiff_2_analysis script
-          {ANALYSISSTACKS_STACKS_PARAMETERS}:
+          {ANALYSISSTACKS_STACKS_PARAMETERS}: {FLAG_OPTIONAL}
             # A commonly used one parameter to set is 'addsum', which will add the sum of all channels of the stack as
             # first channel of the stack, which is convenient for forground/background
             # discrimination in pixel classification.
