@@ -40,14 +40,13 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
             schema_file = None
         try:
             mcd = McdParser(mcd_files[0])
-            mcd_acs = mcd.get_all_imcacquistions()
         except:
             if schema_file is not None:
                 logging.exception('Mcd File corrupted, trying to rescue with schema file')
                 mcd = McdParser(mcd_files[0], metafilename=schema_file)
-                mcd_acs = mcd.get_all_imcacquistions()
             else:
                 raise
+        mcd_acs = mcd.get_all_imcacquistions()
 
         txt_acids = {_txtfn_to_ac(f): f
                    for f in files if f.endswith(TXT_FILENDING)}
