@@ -112,7 +112,7 @@ class McdParserBase(AbstractParserBase):
         n_channel = ac.n_channels
         if n_rows == 0:
             raise AcquisitionError('Acquisition ' + ac_id + ' emtpy!')
-        
+
         f.seek(data_offset_start)
         dat = array.array('f')
         dat.fromfile(f, (n_rows * n_channel))
@@ -162,7 +162,7 @@ class McdParserBase(AbstractParserBase):
     @property
     def meta(self):
         return self._meta
-        
+
 
     @property
     def xml(self):
@@ -260,12 +260,12 @@ class McdParserBase(AbstractParserBase):
         default_format = '.png'
 
         s = self.meta.get_object(mcdmeta.SLIDE, sid)
-        img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET,0)) + image_offestfix
-        img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET,0)) + image_offestfix
+        img_start = int(s.properties.get(mcdmeta.IMAGESTARTOFFSET, 0)) + image_offestfix
+        img_end = int(s.properties.get(mcdmeta.IMAGEENDOFFSET, 0)) + image_offestfix
         slide_format = s.properties.get(mcdmeta.IMAGEFILE, default_format)
-        if slide_format is None:
+        if (slide_format in [None, '', '""', "''"]):
             slide_format = default_format
-            
+
         slide_format = os.path.splitext(slide_format.lower())
         if slide_format[1] == '':
             slide_format = slide_format[0]
@@ -292,7 +292,7 @@ class McdParserBase(AbstractParserBase):
 
         self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix,
                                        start_offkey, end_offkey, fn_out)
-        
+
     def save_acquisition_bfimage_after(self, ac_id, out_folder, fn_out=None):
         ac_postfix = 'after'
         start_offkey = mcdmeta.AFTERABLATIONIMAGESTARTOFFSET
