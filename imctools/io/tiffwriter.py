@@ -58,7 +58,23 @@ class TiffWriter(object):
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=False):
+    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=None):
+        """
+        Saves the image as a tiff
+        :param mode: Specifies the tiff writing mode. Either 'imagej' or 'ome'
+                    for .ome.tiff's
+        :param compression: Tiff compression level.
+                            Default to 0 (no compression)
+                            Internaly compressed tiffs are more incompatible and
+                            not memory-mappable
+        :param dtype: dtype of the  output tiff.
+                      Default: take the dtype of the original data
+        :param bigtiff: should the tiff be writen as a 'bigtiff'?
+                        'bigtiff' support >4gb of data, but are less widely
+                        compatible.
+                        Default: for 'imagej' mode: False
+                                 for 'ome' mode: True
+        """
         #TODO: add original metadata somehow
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
@@ -69,9 +85,13 @@ class TiffWriter(object):
         img = change_dtype(img, dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
         if mode == 'imagej':
+            if bigtiff is None:
+                bigtiff=False
             tifffile.imsave(fn_out, img, compress=compression, imagej=True,
                             bigtiff=bigtiff)
         elif mode == 'ome':
+            if bigtiff is None:
+                bigtiff=True
             xml = self.get_xml(dtype=dtype)
             tifffile.imsave(fn_out, img, compress=compression, imagej=False,
                             description=xml, bigtiff=bigtiff)
