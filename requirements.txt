@@ -7,3 +7,4 @@ flake8
 pytest
 sphinx
 guzzle_sphinx_theme
+request

@@ -8,8 +8,6 @@ from urllib.request import urlretrieve
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from .generate_testcase import ParsingTestMCD
 
-# The testdata folder needs to be copied in the imctools root folder
-# in order for the tests to work.
 TEST_DATA_URL = 'https://dl.dropboxusercontent.com/s/c72yegz77toutjb/testdata.zip'
 TEST_DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'testdata')
 TEST_ACQUISITIONS = os.path.join(TEST_DATA_FOLDER, 'acquisitions')
