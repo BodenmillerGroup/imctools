@@ -31,7 +31,7 @@ class TestMcdParsing(unittest.TestCase):
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
             zip_ref.extractall(TEST_DATA_FOLDER)
 
-        fns_pickles = [f for f in os.listdir() if
+        fns_pickles = [f for f in os.listdir(TEST_RESULTS) if
                        f.endswith(EXT_RESULTS)]
         paths_mcd = []
         for root, dirs, files in os.walk(TEST_ACQUISITIONS):
