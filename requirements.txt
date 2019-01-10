@@ -1,4 +1,11 @@
-nose
 numpy
+tifffile>=0.13.5
+scikit-image
+scipy
+pandas
+flake8
+pytest
+pytest-benchmark
+pytest-cov
 sphinx
 guzzle_sphinx_theme

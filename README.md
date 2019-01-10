@@ -1,25 +1,29 @@
 # imctools
 
+[![Build Status](https://travis-ci.org/BodenmillerGroup/imctools.svg?branch=master)](https://travis-ci.org/BodenmillerGroup/imctools)
+
 An IMC file conversion tool that aims to convert IMC rawfiles (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler tiff files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
 
 Further imctools can directly work as a FIJI plugin, exploiting the Jython language. That allows that IMC data can be directly visualized in FIJI.
 
 For a description of the associated segmentation pipline, please visit: https://github.com/BodenmillerGroup/ImcSegmentationPipeline
 
-
 ## Features
-* MCD lazy data access using memorymaps
-* Full MCD metadata access
-* TXT file loading
-* OME-TIFF loading
-* OME-TIFF/TIFF export (including optional compression)
+
+- MCD lazy data access using memorymaps
+- Full MCD metadata access
+- TXT file loading
+- OME-TIFF loading
+- OME-TIFF/TIFF export (including optional compression)
 
 ## Prerequisites
-* The package is written for Python3, but should also work with Python2
-* The core functions have a 'base' pure Python/Jython implementation with no dependencies outside the standard libraries.
-* The fast functions do need Python packages, such as numpy, scipy etc. installed.
+
+- The package is written for Python3, but should also work with Python2
+- The core functions have a 'base' pure Python/Jython implementation with no dependencies outside the standard libraries.
+- The fast functions do need Python packages, such as numpy, scipy etc. installed.
 
 ## Installation
+
 Use the pip installation manger to directly install the package from Github:
 
 ```
@@ -27,6 +31,7 @@ pip install git+https://github.com/BodenmillerGroup/imctools.git
 ```
 
 ## Usage
+
 imctools is often used from jupyter as part of the preprocessing pipeline, mainly using the 'script' wrapper functions. Check 'notebooks/example_preprocessing_pipline.ipynb' as a template
 
 Further imctools can be directly used as a module:
@@ -63,7 +68,7 @@ fn_out ='/home/vitoz/temp/test.ome.tiff'
 img = imc_ac.get_image_writer(filename=fn_out, metals=['Ir191', 'Yb172'])
 img.save_image(mode='ome', compression=0, dtype=None, bigtiff=False)
 
-# as the mcd object is using lazy loading memory maps, it needs to be closed 
+# as the mcd object is using lazy loading memory maps, it needs to be closed
 # or used with a context manager.
 mcd.close()
 ```
