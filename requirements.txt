@@ -1,3 +1,4 @@
 nose
-sphinx
 numpy
+sphinx
+guzzle_sphinx_theme

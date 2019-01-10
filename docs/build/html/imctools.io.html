@@ -1,0 +1,776 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>imctools.io package &#8212; imctools 0.2.0 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="imctools.scripts package" href="imctools.scripts.html" />
+    <link rel="prev" title="imctools.imagej package" href="imctools.imagej.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="imctools.scripts.html" title="imctools.scripts package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="imctools.imagej.html" title="imctools.imagej package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">imctools 0.2.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Contents</h2>
+    <div class="sidebar-localtoc">
+      <ul>
+<li><a class="reference internal" href="#">imctools.io package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-imctools.io.abstractparser">imctools.io.abstractparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.abstractparserbase">imctools.io.abstractparserbase module</a></li>
+<li><a class="reference internal" href="#imctools-io-imcacquisition-module">imctools.io.imcacquisition module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.imcacquisitionbase">imctools.io.imcacquisitionbase module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.imcfolderwriter">imctools.io.imcfolderwriter module</a></li>
+<li><a class="reference internal" href="#imctools-io-mcdparser-module">imctools.io.mcdparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.mcdparserbase">imctools.io.mcdparserbase module</a></li>
+<li><a class="reference internal" href="#imctools-io-mcdparsercpp-module">imctools.io.mcdparsercpp module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.mcdxmlparser">imctools.io.mcdxmlparser module</a></li>
+<li><a class="reference internal" href="#imctools-io-omeparserbase-module">imctools.io.omeparserbase module</a></li>
+<li><a class="reference internal" href="#imctools-io-ometiffparser-module">imctools.io.ometiffparser module</a></li>
+<li><a class="reference internal" href="#imctools-io-tiffwriter-module">imctools.io.tiffwriter module</a></li>
+<li><a class="reference internal" href="#imctools-io-txtparser-module">imctools.io.txtparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.txtparserbase">imctools.io.txtparserbase module</a></li>
+<li><a class="reference internal" href="#module-imctools.io">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+</div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="imctools.imagej.html"
+                        title="previous chapter">imctools.imagej package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="imctools.scripts.html"
+                        title="next chapter">imctools.scripts package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/imctools.io.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>imctools.io package</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="imctools-io-package">
+<h1>imctools.io package<a class="headerlink" href="#imctools-io-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-imctools.io.abstractparser">
+<span id="imctools-io-abstractparser-module"></span><h2>imctools.io.abstractparser module<a class="headerlink" href="#module-imctools.io.abstractparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.abstractparser.AbstractParser">
+<em class="property">class </em><code class="descclassname">imctools.io.abstractparser.</code><code class="descname">AbstractParser</code><a class="headerlink" href="#imctools.io.abstractparser.AbstractParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparserbase.AbstractParserBase" title="imctools.io.abstractparserbase.AbstractParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparserbase.AbstractParserBase</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io.abstractparserbase">
+<span id="imctools-io-abstractparserbase-module"></span><h2>imctools.io.abstractparserbase module<a class="headerlink" href="#module-imctools.io.abstractparserbase" title="Permalink to this headline">¶</a></h2>
+<p>Creates the basic parser interface</p>
+<dl class="class">
+<dt id="imctools.io.abstractparserbase.AbstractParserBase">
+<em class="property">class </em><code class="descclassname">imctools.io.abstractparserbase.</code><code class="descname">AbstractParserBase</code><a class="headerlink" href="#imctools.io.abstractparserbase.AbstractParserBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="imctools.io.abstractparserbase.AbstractParserBase.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.abstractparserbase.AbstractParserBase.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="imctools.io.abstractparserbase.AcquisitionError">
+<em class="property">exception </em><code class="descclassname">imctools.io.abstractparserbase.</code><code class="descname">AcquisitionError</code><a class="headerlink" href="#imctools.io.abstractparserbase.AcquisitionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An error with the acquisition</p>
+</dd></dl>
+
+</div>
+<div class="section" id="imctools-io-imcacquisition-module">
+<h2>imctools.io.imcacquisition module<a class="headerlink" href="#imctools-io-imcacquisition-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-imctools.io.imcacquisitionbase">
+<span id="imctools-io-imcacquisitionbase-module"></span><h2>imctools.io.imcacquisitionbase module<a class="headerlink" href="#module-imctools.io.imcacquisitionbase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase">
+<em class="property">class </em><code class="descclassname">imctools.io.imcacquisitionbase.</code><code class="descname">ImcAcquisitionBase</code><span class="sig-paren">(</span><em>image_ID</em>, <em>original_file</em>, <em>data</em>, <em>channel_metal</em>, <em>channel_labels</em>, <em>original_metadata=None</em>, <em>image_description=None</em>, <em>origin=None</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>An Image Acquisition Object representing a single acquisition</p>
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_labels">
+<code class="descname">channel_labels</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_mass">
+<code class="descname">channel_mass</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_mass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_metals">
+<code class="descname">channel_metals</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.channel_metals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.data">
+<code class="descname">data</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_channel_nr">
+<code class="descname">get_img_by_channel_nr</code><span class="sig-paren">(</span><em>chan</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_channel_nr" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>chan</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_label">
+<code class="descname">get_img_by_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_metal">
+<code class="descname">get_img_by_metal</code><span class="sig-paren">(</span><em>metal</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_by_metal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_stack_cyx">
+<code class="descname">get_img_stack_cyx</code><span class="sig-paren">(</span><em>channel_idxs=None</em>, <em>offset=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_img_stack_cyx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the data reshaped as a stack of images
+:param: channel_idxs
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_mass_indices">
+<code class="descname">get_mass_indices</code><span class="sig-paren">(</span><em>masslist</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_mass_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the channel indices from the queried mass
+:param masslist:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_metal_indices">
+<code class="descname">get_metal_indices</code><span class="sig-paren">(</span><em>metallist</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.get_metal_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with the indices in the metals from metallist
+:param metallist: List of metal names
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.n_channels">
+<code class="descname">n_channels</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.n_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.original_filename">
+<code class="descname">original_filename</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.original_filename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.shape">
+<code class="descname">shape</code><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisitionbase.ImcAcquisitionBase.validate_channels">
+<code class="descname">validate_channels</code><span class="sig-paren">(</span><em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase.validate_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io.imcfolderwriter">
+<span id="imctools-io-imcfolderwriter-module"></span><h2>imctools.io.imcfolderwriter module<a class="headerlink" href="#module-imctools.io.imcfolderwriter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.imcfolderwriter.ImcFolderWriter">
+<em class="property">class </em><code class="descclassname">imctools.io.imcfolderwriter.</code><code class="descname">ImcFolderWriter</code><span class="sig-paren">(</span><em>out_folder</em>, <em>mcddata=None</em>, <em>imcacquisitions=None</em>, <em>mcdmeta=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcfolderwriter.ImcFolderWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to write an imc folder</p>
+<dl class="method">
+<dt id="imctools.io.imcfolderwriter.ImcFolderWriter.add_imcacquisitions">
+<code class="descname">add_imcacquisitions</code><span class="sig-paren">(</span><em>imcacquisitions</em>, <em>append=False</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcfolderwriter.ImcFolderWriter.add_imcacquisitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcfolderwriter.ImcFolderWriter.add_mcddata">
+<code class="descname">add_mcddata</code><span class="sig-paren">(</span><em>mcddata</em>, <em>add_acquisitions=True</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcfolderwriter.ImcFolderWriter.add_mcddata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.imcfolderwriter.ImcFolderWriter.foldername">
+<code class="descname">foldername</code><a class="headerlink" href="#imctools.io.imcfolderwriter.ImcFolderWriter.foldername" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcfolderwriter.ImcFolderWriter.write_imc_folder">
+<code class="descname">write_imc_folder</code><span class="sig-paren">(</span><em>zipfolder=True</em>, <em>remove_folder=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcfolderwriter.ImcFolderWriter.write_imc_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="imctools-io-mcdparser-module">
+<h2>imctools.io.mcdparser module<a class="headerlink" href="#imctools-io-mcdparser-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-imctools.io.mcdparserbase">
+<span id="imctools-io-mcdparserbase-module"></span><h2>imctools.io.mcdparserbase module<a class="headerlink" href="#module-imctools.io.mcdparserbase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.mcdparserbase.McdParserBase">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdparserbase.</code><code class="descname">McdParserBase</code><span class="sig-paren">(</span><em>filename</em>, <em>filehandle=None</em>, <em>metafilename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparserbase.AbstractParserBase" title="imctools.io.abstractparserbase.AbstractParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparserbase.AbstractParserBase</span></code></a></p>
+<p>Parsing data from Fluidigm MCD files</p>
+<p>The McdParser object should be closed using the close
+:param object:
+:return:</p>
+<dl class="attribute">
+<dt id="imctools.io.mcdparserbase.McdParserBase.acquisition_ids">
+<code class="descname">acquisition_ids</code><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.acquisition_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquisition IDs
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the file handle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdparserbase.McdParserBase.filename">
+<code class="descname">filename</code><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the name of the open file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_acquisition_buffer">
+<code class="descname">get_acquisition_buffer</code><span class="sig-paren">(</span><em>ac_id</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_acquisition_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the raw buffer for the acquisition
+:param ac_id: the acquisition id
+:return: the acquisition buffer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_acquisition_channels">
+<code class="descname">get_acquisition_channels</code><span class="sig-paren">(</span><em>ac_id</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_acquisition_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dict with the channel metadata
+:param ac_id: acquisition ID
+:return: dict with key: channel_nr, value: (channel_name, channel_label)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_acquisition_description">
+<code class="descname">get_acquisition_description</code><span class="sig-paren">(</span><em>ac_id</em>, <em>default=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_acquisition_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the description field of the acquisition
+:param ac_id:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_acquisition_rawdata">
+<code class="descname">get_acquisition_rawdata</code><span class="sig-paren">(</span><em>ac_id</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_acquisition_rawdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the acquisition XML of the acquisition with the id
+:param ac_id: the acquisition id
+:return: the acquisition XML</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_all_imcacquistions">
+<code class="descname">get_all_imcacquistions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_all_imcacquistions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all nonempty imc_acquisitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><em>ac_id</em>, <em>ac_description=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.get_nchannels_acquisition">
+<code class="descname">get_nchannels_acquisition</code><span class="sig-paren">(</span><em>ac_id</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.get_nchannels_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of channels in an acquisition
+:param ac_id:
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdparserbase.McdParserBase.meta">
+<code class="descname">meta</code><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.meta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdparserbase.McdParserBase.n_acquisitions">
+<code class="descname">n_acquisitions</code><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.n_acquisitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of acquisitions in the file
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.parse_mcd_xml">
+<code class="descname">parse_mcd_xml</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.parse_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the mcd xml into a metadata object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.retrieve_mcd_xml">
+<code class="descname">retrieve_mcd_xml</code><span class="sig-paren">(</span><em>start_str='&lt;MCDSchema'</em>, <em>stop_str='&lt;/MCDSchema&gt;'</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.retrieve_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the MCD metadata XML in the binary.
+As suggested in the specifications the file is parsed from the end.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fn</strong> – </li>
+<li><strong>start_str</strong> – </li>
+<li><strong>stop_str</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.save_acquisition_bfimage_after">
+<code class="descname">save_acquisition_bfimage_after</code><span class="sig-paren">(</span><em>ac_id</em>, <em>out_folder</em>, <em>fn_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.save_acquisition_bfimage_after" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.save_acquisition_bfimage_before">
+<code class="descname">save_acquisition_bfimage_before</code><span class="sig-paren">(</span><em>ac_id</em>, <em>out_folder</em>, <em>fn_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.save_acquisition_bfimage_before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.save_meta_xml">
+<code class="descname">save_meta_xml</code><span class="sig-paren">(</span><em>out_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.save_meta_xml" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.save_panorama">
+<code class="descname">save_panorama</code><span class="sig-paren">(</span><em>pid</em>, <em>out_folder</em>, <em>fn_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.save_panorama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save all the panorma images of the acquisition
+:param out_folder: the output folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparserbase.McdParserBase.save_slideimage">
+<code class="descname">save_slideimage</code><span class="sig-paren">(</span><em>sid</em>, <em>out_folder</em>, <em>fn_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.save_slideimage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdparserbase.McdParserBase.xml">
+<code class="descname">xml</code><a class="headerlink" href="#imctools.io.mcdparserbase.McdParserBase.xml" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="imctools-io-mcdparsercpp-module">
+<h2>imctools.io.mcdparsercpp module<a class="headerlink" href="#imctools-io-mcdparsercpp-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-imctools.io.mcdxmlparser">
+<span id="imctools-io-mcdxmlparser-module"></span><h2>imctools.io.mcdxmlparser module<a class="headerlink" href="#module-imctools.io.mcdxmlparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.Acquisition">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">Acquisition</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Acquisition.data_nrows">
+<code class="descname">data_nrows</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.data_nrows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Acquisition.data_offset_end">
+<code class="descname">data_offset_end</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.data_offset_end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Acquisition.data_offset_start">
+<code class="descname">data_offset_start</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.data_offset_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Acquisition.data_size">
+<code class="descname">data_size</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.data_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.Acquisition.get_channel_orderdict">
+<code class="descname">get_channel_orderdict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.get_channel_orderdict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.Acquisition.get_channels">
+<code class="descname">get_channels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Acquisition.n_channels">
+<code class="descname">n_channels</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Acquisition.n_channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.AcquisitionRoi">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">AcquisitionRoi</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.AcquisitionRoi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.Channel">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">Channel</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="imctools.io.mcdxmlparser.META_CSV">
+<code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">META_CSV</code><em class="property"> = '_meta.csv'</em><a class="headerlink" href="#imctools.io.mcdxmlparser.META_CSV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of all the meta objects
+Each entity will have a class corresponding to it, with helpermethods
+that e.g. allow to retrieve images etc.</p>
+<p>This is implemented as parent-child relationships where each entry has a list of parents
+and a nested dictionary of children of the form (child_type: childID: childobject)</p>
+<p>Further each object is registered in the global root node, making them easy accessible.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">McdXmlParser</code><span class="sig-paren">(</span><em>xml</em>, <em>filename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+<p>Represents the full mcd xml</p>
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_acquisition_meta">
+<code class="descname">get_acquisition_meta</code><span class="sig-paren">(</span><em>acid</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_acquisition_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the acquisition metadata dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_acquisition_rois">
+<code class="descname">get_acquisition_rois</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_acquisition_rois" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets a list of all acuisitionROIs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_acquisitions">
+<code class="descname">get_acquisitions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_acquisitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets a list of all acquisitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_channels">
+<code class="descname">get_channels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets a list of all channels</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_object">
+<code class="descname">get_object</code><span class="sig-paren">(</span><em>mtype</em>, <em>mid</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an object defined by type and id
+:param mtype: object type
+:param mid: object id
+:returns: the requested object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_objects_by_id">
+<code class="descname">get_objects_by_id</code><span class="sig-paren">(</span><em>idname</em>, <em>objid</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_objects_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets objects by idname and id
+:param idname: an name of an id registered in the ID_DICT
+:param objid: the id of the object
+:returns: the described object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_panoramas">
+<code class="descname">get_panoramas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_panoramas" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a list of all panoramas</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.get_roipoints">
+<code class="descname">get_roipoints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.get_roipoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a list of all roipoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.metaname">
+<code class="descname">metaname</code><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.metaname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.save_meta_csv">
+<code class="descname">save_meta_csv</code><span class="sig-paren">(</span><em>out_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.save_meta_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the xml data as csv tables</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.McdXmlParser.save_meta_xml">
+<code class="descname">save_meta_xml</code><span class="sig-paren">(</span><em>out_folder</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.McdXmlParser.save_meta_xml" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.Meta">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">Meta</code><span class="sig-paren">(</span><em>mtype</em>, <em>meta</em>, <em>parents</em>, <em>symbol=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an abstract metadata object.</p>
+<dl class="method">
+<dt id="imctools.io.mcdxmlparser.Meta.get_root">
+<code class="descname">get_root</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Meta.get_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the root node of this metadata
+tree</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Meta.is_root">
+<code class="descname">is_root</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Meta.is_root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.mcdxmlparser.Meta.metaname">
+<code class="descname">metaname</code><a class="headerlink" href="#imctools.io.mcdxmlparser.Meta.metaname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.Panorama">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">Panorama</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Panorama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.RoiPoint">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">RoiPoint</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.RoiPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="imctools.io.mcdxmlparser.Slide">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdxmlparser.</code><code class="descname">Slide</code><span class="sig-paren">(</span><em>meta</em>, <em>parents</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdxmlparser.Slide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.mcdxmlparser.Meta" title="imctools.io.mcdxmlparser.Meta"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdxmlparser.Meta</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="imctools-io-omeparserbase-module">
+<h2>imctools.io.omeparserbase module<a class="headerlink" href="#imctools-io-omeparserbase-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="imctools-io-ometiffparser-module">
+<h2>imctools.io.ometiffparser module<a class="headerlink" href="#imctools-io-ometiffparser-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="imctools-io-tiffwriter-module">
+<h2>imctools.io.tiffwriter module<a class="headerlink" href="#imctools-io-tiffwriter-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="imctools-io-txtparser-module">
+<h2>imctools.io.txtparser module<a class="headerlink" href="#imctools-io-txtparser-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-imctools.io.txtparserbase">
+<span id="imctools-io-txtparserbase-module"></span><h2>imctools.io.txtparserbase module<a class="headerlink" href="#module-imctools.io.txtparserbase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.txtparserbase.TxtParserBase">
+<em class="property">class </em><code class="descclassname">imctools.io.txtparserbase.</code><code class="descname">TxtParserBase</code><span class="sig-paren">(</span><em>filename</em>, <em>filehandle=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparserbase.AbstractParserBase" title="imctools.io.abstractparserbase.AbstractParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparserbase.AbstractParserBase</span></code></a></p>
+<p>Loads and strores an IMC .txt file</p>
+<dl class="attribute">
+<dt id="imctools.io.txtparserbase.TxtParserBase.ac_id">
+<code class="descname">ac_id</code><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.ac_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="imctools.io.txtparserbase.TxtParserBase.clean_channel_metals">
+<em class="property">static </em><code class="descname">clean_channel_metals</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.clean_channel_metals" title="Permalink to this definition">¶</a></dt>
+<dd><p>clean the names to be nice
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.txtparserbase.TxtParserBase.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the imc acquisition object
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.txtparserbase.TxtParserBase.parse_csv">
+<code class="descname">parse_csv</code><span class="sig-paren">(</span><em>txtfile</em>, <em>first_col=3</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.parse_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.txtparserbase.TxtParserBase.parse_csv2">
+<code class="descname">parse_csv2</code><span class="sig-paren">(</span><em>txtfile</em>, <em>first_col=3</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.parse_csv2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.txtparserbase.TxtParserBase.parse_csv3">
+<code class="descname">parse_csv3</code><span class="sig-paren">(</span><em>txtfile</em>, <em>first_col=3</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparserbase.TxtParserBase.parse_csv3" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fastest  csv parser so far
+:param filename:
+:param first_col: First column to consider
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-imctools.io" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.io.change_dtype">
+<code class="descclassname">imctools.io.</code><code class="descname">change_dtype</code><span class="sig-paren">(</span><em>array</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.change_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the dtype of an array</p>
+<p>This makes sure that the values are correctly truncated and rounded
+to fit into the new dtype.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> – a numpy array</li>
+<li><strong>dtypw</strong> – a numpy dtype</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a copy of the array with the correct dtype.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="imctools.imagej.html" title="previous chapter (use the left arrow)">imctools.imagej package</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="imctools.scripts.html" title="next chapter (use the right arrow)">imctools.scripts package</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="imctools.scripts.html" title="imctools.scripts package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="imctools.imagej.html" title="imctools.imagej package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">imctools 0.2.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2019, Vito Zanotelli. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>
