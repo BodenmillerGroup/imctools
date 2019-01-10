@@ -3,13 +3,15 @@ import os
 import sys
 import unittest
 import zipfile
-from urllib.request import urlretrieve
+
+try:
+    import urllib.request as urlrequest
+except ImportError:
+    import urllib as urlrequest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from .generate_testcase import ParsingTestMCD
 
-# The testdata folder needs to be copied in the imctools root folder
-# in order for the tests to work.
 TEST_DATA_URL = 'https://dl.dropboxusercontent.com/s/c72yegz77toutjb/testdata.zip'
 TEST_DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'testdata')
 TEST_ACQUISITIONS = os.path.join(TEST_DATA_FOLDER, 'acquisitions')
@@ -24,12 +26,12 @@ class TestMcdParsing(unittest.TestCase):
     def get_testcases(self):
         zip_file = os.path.join(TEST_DATA_FOLDER, 'testdata.zip')
         if not os.path.isfile(zip_file):
-            urlretrieve(TEST_DATA_URL, zip_file)
+            urlrequest.urlretrieve(TEST_DATA_URL, zip_file)
 
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
             zip_ref.extractall(TEST_DATA_FOLDER)
 
-        fns_pickles = [f for f in os.listdir() if
+        fns_pickles = [f for f in os.listdir(TEST_RESULTS) if
                        f.endswith(EXT_RESULTS)]
         paths_mcd = []
         for root, dirs, files in os.walk(TEST_ACQUISITIONS):

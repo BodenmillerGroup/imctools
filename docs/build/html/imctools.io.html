@@ -65,17 +65,17 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-imctools.io.abstractparser">imctools.io.abstractparser module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.abstractparserbase">imctools.io.abstractparserbase module</a></li>
-<li><a class="reference internal" href="#imctools-io-imcacquisition-module">imctools.io.imcacquisition module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.imcacquisition">imctools.io.imcacquisition module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.imcacquisitionbase">imctools.io.imcacquisitionbase module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.imcfolderwriter">imctools.io.imcfolderwriter module</a></li>
-<li><a class="reference internal" href="#imctools-io-mcdparser-module">imctools.io.mcdparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.mcdparser">imctools.io.mcdparser module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.mcdparserbase">imctools.io.mcdparserbase module</a></li>
 <li><a class="reference internal" href="#imctools-io-mcdparsercpp-module">imctools.io.mcdparsercpp module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.mcdxmlparser">imctools.io.mcdxmlparser module</a></li>
-<li><a class="reference internal" href="#imctools-io-omeparserbase-module">imctools.io.omeparserbase module</a></li>
-<li><a class="reference internal" href="#imctools-io-ometiffparser-module">imctools.io.ometiffparser module</a></li>
-<li><a class="reference internal" href="#imctools-io-tiffwriter-module">imctools.io.tiffwriter module</a></li>
-<li><a class="reference internal" href="#imctools-io-txtparser-module">imctools.io.txtparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.omeparserbase">imctools.io.omeparserbase module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.ometiffparser">imctools.io.ometiffparser module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.tiffwriter">imctools.io.tiffwriter module</a></li>
+<li><a class="reference internal" href="#module-imctools.io.txtparser">imctools.io.txtparser module</a></li>
 <li><a class="reference internal" href="#module-imctools.io.txtparserbase">imctools.io.txtparserbase module</a></li>
 <li><a class="reference internal" href="#module-imctools.io">Module contents</a></li>
 </ul>
@@ -162,8 +162,35 @@
 </dd></dl>
 
 </div>
-<div class="section" id="imctools-io-imcacquisition-module">
-<h2>imctools.io.imcacquisition module<a class="headerlink" href="#imctools-io-imcacquisition-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.imcacquisition">
+<span id="imctools-io-imcacquisition-module"></span><h2>imctools.io.imcacquisition module<a class="headerlink" href="#module-imctools.io.imcacquisition" title="Permalink to this headline">¶</a></h2>
+<p>This defines the IMC acquisition base class</p>
+<dl class="class">
+<dt id="imctools.io.imcacquisition.ImcAcquisition">
+<em class="property">class </em><code class="descclassname">imctools.io.imcacquisition.</code><code class="descname">ImcAcquisition</code><span class="sig-paren">(</span><em>image_ID</em>, <em>original_file</em>, <em>data</em>, <em>channel_metal</em>, <em>channel_labels</em>, <em>original_metadata=None</em>, <em>image_description=None</em>, <em>origin=None</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisition.ImcAcquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.imcacquisitionbase.ImcAcquisitionBase" title="imctools.io.imcacquisitionbase.ImcAcquisitionBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.imcacquisitionbase.ImcAcquisitionBase</span></code></a></p>
+<p>An Image Acquisition Object representing a single acquisition</p>
+<dl class="method">
+<dt id="imctools.io.imcacquisition.ImcAcquisition.get_image_writer">
+<code class="descname">get_image_writer</code><span class="sig-paren">(</span><em>filename</em>, <em>metals=None</em>, <em>mass=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisition.ImcAcquisition.get_image_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an image writer with the right data
+:param filename:
+:param metals:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisition.ImcAcquisition.save_analysis_tiff">
+<code class="descname">save_analysis_tiff</code><span class="sig-paren">(</span><em>filename</em>, <em>metals=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisition.ImcAcquisition.save_analysis_tiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.imcacquisition.ImcAcquisition.save_image">
+<code class="descname">save_image</code><span class="sig-paren">(</span><em>filename</em>, <em>metals=None</em>, <em>mass=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imcacquisition.ImcAcquisition.save_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-imctools.io.imcacquisitionbase">
 <span id="imctools-io-imcacquisitionbase-module"></span><h2>imctools.io.imcacquisitionbase module<a class="headerlink" href="#module-imctools.io.imcacquisitionbase" title="Permalink to this headline">¶</a></h2>
@@ -294,8 +321,54 @@
 </dd></dl>
 
 </div>
-<div class="section" id="imctools-io-mcdparser-module">
-<h2>imctools.io.mcdparser module<a class="headerlink" href="#imctools-io-mcdparser-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.mcdparser">
+<span id="imctools-io-mcdparser-module"></span><h2>imctools.io.mcdparser module<a class="headerlink" href="#module-imctools.io.mcdparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.mcdparser.McdParser">
+<em class="property">class </em><code class="descclassname">imctools.io.mcdparser.</code><code class="descname">McdParser</code><span class="sig-paren">(</span><em>filename</em>, <em>filehandle=None</em>, <em>metafilename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparser.McdParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparser.AbstractParser" title="imctools.io.abstractparser.AbstractParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparser.AbstractParser</span></code></a>, <a class="reference internal" href="#imctools.io.mcdparserbase.McdParserBase" title="imctools.io.mcdparserbase.McdParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.mcdparserbase.McdParserBase</span></code></a></p>
+<p>Parsing data from Fluidigm MCD files</p>
+<p>The McdParser object should be closed using the close
+:param object:
+:return:</p>
+<dl class="method">
+<dt id="imctools.io.mcdparser.McdParser.get_acquisition_rawdata">
+<code class="descname">get_acquisition_rawdata</code><span class="sig-paren">(</span><em>ac_id</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparser.McdParser.get_acquisition_rawdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the unreshaped image data from the acquisition.
+:param ac_id: the acquisition id
+:returns: the acquisition rawdata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparser.McdParser.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><em>ac_id</em>, <em>ac_description=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparser.McdParser.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an ImcAcquisition object corresponding to the ac_id
+:param ac_id: The requested acquisition id
+:returns: an ImcAcquisition object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.mcdparser.McdParser.retrieve_mcd_xml">
+<code class="descname">retrieve_mcd_xml</code><span class="sig-paren">(</span><em>start_str='&lt;MCDSchema'</em>, <em>stop_str='&lt;/MCDSchema&gt;'</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcdparser.McdParser.retrieve_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the MCD metadata XML in the binary and updates the mcdparser object.
+As suggested in the specifications the file is parsed from the end.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fn</strong> – </li>
+<li><strong>start_str</strong> – </li>
+<li><strong>stop_str</strong> – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-imctools.io.mcdparserbase">
 <span id="imctools-io-mcdparserbase-module"></span><h2>imctools.io.mcdparserbase module<a class="headerlink" href="#module-imctools.io.mcdparserbase" title="Permalink to this headline">¶</a></h2>
@@ -639,17 +712,111 @@ tree</p>
 </dd></dl>
 
 </div>
-<div class="section" id="imctools-io-omeparserbase-module">
-<h2>imctools.io.omeparserbase module<a class="headerlink" href="#imctools-io-omeparserbase-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.omeparserbase">
+<span id="imctools-io-omeparserbase-module"></span><h2>imctools.io.omeparserbase module<a class="headerlink" href="#module-imctools.io.omeparserbase" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.omeparserbase.OmeParserBase">
+<em class="property">class </em><code class="descclassname">imctools.io.omeparserbase.</code><code class="descname">OmeParserBase</code><span class="sig-paren">(</span><em>data</em>, <em>ome</em>, <em>original_file=None</em>, <em>origin=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.omeparserbase.OmeParserBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparserbase.AbstractParserBase" title="imctools.io.abstractparserbase.AbstractParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparserbase.AbstractParserBase</span></code></a></p>
+<dl class="method">
+<dt id="imctools.io.omeparserbase.OmeParserBase.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.omeparserbase.OmeParserBase.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.omeparserbase.OmeParserBase.get_meta_dict">
+<code class="descname">get_meta_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.omeparserbase.OmeParserBase.get_meta_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-io-ometiffparser-module">
-<h2>imctools.io.ometiffparser module<a class="headerlink" href="#imctools-io-ometiffparser-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.ometiffparser">
+<span id="imctools-io-ometiffparser-module"></span><h2>imctools.io.ometiffparser module<a class="headerlink" href="#module-imctools.io.ometiffparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.ometiffparser.OmetiffParser">
+<em class="property">class </em><code class="descclassname">imctools.io.ometiffparser.</code><code class="descname">OmetiffParser</code><span class="sig-paren">(</span><em>original_file</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiffparser.OmetiffParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparser.AbstractParser" title="imctools.io.abstractparser.AbstractParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparser.AbstractParser</span></code></a>, <a class="reference internal" href="#imctools.io.omeparserbase.OmeParserBase" title="imctools.io.omeparserbase.OmeParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.omeparserbase.OmeParserBase</span></code></a></p>
+<p>Parses an ome tiff</p>
+<dl class="method">
+<dt id="imctools.io.ometiffparser.OmetiffParser.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiffparser.OmetiffParser.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Imc Acquisition object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.ometiffparser.OmetiffParser.read_image">
+<code class="descname">read_image</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiffparser.OmetiffParser.read_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-io-tiffwriter-module">
-<h2>imctools.io.tiffwriter module<a class="headerlink" href="#imctools-io-tiffwriter-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.tiffwriter">
+<span id="imctools-io-tiffwriter-module"></span><h2>imctools.io.tiffwriter module<a class="headerlink" href="#module-imctools.io.tiffwriter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.tiffwriter.TiffWriter">
+<em class="property">class </em><code class="descclassname">imctools.io.tiffwriter.</code><code class="descname">TiffWriter</code><span class="sig-paren">(</span><em>file_name</em>, <em>img_stack</em>, <em>pixeltype=None</em>, <em>channel_name=None</em>, <em>original_description=None</em>, <em>fluor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="imctools.io.tiffwriter.TiffWriter.get_xml">
+<code class="descname">get_xml</code><span class="sig-paren">(</span><em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.get_xml" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.tiffwriter.TiffWriter.nchannels">
+<code class="descname">nchannels</code><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.nchannels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.tiffwriter.TiffWriter.pixeltype_dict">
+<code class="descname">pixeltype_dict</code><em class="property"> = {dtype('uint8'): 'uint8', dtype('int16'): 'int16', dtype('uint16'): 'uint16', dtype('int32'): 'int32', dtype('uint32'): 'uint32', dtype('int64'): 'float', dtype('float32'): 'float', dtype('float64'): 'double'}</em><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.pixeltype_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="imctools.io.tiffwriter.TiffWriter.pixeltype_np">
+<code class="descname">pixeltype_np</code><em class="property"> = {'double': dtype('float64'), 'float': dtype('float32'), 'int16': dtype('int16'), 'int32': dtype('int32'), 'int8': dtype('int8'), 'uint16': dtype('uint16'), 'uint32': dtype('uint32'), 'uint8': dtype('uint8')}</em><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.pixeltype_np" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.tiffwriter.TiffWriter.save_image">
+<code class="descname">save_image</code><span class="sig-paren">(</span><em>mode='imagej'</em>, <em>compression=0</em>, <em>dtype=None</em>, <em>bigtiff=False</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.save_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-io-txtparser-module">
-<h2>imctools.io.txtparser module<a class="headerlink" href="#imctools-io-txtparser-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.io.txtparser">
+<span id="imctools-io-txtparser-module"></span><h2>imctools.io.txtparser module<a class="headerlink" href="#module-imctools.io.txtparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="imctools.io.txtparser.TxtParser">
+<em class="property">class </em><code class="descclassname">imctools.io.txtparser.</code><code class="descname">TxtParser</code><span class="sig-paren">(</span><em>filename</em>, <em>filehandle=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparser.TxtParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#imctools.io.abstractparser.AbstractParser" title="imctools.io.abstractparser.AbstractParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.abstractparser.AbstractParser</span></code></a>, <a class="reference internal" href="#imctools.io.txtparserbase.TxtParserBase" title="imctools.io.txtparserbase.TxtParserBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">imctools.io.txtparserbase.TxtParserBase</span></code></a></p>
+<p>Loads and strores an IMC .txt file</p>
+<dl class="staticmethod">
+<dt id="imctools.io.txtparser.TxtParser.clean_channel_metals">
+<em class="property">static </em><code class="descname">clean_channel_metals</code><span class="sig-paren">(</span><em>names</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparser.TxtParser.clean_channel_metals" title="Permalink to this definition">¶</a></dt>
+<dd><p>clean the names to be nice
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="imctools.io.txtparser.TxtParser.get_imc_acquisition">
+<code class="descname">get_imc_acquisition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txtparser.TxtParser.get_imc_acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the imc acquisition object
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-imctools.io.txtparserbase">
 <span id="imctools-io-txtparserbase-module"></span><h2>imctools.io.txtparserbase module<a class="headerlink" href="#module-imctools.io.txtparserbase" title="Permalink to this headline">¶</a></h2>
