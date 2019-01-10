@@ -7,8 +7,8 @@ from .generate_testcase import ParsingTestMCD
 
 # The testdata folder needs to be copied in the imctools root folder
 # in order for the tests to work.
-TEST_ACQUISITIONS = '../testdata/acquisitions/'
-TEST_RESULTS = '../testdata/test_results/'
+TEST_ACQUISITIONS = './testdata/acquisitions/'
+TEST_RESULTS = './testdata/test_results/'
 EXT_MCD = '.mcd'
 EXT_RESULTS = EXT_MCD + '.pickle'
 
