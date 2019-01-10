@@ -59,16 +59,16 @@
       <ul>
 <li><a class="reference internal" href="#">imctools.scripts package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#imctools-scripts-convertfolder2imcfolder-module">imctools.scripts.convertfolder2imcfolder module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.convertfolder2imcfolder">imctools.scripts.convertfolder2imcfolder module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-cropobjects-module">imctools.scripts.cropobjects module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-croprandomsection-module">imctools.scripts.croprandomsection module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-cropsection-module">imctools.scripts.cropsection module</a></li>
-<li><a class="reference internal" href="#imctools-scripts-exportacquisitioncsv-module">imctools.scripts.exportacquisitioncsv module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.exportacquisitioncsv">imctools.scripts.exportacquisitioncsv module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-generatedistancetospheres-module">imctools.scripts.generatedistancetospheres module</a></li>
-<li><a class="reference internal" href="#imctools-scripts-imc2tiff-module">imctools.scripts.imc2tiff module</a></li>
-<li><a class="reference internal" href="#imctools-scripts-mcd2tiff-module">imctools.scripts.mcd2tiff module</a></li>
-<li><a class="reference internal" href="#imctools-scripts-ome2micat-module">imctools.scripts.ome2micat module</a></li>
-<li><a class="reference internal" href="#imctools-scripts-ometiff2analysis-module">imctools.scripts.ometiff2analysis module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.imc2tiff">imctools.scripts.imc2tiff module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.mcd2tiff">imctools.scripts.mcd2tiff module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.ome2micat">imctools.scripts.ome2micat module</a></li>
+<li><a class="reference internal" href="#module-imctools.scripts.ometiff2analysis">imctools.scripts.ometiff2analysis module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-probablity2uncertainty-module">imctools.scripts.probablity2uncertainty module</a></li>
 <li><a class="reference internal" href="#imctools-scripts-resizeimage-module">imctools.scripts.resizeimage module</a></li>
 <li><a class="reference internal" href="#module-imctools.scripts">Module contents</a></li>
@@ -122,8 +122,16 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="imctools-scripts-convertfolder2imcfolder-module">
-<h2>imctools.scripts.convertfolder2imcfolder module<a class="headerlink" href="#imctools-scripts-convertfolder2imcfolder-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.convertfolder2imcfolder">
+<span id="imctools-scripts-convertfolder2imcfolder-module"></span><h2>imctools.scripts.convertfolder2imcfolder module<a class="headerlink" href="#module-imctools.scripts.convertfolder2imcfolder" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.scripts.convertfolder2imcfolder.convert_folder2imcfolder">
+<code class="descclassname">imctools.scripts.convertfolder2imcfolder.</code><code class="descname">convert_folder2imcfolder</code><span class="sig-paren">(</span><em>fol</em>, <em>out_folder</em>, <em>dozip=True</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.convertfolder2imcfolder.convert_folder2imcfolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a folder containing IMC acquisitions
+(mcd and tiff)
+to a zipfolder containing standardized names files.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="imctools-scripts-cropobjects-module">
 <h2>imctools.scripts.cropobjects module<a class="headerlink" href="#imctools-scripts-cropobjects-module" title="Permalink to this headline">¶</a></h2>
@@ -134,23 +142,162 @@
 <div class="section" id="imctools-scripts-cropsection-module">
 <h2>imctools.scripts.cropsection module<a class="headerlink" href="#imctools-scripts-cropsection-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="imctools-scripts-exportacquisitioncsv-module">
-<h2>imctools.scripts.exportacquisitioncsv module<a class="headerlink" href="#imctools-scripts-exportacquisitioncsv-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.exportacquisitioncsv">
+<span id="imctools-scripts-exportacquisitioncsv-module"></span><h2>imctools.scripts.exportacquisitioncsv module<a class="headerlink" href="#module-imctools.scripts.exportacquisitioncsv" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="imctools.scripts.exportacquisitioncsv.AC_META">
+<code class="descclassname">imctools.scripts.exportacquisitioncsv.</code><code class="descname">AC_META</code><em class="property"> = 'acquisition_metadata'</em><a class="headerlink" href="#imctools.scripts.exportacquisitioncsv.AC_META" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads all the acquisition metadata from the ome folders and concatenates them
+to a csv that contains all the metadata.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.exportacquisitioncsv.export_acquisition_csv">
+<code class="descclassname">imctools.scripts.exportacquisitioncsv.</code><code class="descname">export_acquisition_csv</code><span class="sig-paren">(</span><em>fol_ome</em>, <em>fol_out</em>, <em>outname='acquisition_metadata'</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.exportacquisitioncsv.export_acquisition_csv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.exportacquisitioncsv.read_acmeta">
+<code class="descclassname">imctools.scripts.exportacquisitioncsv.</code><code class="descname">read_acmeta</code><span class="sig-paren">(</span><em>fol_ome</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.exportacquisitioncsv.read_acmeta" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="imctools-scripts-generatedistancetospheres-module">
 <h2>imctools.scripts.generatedistancetospheres module<a class="headerlink" href="#imctools-scripts-generatedistancetospheres-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="imctools-scripts-imc2tiff-module">
-<h2>imctools.scripts.imc2tiff module<a class="headerlink" href="#imctools-scripts-imc2tiff-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.imc2tiff">
+<span id="imctools-scripts-imc2tiff-module"></span><h2>imctools.scripts.imc2tiff module<a class="headerlink" href="#module-imctools.scripts.imc2tiff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.scripts.imc2tiff.convert_imcfolders2tiff">
+<code class="descclassname">imctools.scripts.imc2tiff.</code><code class="descname">convert_imcfolders2tiff</code><span class="sig-paren">(</span><em>folders</em>, <em>output_folder</em>, <em>common_filepart=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.imc2tiff.convert_imcfolders2tiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a list of folders into ome.tiffs
+:param folder:
+:param output_folder:
+:param common_filepart:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.imc2tiff.convert_imczip2tiff">
+<code class="descclassname">imctools.scripts.imc2tiff.</code><code class="descname">convert_imczip2tiff</code><span class="sig-paren">(</span><em>zipfn</em>, <em>output_folder</em>, <em>common_filepart=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.imc2tiff.convert_imczip2tiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a zip archive containing IMC files to tiff</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.imc2tiff.save_imc_to_tiff">
+<code class="descclassname">imctools.scripts.imc2tiff.</code><code class="descname">save_imc_to_tiff</code><span class="sig-paren">(</span><em>imc_acquisition</em>, <em>acquisition='all'</em>, <em>tifftype='ome'</em>, <em>compression=0</em>, <em>outname=None</em>, <em>outpath=None</em>, <em>zip_filetype=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.imc2tiff.save_imc_to_tiff" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>imc_acquisition</strong> – </li>
+<li><strong>acquisition</strong> – </li>
+<li><strong>tifftype</strong> – </li>
+<li><strong>compression</strong> – </li>
+<li><strong>outname</strong> – </li>
+<li><strong>outpath</strong> – </li>
+<li><strong>verbose</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-scripts-mcd2tiff-module">
-<h2>imctools.scripts.mcd2tiff module<a class="headerlink" href="#imctools-scripts-mcd2tiff-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.mcd2tiff">
+<span id="imctools-scripts-mcd2tiff-module"></span><h2>imctools.scripts.mcd2tiff module<a class="headerlink" href="#module-imctools.scripts.mcd2tiff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.scripts.mcd2tiff.save_mcd_tiff">
+<code class="descclassname">imctools.scripts.mcd2tiff.</code><code class="descname">save_mcd_tiff</code><span class="sig-paren">(</span><em>mcd_filename</em>, <em>acquisition='all'</em>, <em>tifftype='ome'</em>, <em>compression=0</em>, <em>outname=None</em>, <em>outpath=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.mcd2tiff.save_mcd_tiff" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mcd_filename</strong> – </li>
+<li><strong>acquisition</strong> – </li>
+<li><strong>tifftype</strong> – </li>
+<li><strong>compression</strong> – </li>
+<li><strong>outname</strong> – </li>
+<li><strong>outpath</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-scripts-ome2micat-module">
-<h2>imctools.scripts.ome2micat module<a class="headerlink" href="#imctools-scripts-ome2micat-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.ome2micat">
+<span id="imctools-scripts-ome2micat-module"></span><h2>imctools.scripts.ome2micat module<a class="headerlink" href="#module-imctools.scripts.ome2micat" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.scripts.ome2micat.ome2micatfolder">
+<code class="descclassname">imctools.scripts.ome2micat.</code><code class="descname">ome2micatfolder</code><span class="sig-paren">(</span><em>path_ome</em>, <em>basefolder</em>, <em>path_mask=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.ome2micat.ome2micatfolder" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fn_ome</strong> – </li>
+<li><strong>basefolder</strong> – </li>
+<li><strong>fn_mask</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.ome2micat.ome2singletiff">
+<code class="descclassname">imctools.scripts.ome2micat.</code><code class="descname">ome2singletiff</code><span class="sig-paren">(</span><em>path_ome</em>, <em>outfolder</em>, <em>basename=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.ome2micat.ome2singletiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the planes of an ome stack as a folder
+:param fn_ome:
+:param outfolder:
+:return:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="imctools.scripts.ome2micat.omefolder2micatfolder">
+<code class="descclassname">imctools.scripts.ome2micat.</code><code class="descname">omefolder2micatfolder</code><span class="sig-paren">(</span><em>fol_ome</em>, <em>outfolder</em>, <em>fol_masks=None</em>, <em>mask_suffix=None</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.ome2micat.omefolder2micatfolder" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fol_ome</strong> – </li>
+<li><strong>outfolder</strong> – </li>
+<li><strong>fol_masks</strong> – </li>
+<li><strong>mask_suffix</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="imctools-scripts-ometiff2analysis-module">
-<h2>imctools.scripts.ometiff2analysis module<a class="headerlink" href="#imctools-scripts-ometiff2analysis-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-imctools.scripts.ometiff2analysis">
+<span id="imctools-scripts-ometiff2analysis-module"></span><h2>imctools.scripts.ometiff2analysis module<a class="headerlink" href="#module-imctools.scripts.ometiff2analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="imctools.scripts.ometiff2analysis.ometiff_2_analysis">
+<code class="descclassname">imctools.scripts.ometiff2analysis.</code><code class="descname">ometiff_2_analysis</code><span class="sig-paren">(</span><em>filename</em>, <em>outfolder</em>, <em>basename</em>, <em>pannelcsv=None</em>, <em>metalcolumn=None</em>, <em>masscolumn=None</em>, <em>usedcolumn=None</em>, <em>addsum=False</em>, <em>bigtiff=True</em>, <em>sort_channels=True</em>, <em>pixeltype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.scripts.ometiff2analysis.ometiff_2_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="imctools-scripts-probablity2uncertainty-module">
 <h2>imctools.scripts.probablity2uncertainty module<a class="headerlink" href="#imctools-scripts-probablity2uncertainty-module" title="Permalink to this headline">¶</a></h2>

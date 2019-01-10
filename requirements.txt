@@ -5,7 +5,5 @@ scipy
 pandas
 flake8
 pytest
-pytest-benchmark
-pytest-cov
 sphinx
 guzzle_sphinx_theme
