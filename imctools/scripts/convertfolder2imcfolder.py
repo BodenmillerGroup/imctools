@@ -6,6 +6,7 @@ from imctools.io.imcfolderwriter import ImcFolderWriter
 import os
 import zipfile
 import argparse
+import logging
 TXT_FILENDING = '.txt'
 MCD_FILENDING = '.mcd'
 ZIP_FILENDING = '.zip'
@@ -26,7 +27,7 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
     else:
         in_fol = fol
         istmp = False
-    
+
     try:
         files = [os.path.join(root, fn) for root, dirs, files in os.walk(in_fol) for fn in files]
         mcd_files = [f for f in files
@@ -37,10 +38,18 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
             schema_file = schema_files[0]
         else:
             schema_file = None
-        mcd = McdParser(mcd_files[0], metafilename=schema_file)
+        try:
+            mcd = McdParser(mcd_files[0])
+        except:
+            if schema_file is not None:
+                logging.exception('Mcd File corrupted, trying to rescue with schema file')
+                mcd = McdParser(mcd_files[0], metafilename=schema_file)
+            else:
+                raise
+        mcd_acs = mcd.get_all_imcacquistions()
+
         txt_acids = {_txtfn_to_ac(f): f
                    for f in files if f.endswith(TXT_FILENDING)}
-        mcd_acs = mcd.get_all_imcacquistions()
         mcd_acids = set(m.image_ID for m in mcd_acs)
         txtonly_acs = set(txt_acids.keys()).difference(mcd_acids)
         for txta in txtonly_acs:
@@ -78,11 +87,11 @@ if __name__ == "__main__":
                         type=str,
                         default='',
                         help='Path to the output folder')
-    
+
     args = parser.parse_args()
     in_fol = args.folder_path
     out_fol = args.out_folder
     if out_fol == '':
         out_fol = os.path.split(in_fol)[0]
     convert_folder2imcfolder(in_fol, out_fol)
-        
+
