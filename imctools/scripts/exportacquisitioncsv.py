@@ -21,7 +21,7 @@ def _read_and_concat(fol_ome, suffix, idname):
     dat = pd.concat([pd.read_csv(os.path.join(fol_ome, a, a+suffix)) for a in ac_names],
                            keys=ac_names, names=[COL_ACSESSION])
     dat = dat.reset_index(COL_ACSESSION, drop=False)
-    dat = dat.rename(columns={COL_MCD_ID: COL_ACID})
+    dat = dat.rename(columns={COL_MCD_ID: idname})
     return dat
 
 def read_acmeta(fol_ome):
