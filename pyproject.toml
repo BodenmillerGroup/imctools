@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "imctools"
-version = "0.2.1"
+version = "1.0.0"
 description = "Tools to handle IMC data"
 license = "LICENSE"
 authors = [
