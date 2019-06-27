@@ -133,7 +133,7 @@ if __name__ == "__main__":
                        args.usedcolumn, args.addsum == 'yes',
                        bigtiff=args.bigtiff == 'yes',
                        sort_channels=args.sort_channels == 'yes',
-                       pixeltype=outformat)
+                       pixeltype=args.outformat)
 
 
 

@@ -788,8 +788,35 @@ tree</p>
 
 <dl class="method">
 <dt id="imctools.io.tiffwriter.TiffWriter.save_image">
-<code class="descname">save_image</code><span class="sig-paren">(</span><em>mode='imagej'</em>, <em>compression=0</em>, <em>dtype=None</em>, <em>bigtiff=False</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.save_image" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">save_image</code><span class="sig-paren">(</span><em>mode='imagej'</em>, <em>compression=0</em>, <em>dtype=None</em>, <em>bigtiff=None</em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.tiffwriter.TiffWriter.save_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the image as a tiff
+:param mode: Specifies the tiff writing mode. Either ‘imagej’ or ‘ome’</p>
+<blockquote>
+<div>for .ome.tiff’s</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>compression</strong> – Tiff compression level.
+Default to 0 (no compression)
+Internaly compressed tiffs are more incompatible and
+not memory-mappable</li>
+<li><strong>dtype</strong> – dtype of the  output tiff.
+Default: take the dtype of the original data</li>
+<li><strong>bigtiff</strong> – <p>should the tiff be writen as a ‘bigtiff’?
+‘bigtiff’ support &gt;4gb of data, but are less widely
+compatible.
+Default: for ‘imagej’ mode: False</p>
+<blockquote>
+<div>for ‘ome’ mode: True</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
