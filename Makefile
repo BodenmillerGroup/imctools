@@ -1,37 +1,34 @@
-.PHONY: clean clean-test clean-pyc clean-build
+SHELL := /bin/bash
 
 init:
-	pip install -r requirements.txt
+	poetry install
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+build:
+	poetry build
 
-clean-build: ## remove build artifacts
+publish:
+	poetry publish
+
+update:
+	poetry update && poetry install
+
+clean:
+	find . -type d -name __pycache__ -exec rm -r {} \+
+	find . -type d -name .pytest_cache -exec rm -r {} \+
+	find . -type d -name .mypy_cache -exec rm -r {} \+
+	find . -name '*.egg-info' -exec rm -fr {} +
 	rm -fr build/
 	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
-
-clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-
-clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-	rm -fr .pytest_cache
+	rm -fr docs/build/
 
 lint: ## check style with flake8
 	flake8 imctools tests
 
 test: ## run tests quickly with the default Python
-	py.test
+	pytest
 
 coverage: ## check code coverage
 	pytest --cov=imctools tests/
 
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+generate-docs:
+	sphinx-build -M html "docs/source" "docs/build" $(O)

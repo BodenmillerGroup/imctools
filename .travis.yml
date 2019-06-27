@@ -1,7 +1,46 @@
+dist: xenial   # required for Python >= 3.7
+
 language: python
 python:
   - "2.7"
-  - "3.6"
+  - "3.7"
+
+stages:
+  - test
+  - name: deploy
+    if: tag IS present
+
+before_install:
+  - pip install --upgrade pip
+  - pip install --no-cache "poetry==0.12.16" && poetry config settings.virtualenvs.create false
+
 install:
-  - "pip install -r requirements.txt"
-script: pytest
+  - poetry install --no-interaction
+
+jobs:
+  include:
+    - stage: test
+      install:
+        - pip install --upgrade pip
+        - pip install poetry
+        - poetry install -v
+      script:
+        - pytest --cov
+    - stage: deploy
+      script:
+        - echo Deploying to PyPI...
+
+before_deploy:
+  # User and password environment variables are set as hidden variables through
+  # the web interface in the project settings.
+  - poetry config http-basic.pypi $PYPI_USER $PYPI_PASS
+  - poetry build
+
+deploy:
+  provider: script
+  script: poetry publish
+  skip_cleanup: true
+  on:
+    condition: $TRAVIS_BUILD_STAGE_NAME = Deploy
+    repo: BodenmillerGroup/imctools
+    tags: true

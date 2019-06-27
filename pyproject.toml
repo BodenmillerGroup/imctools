@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "imctools"
+version = "0.2.1"
+description = "Tools to handle IMC data"
+license = "LICENSE"
+authors = [
+    "Vito Zanotelli <vito.zanotelli@uzh.ch>",
+    "Anton Rau <anton.rau@uzh.ch>"
+]
+homepage = "https://github.com/BodenmillerGroup/imctools"
+repository = "https://github.com/BodenmillerGroup/imctools"
+documentation = "https://bodenmillergroup.github.io/imctools"
+keywords = ["mcd", "ome-tiff", "imc", "cellprofiler", "fiji"]
+readme = "README.md"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+]
+exclude = ["tests", "docs", "examples"]
+
+[build-system]
+requires = ["poetry>=0.12.16"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.dependencies]
+pandas = { version = "*", optional = false }
+scikit-image = { version = "^0.14.3", optional = false }
+tifffile = { version = ">=2019.6.18", optional = false }
+
+[tool.poetry.dev-dependencies]
+sphinx = "*"
+guzzle_sphinx_theme = "*"
+flake8 = "^3.7"
+pytest = "^4.4"
+vulture = "^1.0"
+mypy = "*"
+autoflake = "^1.3"
+isort = "^4.3"
