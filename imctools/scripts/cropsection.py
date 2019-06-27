@@ -4,6 +4,7 @@ from scipy import ndimage as ndi
 from imctools import library as lib
 import argparse
 import os
+import warnings
 from scipy import ndimage as ndi
 import numpy as np
 
@@ -17,6 +18,12 @@ def crop_section(fn_stack, outfolder, slice, basename=None):
     :param slice:
     :return:
     """
+    warnings.warn('''crop_section is deprecated and
+                  will not be supported in future versions.
+                  Please use the `Crop bb` module from
+                  Bodenmillergroup/ImcPluginsCP
+                  in CellProfiler!''',
+                  DeprecationWarning)
     if basename is None:
        basename = os.path.split(fn_stack)[1].strip('.tif').strip('.tiff')
 

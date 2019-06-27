@@ -3,7 +3,7 @@ import tifffile
 import numpy as np
 from scipy.ndimage import distance_transform_edt
 import imctools.library as lib
-
+import warnings
 
 
 
@@ -18,6 +18,13 @@ def generate_distanceto_spheres(fn_label, cur_label, out_file, bg_label=0):
     :param extend:
     :return:
     """
+    warnings.warn('''generate_distanceto_spheres is deprecated and
+                  will not be supported in future versions.
+                  Please use the `MaskToBinstack` together with
+                  `Transform Binary`
+                  module from Bodenmillergroup/ImcPluginsCP
+                  in CellProfiler!''',
+                  DeprecationWarning)
 
     with tifffile.TiffFile(fn_label) as tif:
         labels = tif.asarray()
@@ -45,7 +52,12 @@ def generate_distanceto_binary(fns_binary, out_file, allinverted=False, addinver
     :param extend:
     :return:
     """
-    
+    warnings.warn('''generate_distanceto_binary is deprecated and
+                  will not be supported in future versions.
+                  Please use the `Transform Binary` module from
+                  Bodenmillergroup/ImcPluginsCP
+                  in CellProfiler!''',
+                  DeprecationWarning)
     imgs = list()
 
     with tifffile.TiffWriter(out_file, imagej=True) as outtif:

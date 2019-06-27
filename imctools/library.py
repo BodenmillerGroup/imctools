@@ -26,6 +26,8 @@ import pandas as pd
 import os
 import tifffile
 
+import warnings
+
 def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
     """
 
@@ -36,6 +38,12 @@ def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
                                           radius=3))
     True
     """
+    warnings.warn('''remove_outlier_pixels is deprecated and
+                  will not be supported in future versions.
+                  Please use the `Smooth Multichannel` module from
+                  Bodenmillergroup/ImcPluginsCP
+                  in CellProfiler!''',
+                  DeprecationWarning)
     if (radius % 2) == 0:
        radius += 1
     mask = np.ones((radius, radius))
@@ -53,6 +61,10 @@ def remove_outlier_pixels(img, threshold=50, mode='median', radius=3):
     return img_out
 
 def scale_images(img, cap_percentile=99, rescale = False):
+        warnings.warn('''scale_images is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
         perc = np.percentile(img, cap_percentile)
         img[img > perc] = perc
         if rescale:
@@ -61,6 +73,10 @@ def scale_images(img, cap_percentile=99, rescale = False):
 
 
 def normalize_images(img, **kwargs):
+        warnings.warn('''normalize_images is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
         img = sk.exposure.equalize_hist(img, **kwargs)
 
 
@@ -70,6 +86,10 @@ def threshold_images(img, method='otsu',
                      fill=False,
                      block_size=10,  # only for adaptive
                      **kwargs):
+    warnings.warn('''threshold_images is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     if method.lower() == 'otsu':
         thresh = filters.threshold_otsu(img)
@@ -102,6 +122,10 @@ def threshold_images(img, method='otsu',
 
 
 def keep_max_area(tresh_img):
+    warnings.warn('''keep_max_area is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     lab = sk.measure.label(tresh_img)
     labMax = np.bincount(lab[lab > 0]).argmax()
     tresh_img_max = lab == labMax
@@ -109,6 +133,10 @@ def keep_max_area(tresh_img):
 
 
 def flip_img(img, axis):
+    warnings.warn('''flip_img is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     if axis == 1:
         img = np.fliplr(img)
     elif axis == 0:
@@ -118,6 +146,10 @@ def flip_img(img, axis):
 
 
 def crop_img_to_binary(img, tresh_img):
+    warnings.warn('''crop_img_to_binary is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     region = sk.measure.regionprops(tresh_img)
     minr, minc, maxr, maxc = region[0].bbox
 
@@ -131,6 +163,10 @@ def stretch_imgs_equal(img_list,
                        direction='min',  # min or max
                        interpol=None  # which interpolation algorithm
                        ):
+    warnings.warn('''stretch_imgs_equal is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     heights = np.array([float(img.shape[0]) for img in img_list])
     widths = np.array([float(img.shape[1]) for img in img_list])
@@ -167,12 +203,20 @@ def stretch_imgs_equal(img_list,
 
 
 def blur_img_gauss(img, sigma=1, idKeys=None):
+    warnings.warn('''blur_img_gauss is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     blur_img = filters.gaussian_filter(img, sigma=sigma)
     return blur_img
 
 def l2l_corr(img,dim=0):
     '''Calculates the line to line correlations between all lines of an image,
     represented as a 2D matrix img'''
+    warnings.warn('''l2l_corr is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     if dim == 0:
         img = img.T
 
@@ -196,6 +240,10 @@ def distance_transform_wrapper(logicarray, maxdist=65535):
 
     :returns an array containing the distance to the next False pixel
     """
+    warnings.warn('''distance_transform_wrapper is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     if np.all(logicarray):
         shape = logicarray.shape
@@ -216,6 +264,10 @@ def distance_to_border(logicarray, maxdist=65535):
     positive pixel is in the logicarry.
     :returns an array containing the distance to the next False pixel
     """
+    warnings.warn('''distance_to_border is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     logicarray = logicarray > 0
     if np.all(logicarray) | np.all(logicarray == False):
@@ -245,6 +297,10 @@ def find_touching_pixels(label_img, distance=1, selem=None):
                     1 the 'distance' is not true.
     :return: a mask of the regions touching or are close up to a certain diameter
     """
+    warnings.warn('''find_touching_pixels is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     if selem is None:
         selem = morphology.disk(1)
@@ -266,6 +322,10 @@ def find_touching_pixels(label_img, distance=1, selem=None):
 
 
 def scale_labelmask(labelmask, scale):
+    warnings.warn('''scale_labelmask is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     #assert (scaling % 1) == 0, "only integer scaling supported!"
 
     # rescale
@@ -280,6 +340,10 @@ def scale_labelmask(labelmask, scale):
     return trans_labs.astype(np.int)
 
 def extract_mean_markers_by_mask(label_image, img_stack):
+    warnings.warn('''extract_mean_markers_by_mask is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     label_image = np.squeeze(label_image)
     label_dict = dict()
     objects = ndi.find_objects(label_image)
@@ -303,6 +367,10 @@ def apply_functions_to_labels(label_image, img_stack, fkt_list ,out_array=None):
     :param fkt_dict: dict key: fkt_name, value: function of the form fkt(mask, img)
     :return:
     """
+    warnings.warn('''apply_functions_to_labels is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     label_image = np.squeeze(label_image)
     objects = ndi.find_objects(label_image)
@@ -342,6 +410,10 @@ def apply_functions_to_list_of_labels(label_image_list, img_stack_list, fkt_list
     :param out_array:
     :return:
     """
+    warnings.warn('''apply_functions_to_list_of_labels is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     nobjs = [len(np.unique(labs))-1 for labs in label_image_list]
     nchannels = img_stack_list[0].shape[2]
@@ -378,6 +450,10 @@ def apply_functions_to_list_of_labels_table(label_image_list,
     :param channel_names:
     :return:
     """
+    warnings.warn('''apply_functions_to_labels_table is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     dat = apply_functions_to_list_of_labels(label_image_list, img_stack_list, fkt_list)
     dat = pd.DataFrame(dat, columns=['cut_id', 'cell_id'] + list(fkt_names))
     dat['channel'] = np.tile(np.array(channel_names), dat.shape[0]/len(channel_names))
@@ -448,6 +524,10 @@ def map_series_on_mask(mask, series, label = None):
     :param label:
     :return:
     """
+    warnings.warn('''map_series_on_mask is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     if label is None:
         label = series.index
 
@@ -473,6 +553,10 @@ def create_neightbourhood_dict(label_mask, bg_label=0):
     :param label_mask:
     :return: nb_dict: a with key=label and entry=neightbour label
     """
+    warnings.warn('''create_neightbourhood_dict is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     vertices, edges = make_neighbourhood_graph(label_mask)
     nb_dict = dict((v, list()) for v in vertices if v != bg_label)
@@ -494,6 +578,10 @@ def make_neighbourhood_graph(label_mask, uni_edges=True):
     :param label_mask:
     :return: vertices, edges: vertices and edges of the neighbourhood graph, includes  background labels
     """
+    warnings.warn('''make_neighbourhood_graph is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     # get unique labels
     grid = label_mask
     vertices = np.unique(grid)
@@ -529,6 +617,10 @@ def save_object_stack(folder, basename, img_stack, slices, labels=None):
     :param slices: a list of numpy slices sphecifying the regions to be saved
     :return:
     """
+    warnings.warn('''save_object_stack is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
 
     if labels is None:
         labels = range(slices)
@@ -555,6 +647,10 @@ def crop_slice(origshape, w, h=None, x=None, y=None, random_seed=None,
     provided, a random slice will be taken.
 
     """
+    warnings.warn('''crop_slice is deprecated and
+                      will not be supported in future versions.
+                      ''',
+                      DeprecationWarning)
     if random_seed is not None:
         np.random.seed(random_seed)
 

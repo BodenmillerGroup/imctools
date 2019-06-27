@@ -4,6 +4,7 @@ from scipy import ndimage as ndi
 from imctools import library as lib
 import argparse
 import os
+import warnings
 from scipy import ndimage as ndi
 import numpy as np
 
@@ -18,6 +19,12 @@ def crop_random_section(fn_stack, outfolder, basename, size, random_seed=None):
     :param extend:
     :return:
     """
+    warnings.warn('''crop_random_section is deprecated and
+                  will not be supported in future versions.
+                  Please use the `Crop bb` module from
+                  Bodenmillergroup/ImcPluginsCP
+                  in CellProfiler!''',
+                  DeprecationWarning)
 
     with tifffile.TiffFile(fn_stack) as tif:
         stack = tif.asarray()

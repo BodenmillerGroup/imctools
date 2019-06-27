@@ -3,6 +3,7 @@ import tifffile
 from scipy import ndimage as ndi
 from imctools import library as lib
 import argparse
+import warnings
 import os
 import numpy as np
 
@@ -17,6 +18,11 @@ def crop_objects(fn_stack, fn_label, outfolder, basename, extend, order=None):
     :param extend:
     :return:
     """
+    warnings.warn('''crop_objects is deprecated and will not be supported in future versions.\n
+                  Please use the `SaveObjectCrops` module from Bodenmillergroup/ImcPluginsCP 
+                  in CellProfiler!''',
+                  DeprecationWarning)
+
     if order is None:
         order = 'cxy'
 

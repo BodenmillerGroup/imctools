@@ -6,7 +6,7 @@ import argparse
 import os
 import numpy as np
 from skimage import transform
-
+import warnings
 
 def resize_image(fn_stack, outfolder, basename, scalefactor):
     """
@@ -18,6 +18,12 @@ def resize_image(fn_stack, outfolder, basename, scalefactor):
     :param scalefactor: Factor to scale by
     :return:
     """
+    
+    warnings.warn('''resize_image is deprecated and
+                  will not be supported in future versions.
+                  Please use the `resize` module
+                  in CellProfiler!''',
+                  DeprecationWarning)
 
     with tifffile.TiffFile(fn_stack) as tif:
         stack = tif.asarray()
