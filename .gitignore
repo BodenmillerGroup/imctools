@@ -21,3 +21,7 @@ venv/
 # Python
 dist/
 __pycache__
+*.egg-info
+
+# Sphinx documentation
+docs/build/

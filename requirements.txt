@@ -1,9 +1,0 @@
-numpy
-tifffile>=0.13.5
-scikit-image
-scipy
-pandas
-flake8
-pytest
-sphinx
-guzzle_sphinx_theme
