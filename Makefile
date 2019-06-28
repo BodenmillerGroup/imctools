@@ -32,3 +32,18 @@ coverage: ## check code coverage
 
 generate-docs:
 	sphinx-build -M html "docs/source" "docs/build" $(O)
+
+mypy:
+	mypy imctools
+
+isort:
+	isort --multi-line=3 --trailing-comma --force-grid-wrap=0 --combine-as --line-width 88 --recursive --apply imctools
+
+vulture:
+	vulture imctools --min-confidence 70
+
+black:
+	black imctools
+
+autoflake:
+	autoflake --remove-all-unused-imports --recursive --remove-unused-variables --in-place imctools --exclude=__init__.py
