@@ -212,17 +212,6 @@ version = "3.2.0"
 
 [[package]]
 category = "dev"
-description = "Sphinx theme used by Guzzle."
-name = "guzzle-sphinx-theme"
-optional = false
-python-versions = "*"
-version = "0.7.11"
-
-[package.dependencies]
-Sphinx = ">=1.2b1"
-
-[[package]]
-category = "dev"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -806,7 +795,7 @@ python-versions = ">=2.7"
 version = "0.5.1"
 
 [metadata]
-content-hash = "52787036501a38c2d22d7150706d69df28bdbb1ee79bbe4b51e47e61661065c1"
+content-hash = "c53ed3ee8348dc023e5eeb8c3eb7c809fbff9caed1ed997aa4bd86f53cf866bf"
 python-versions = "*"
 
 [metadata.hashes]
@@ -831,7 +820,6 @@ flake8 = ["859996073f341f2670741b51ec1e67a01da142831aa1fdc6242dbf88dffbe661", "a
 funcsigs = ["330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca", "a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"]
 functools32 = ["89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0", "f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d"]
 futures = ["9ec02aa7d674acb8618afb127e27fde7fc68994c0437ad759fa094a574adb265", "ec0a6cb848cc212002b9828c3e34c675e0c9ff6741dc445cab6fdd4e1085d1f1"]
-guzzle-sphinx-theme = ["9b8c1639c343c02c3f3db7df660ddf6f533b5454ee92a5f7b02edaa573fed3e6"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 imagecodecs = ["11c3df3a8e83a69222b2c5a43f7e55d18de418ffe59a82722de887111b77f958", "1d8eb81829bf68b8621967f81bf0a268f8dd9d1d0c6f3db3f6ead89b6900fae4", "23283b7d8697a5af707812a1752a8eb6f3a9c3af2a2ffb0da70af4bfd9a4fc2a", "2709035dd4c0b81a0981919396edcbd864a0d6aeb4974fd2b55b5a464aaf8a2c", "5a5a6e6ec552e8f0d57a6821ab64c82b05da8724376d9691829524bc58a67dbf", "5bbb6d87bdf8a24298436f0fa343f40f6a0f342d6883fe0b3c772572bcde4a7c", "7cd689549b41dc979fed1a26e668a080e67b276b029d179ae3a9eb27a0187719", "b9ba45bad9417e0a9e2e0b26c894624baee56110a2a8d3305b0a411946d7732b", "e6cfd730f3a07fa5cc72a24df080bdc581f9d5118745db6b60270364cb4b22dd"]
 imagesize = ["3f349de3eb99145973fefb7dbe38554414e5c30abd0c8e4b970a7c9d09f3a1d8", "f3832918bc3c66617f92e35f5d70729187676313caa60c187eb0f28b8fe5e3b5"]
