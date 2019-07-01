@@ -14,7 +14,7 @@ class TxtParser(AbstractParser, TxtParserBase):
 
     def __init__(self, filename, filehandle=None):
         AbstractParser.__init__(self)
-        TxtParserBase.__init__(self, filename, filehandle=None)
+        TxtParserBase.__init__(self, filename, filehandle=filehandle)
         self.data = np.array(self.data)
 
     def get_imc_acquisition(self):
