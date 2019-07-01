@@ -34,7 +34,7 @@ def save_imc_to_tiff(imc_acquisition, acquisition='all', tifftype='ome',
 
     if outpath is None:
         outpath = os.path.split(imc_acquisition)[0]
-    
+
     if zip_filetype is None:
         zip_filetype = ''
 
@@ -98,7 +98,7 @@ def convert_imcfolders2tiff(folders, output_folder, common_filepart=None,
                                           fn.endswith(ZIP_FILENDING)):
                 txtname = os.path.join(fol, fn)
                 try:
-                    save_imc_to_tiff(txtname, 
+                    save_imc_to_tiff(txtname,
                                      outpath=output_folder, **kwargs)
                 except:
                     failed_images.append(txtname)
@@ -116,7 +116,7 @@ def convert_imczip2tiff(zipfn, output_folder, common_filepart=None, **kwargs):
     if common_filepart is None:
         common_filepart = ''
     with temporarydirectory.TemporaryDirectory() as tempdir:
-        with zipfile.ZipFile(zipfn) as zipf:
+        with zipfile.ZipFile(zipfn, allowZip64=True) as zipf:
             for fn in zipf.namelist():
                 if (common_filepart in fn) & fn.endswith(IMC_FILENDINGS):
                     zipf.extract(fn, tempdir)
