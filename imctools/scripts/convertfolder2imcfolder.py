@@ -20,7 +20,7 @@ def convert_folder2imcfolder(fol, out_folder, dozip=True):
     """
     if fol.endswith(ZIP_FILENDING):
         tmpdir = temporarydirectory.TemporaryDirectory()
-        with zipfile.ZipFile(fol) as zipf:
+        with zipfile.ZipFile(fol, allowZip64=True) as zipf:
             zipf.extractall(tmpdir.name)
         in_fol = tmpdir.name
         istmp = True
