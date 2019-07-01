@@ -27,8 +27,11 @@ Documentation: https://imctools.readthedocs.io
 
 ## Installation
 
-Use the pip installation manger to directly install the package from Github:
-
+Preferable way to install `imctools` is via official PyPI registry:
+```
+pip install imctools
+```
+To directly install the package from Github (**NOT RECOMMENDED**):
 ```
 pip install git+https://github.com/BodenmillerGroup/imctools.git
 ```
