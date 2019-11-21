@@ -1,10 +1,10 @@
 [build-system]
-requires = ["poetry>=0.12.16"]
+requires = ["poetry>=0.12.17"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "1.0.3"
+version = "1.0.4"
 description = "Tools to handle IMC data"
 license = "LICENSE"
 authors = [
@@ -32,13 +32,13 @@ exclude = ["tests", "docs", "examples"]
 [tool.poetry.dependencies]
 pandas = { version = "*", optional = false }
 scikit-image = { version = "*", optional = false }
-tifffile = { version = ">=2019.6.18", optional = false }
+tifffile = { version = ">=2019.7.26", optional = false }
 
 [tool.poetry.dev-dependencies]
-sphinx = "^1.8.5"
-flake8 = "^3.7"
-pytest = "^4.4"
-vulture = "^1.0"
+sphinx = "*"
+flake8 = "*"
+pytest = "*"
+vulture = "*"
 mypy = "*"
-autoflake = "^1.3"
-isort = "^4.3"
+autoflake = "*"
+isort = "*"
