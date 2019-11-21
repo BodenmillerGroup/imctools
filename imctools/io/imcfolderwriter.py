@@ -1,7 +1,9 @@
-import shutil
+import logging
 import os
 import imctools.io.mcdxmlparser as mcdmeta
 import zipfile
+
+logger = logging.getLogger(__name__)
 
 class ImcFolderWriter(object):
     """ A class to write an imc folder """
@@ -90,6 +92,9 @@ class ImcFolderWriter(object):
             os.removedirs(out_folder)
 
     def _write_acquisition(self, ac, out_folder):
+        if 0 in ac.shape:
+            logger.error(f"Cannot write acquisition with the shape: {ac.shape}")
+            return
         file_end = '_ac.ome.tiff'
         if ac.image_description is None:
             ac_id = ac.image_ID
@@ -116,5 +121,3 @@ if __name__ == '__main__':
     mcd.save_meta_xml('/home/vitoz/temp/')
     ifw = ImcFolderWriter('/home/vitoz/temp/', mcddata=mcd)
     ifw.write_imc_folder()
-
-
