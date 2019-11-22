@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "1.0.4"
+version = "0.0.1"
 description = "Tools to handle IMC data"
 license = "LICENSE"
 authors = [
@@ -13,32 +13,37 @@ authors = [
 ]
 homepage = "https://github.com/BodenmillerGroup/imctools"
 repository = "https://github.com/BodenmillerGroup/imctools"
-documentation = "https://bodenmillergroup.github.io/imctools"
+documentation = "https://imctools.readthedocs.io"
 keywords = ["mcd", "ome-tiff", "imc", "cellprofiler", "fiji"]
 readme = "README.md"
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.4",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.7",
 ]
-exclude = ["tests", "docs", "examples"]
+include = ["AUTHORS.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "README.md"]
+exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
-pandas = { version = "*", optional = false }
-scikit-image = { version = "*", optional = false }
+Click = "7.0"
+python = "^3.7"
+numpy = { version = ">=1.17.4", optional = false }
 tifffile = { version = ">=2019.7.26", optional = false }
 
 [tool.poetry.dev-dependencies]
-sphinx = "*"
-flake8 = "*"
-pytest = "*"
-vulture = "*"
-mypy = "*"
-autoflake = "*"
-isort = "*"
+autoflake = "1.3.1"
+black = "19.10b0"
+bump2version = "0.5.11"
+flake8 = "3.7.9"
+isort = "4.3.21"
+mypy = "0.740"
+pdoc3 = "0.7.2"
+pylint = "2.4.4"
+pytest = "5.3.0"
+pytest-cov = "2.8.1"
+vulture = "1.1"
+
+[tool.black]
+line-length = 120
+target-version = [ "py37" ]

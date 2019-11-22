@@ -1,5 +1,6 @@
 # imctools
 
+[![PyPI version](https://badge.fury.io/py/imctools.svg)](https://pypi.python.org/pypi/imctools)
 [![Build Status](https://travis-ci.org/BodenmillerGroup/imctools.svg?branch=master)](https://travis-ci.org/BodenmillerGroup/imctools)
 [![Documentation Status](https://readthedocs.org/projects/imctools/badge/?version=latest)](https://imctools.readthedocs.io/en/latest/?badge=latest)
 
