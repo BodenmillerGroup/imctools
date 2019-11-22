@@ -1,5 +1,5 @@
 # Config file for automatic testing at travis-ci.org
-
+dist: bionic
 language: python
 python:
   - 3.8
@@ -10,4 +10,18 @@ install:
   - pip install .
 
 # Command to run tests, e.g. python setup.py test
-script: pytest
+script:
+  # test with pytest
+  - make test
+  # generate the docs
+  - make build-docs
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN # Put in settings as a secure variable
+  keep_history: true
+  on:
+    branch: master
+  verbose: true
+  local_dir: docs/
