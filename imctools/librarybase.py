@@ -40,7 +40,7 @@ def dict_key_apply(iterable, str_fkt):
     Applys a string modifiying function to all keys of a nested dict.
     """
     if type(iterable) is dict:
-        for key in iterable.keys():
+        for key in list(iterable.keys()):
             new_key = str_fkt(key)
             iterable[new_key] = iterable.pop(key)
             if type(iterable[new_key]) is dict or type(iterable[new_key]) is list:
