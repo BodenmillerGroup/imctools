@@ -10,8 +10,18 @@ class ImageStack:
     An Image Stack Object representing a single acquisition
     """
 
-    def __init__(self, image_ID, original_file, data, channel_metal, channel_labels,
-                 original_metadata=None, image_description=None, origin=None, offset=0):
+    def __init__(
+        self,
+        image_ID,
+        original_file,
+        data,
+        channel_metal,
+        channel_labels,
+        original_metadata=None,
+        image_description=None,
+        origin=None,
+        offset=0,
+    ):
         """
 
         :param image_ID: The acquisition ID
@@ -65,7 +75,9 @@ class ImageStack:
         out_names = [self.channel_labels[i] for i in order]
         out_fluor = [self.channel_metals[i] for i in order]
         dat = np.array(self.get_img_stack_cyx(order), dtype=np.float32).swapaxes(2, 0)
-        tw = TiffWriter(filename, dat, channel_name=out_names, original_description=self.original_metadata, fluor=out_fluor)
+        tw = TiffWriter(
+            filename, dat, channel_name=out_names, original_description=self.original_metadata, fluor=out_fluor
+        )
         return tw
 
     def save_analysis_tiff(self, filename, metals=None):
@@ -85,16 +97,16 @@ class ImageStack:
 
     @property
     def channel_metals(self):
-        return self._channel_metals[self._offset:]
+        return self._channel_metals[self._offset :]
 
     @property
     def channel_mass(self):
-        return [''.join([m for m in metal if m.isdigit()]) for metal in self._channel_metals[self._offset:]]
+        return ["".join([m for m in metal if m.isdigit()]) for metal in self._channel_metals[self._offset :]]
 
     @property
     def channel_labels(self):
         if self._channel_labels is not None:
-            return self._channel_labels[self._offset:]
+            return self._channel_labels[self._offset :]
         else:
             return None
 
@@ -174,17 +186,17 @@ class ImageStack:
 
             for i in range(self._offset):
                 if i < 3:
-                    channel = ['X', 'Y', 'Z'][i] + channel
+                    channel = ["X", "Y", "Z"][i] + channel
                 else:
                     channel = [str(i)] + channel
 
         elif len(channel) == self.n_channels + self._offset:
             pass
         else:
-            raise ValueError('Incompatible channel names/labels!')
+            raise ValueError("Incompatible channel names/labels!")
 
         # remove special characters
-        channel = [c.replace('(', '').replace(')', '').strip() if c is not None else '' for c in channel]
+        channel = [c.replace("(", "").replace(")", "").strip() if c is not None else "" for c in channel]
         return channel
 
     @staticmethod
@@ -193,27 +205,27 @@ class ImageStack:
         return pos[0]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from imctools.io.mcdparser import McdParser
     from imctools.io.ometiffparser import OmetiffParser
-    fn = '/home/vitoz/temp/20170508_p52-54_s19_ac1_a12.ome.tiff'
-    #with OmetiffParser(fn) as testmcd:
+
+    fn = "/home/vitoz/temp/20170508_p52-54_s19_ac1_a12.ome.tiff"
+    # with OmetiffParser(fn) as testmcd:
     testmcd = OmetiffParser(fn)
-    #print(testmcd.filename)
-    #print(testmcd.n_acquisitions)
-    #print(testmcd.get_acquisition_xml('0'))
-    #print(testmcd.get_acquisition_channels_xml('0'))
-    #print(testmcd.get_acquisition_channels('0'))
+    # print(testmcd.filename)
+    # print(testmcd.n_acquisitions)
+    # print(testmcd.get_acquisition_xml('0'))
+    # print(testmcd.get_acquisition_channels_xml('0'))
+    # print(testmcd.get_acquisition_channels('0'))
     imc_img = testmcd.get_imc_acquisition()
     print(imc_img.n_channels)
-    print(imc_img.get_mass_indices(['191', '193']))
+    print(imc_img.get_mass_indices(["191", "193"]))
     # img = imc_img.get_img_by_metal('X')
     # plt.figure()OmetiffParser(fn)
     # plt.imshow(np.array(img).squeeze())
     # plt.show()
 
-
     print(imc_img.channel_metals)
-    iw = imc_img.get_image_writer('/home/vitoz/temp/test_iridium.ome.tiff', mass=['191', '193'])
-    iw.save_image(mode='ome')
+    iw = imc_img.get_image_writer("/home/vitoz/temp/test_iridium.ome.tiff", mass=["191", "193"])
+    iw.save_image(mode="ome")

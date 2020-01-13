@@ -41,4 +41,6 @@ class Slide:
         self.acquisitions: List[Acquisition] = []
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(id={self.id}, original_id={self.original_id}, description={self.description})"
+        return (
+            f"{self.__class__.__name__}(id={self.id}, original_id={self.original_id}, description={self.description})"
+        )

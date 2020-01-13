@@ -1,5 +1,5 @@
 [build-system]
-requires = ["poetry>=1.0.0"]
+requires = ["poetry>=1.0.2"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry]
@@ -26,9 +26,8 @@ include = ["AUTHORS.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "README.m
 exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-Click = "7.0"
-numpy = { version = ">=1.18.1", optional = false }
+python = ">=3.7"
+pandas = { version = ">=1.0.0rc0", optional = false }
 tifffile = { version = ">=2019.7.26", optional = false }
 
 [tool.poetry.dev-dependencies]
