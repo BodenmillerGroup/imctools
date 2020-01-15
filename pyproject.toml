@@ -28,7 +28,7 @@ exclude = ["tests", "docs"]
 [tool.poetry.dependencies]
 python = ">=3.7"
 pandas = { version = ">=1.0.0rc0", optional = false }
-tifffile = { version = ">=2019.7.26", optional = false }
+xtiff = { version = ">=0.4.2", optional = false }
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1.3.1"
