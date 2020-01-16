@@ -4,18 +4,19 @@ from typing import List
 import numpy as np
 from xtiff import to_tiff
 
+from imctools.io.utils import get_ome_channel_xml
+
 
 class ImcAcquisition:
     """This defines the IMC acquisition base class
     This can be extended too e.g. read the data from a text file instead from a provided array.
-
     """
 
     def __init__(
         self,
         original_id: str,
         filepath: str,
-        data,
+        data: np.ndarray,
         channel_names,
         channel_labels,
         metadata=None,
@@ -48,10 +49,6 @@ class ImcAcquisition:
         self._data = data
         self._offset = offset
 
-        x_max = len(self._data[0])
-        y_max = len(self._data[0][0])
-        self._shape = tuple([int(x_max), int(y_max), self.n_channels])
-
         self._channel_names = self._validate_values(channel_names)
         self._channel_labels = self._validate_values(channel_labels)
         self.metadata = metadata
@@ -68,7 +65,10 @@ class ImcAcquisition:
 
     @property
     def shape(self):
-        return self._shape
+        """
+        Shape in cyx format
+        """
+        return self.data.shape
 
     @property
     def channel_names(self):
@@ -169,8 +169,14 @@ class ImcAcquisition:
         else:
             order = [i for i in range(self.n_channels)]
 
-        names = [self.channel_labels[i] for i in order]
-        fluors = [self.channel_names[i] for i in order]
+        channel_names = [self.channel_labels[i] for i in order]
+        channel_fluors = [self.channel_names[i] for i in order]
 
         data = np.array(self.get_image_stack_cyx(order), dtype=np.float32)
-        to_tiff(data, filename, channel_names=names)
+        to_tiff(
+            data,
+            filename,
+            ome_channel_xml_fun=get_ome_channel_xml,
+            channel_names=channel_names,
+            channel_fluors=channel_fluors,
+        )

@@ -10,7 +10,8 @@ from imctools.io.mcd_xml import OBJ_DICT, ID_DICT, Meta
 
 class McdXmlParser(Meta):
     """
-    Represents the full mcd xml
+    Represents the full MCD XML structure
+
     """
 
     def __init__(self, xml: str, filename: str = None):
@@ -33,8 +34,6 @@ class McdXmlParser(Meta):
         return metaname
 
     def _init_objects(self):
-        x = OBJ_DICT.keys()
-        y = self.properties.keys()
         obj_keys = [k for k in OBJ_DICT.keys() if k in self.properties.keys()]
         for k in obj_keys:
             ObjClass = OBJ_DICT[k]

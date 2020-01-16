@@ -10,20 +10,15 @@ import imctools.io.mcd_constants as const
 from imctools.io.mcd_xml_parser import McdXmlParser
 from imctools.io.utils import reshape_long_2_cyx
 
-"""
-This module should help parsing the MCD xml metadata
-"""
-
 
 class McdParser:
-    """Parsing data from Fluidigm MCD files
-
-    The McdParser object should be closed using the close method
     """
+    Parsing data from Fluidigm MCD files
+    The McdParser object should be closed using the close method
 
+    """
     def __init__(self, filename: str, file_handle: BinaryIO = None, meta_filename: str = None):
         """
-
         Parameters
         ----------
 
@@ -31,6 +26,7 @@ class McdParser:
             Filename of an .mcd file
         file_handle
             File handle pointing to an open .mcd file
+
         """
         if file_handle is None:
             self._fh = open(filename, mode="rb")
@@ -310,8 +306,8 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    # filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
-    filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
+    filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
+    # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
     with McdParser(filename) as mcd:
         imc_img = mcd.get_imc_acquisition("1")
         imc_img.save_image("/home/anton/Downloads/test.ome.tiff")

@@ -1,8 +1,3 @@
-from collections import OrderedDict
-from typing import Dict, List, Any
-
-import imctools.io.mcd_constants as const
-
 """
 Definition of all the meta objects
 Each entity will have a class corresponding to it, with helper methods
@@ -12,15 +7,23 @@ This is implemented as parent-child relationships where each entry has a list of
 and a nested dictionary of children of the form (child_type: childID: childobject)
 
 Further each object is registered in the global root node, making them easy accessible.
+
 """
+from __future__ import annotations
+
+from collections import OrderedDict
+from typing import Dict, Sequence, Optional, Any
+
+import imctools.io.mcd_constants as const
 
 
 class Meta:
     """
     Represents an abstract metadata object.
+
     """
 
-    def __init__(self, meta_type: str, properties: Dict[str, str], parents: List[Any], symbol: str = None):
+    def __init__(self, meta_type: str, properties: Dict[str, str], parents: Sequence[Meta], symbol: Optional[str] = None):
         """
         Initializes the metadata object, generates the
         parent-child relationships and updates to object list
@@ -40,7 +43,7 @@ class Meta:
         self.parents = parents
         self.symbol = symbol
 
-        self.children = dict()
+        self.children: Dict[str, Meta] = dict()
 
         for p in parents:
             self._update_parents(p)
