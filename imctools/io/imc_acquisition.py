@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 
+import numpy as np
 from xtiff import to_tiff
 
 
@@ -160,5 +161,16 @@ class ImcAcquisition:
         values = [v.replace("(", "").replace(")", "").strip() if v is not None else "" for v in values]
         return values
 
-    def save_image(self, filename: str):
-        to_tiff(self.data, filename, channel_names=self.channel_names)
+    def save_image(self, filename: str, metals=None, mass=None):
+        if metals is not None:
+            order = self.get_metal_indices(metals)
+        elif mass is not None:
+            order = self.get_mass_indices(mass)
+        else:
+            order = [i for i in range(self.n_channels)]
+
+        names = [self.channel_labels[i] for i in order]
+        fluors = [self.channel_names[i] for i in order]
+
+        data = np.array(self.get_image_stack_cyx(order), dtype=np.float32)
+        to_tiff(data, filename, channel_names=names)

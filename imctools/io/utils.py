@@ -1,60 +1,31 @@
-import re
-from collections import defaultdict
-
-"""
-Helper functions to deal with XML
-"""
+import numpy as np
 
 
-def etree_to_dict(t):
+def reshape_long_2_cyx(longdat, is_sorted=True, shape=None, channel_idxs=None):
     """
-    Converts an etree xml to a dictionary
+
+    :param longdat:
+    :param is_sorted:
+    :param shape:
+    :param channel_idxs:
+    :return:
     """
-    d = {t.tag: {} if t.attrib else None}
-    children = list(t)
-    if children:
-        dd = defaultdict(list)
-        for dc in map(etree_to_dict, children):
-            for k, v in dc.items():
-                dd[k].append(v)
-        d = {t.tag: {k: v[0] if (len(v) == 1 and ~isinstance(v[0], type(dict()))) else v for k, v in dd.items()}}
-    if t.attrib:
-        d[t.tag].update(("@" + k, v) for k, v in t.attrib.items())
-    if t.text:
-        text = t.text.strip()
-        if children or t.attrib:
-            if text:
-                d[t.tag]["#text"] = text
-        else:
-            d[t.tag] = text
-    return d
 
+    if shape is None:
+        shape = longdat[:, :2].max(axis=0) + 1
+        if np.prod(shape) > longdat.shape[0]:
+            shape[1] -= 1
 
-def strip_ns(tag):
-    """
-    strips the namespace from a string
-    """
-    return re.sub("^\{.*\}", "", tag)
+        shape = shape.astype(int)
+    if channel_idxs is None:
+        channel_idxs = range(longdat.shape[1])
+    nchan = len(channel_idxs)
+    tdat = longdat[:, channel_idxs]
+    if is_sorted:
+        img = np.reshape(tdat[: (np.prod(shape)), :], [shape[1], shape[0], nchan], order="C")
+        img = img.swapaxes(0, 2)
+        img = img.swapaxes(1, 2)
+        return img
 
-
-def dict_key_apply(iterable, str_fkt):
-    """
-    Applys a string modifiying function to all keys of a nested dict.
-    """
-    if type(iterable) is dict:
-        for key in list(iterable.keys()):
-            new_key = str_fkt(key)
-            iterable[new_key] = iterable.pop(key)
-            if type(iterable[new_key]) is dict or type(iterable[new_key]) is list:
-                iterable[new_key] = dict_key_apply(iterable[new_key], str_fkt)
-    elif type(iterable) is list:
-        for item in iterable:
-            item = dict_key_apply(item, str_fkt)
-    return iterable
-
-
-def xml2dict(xml, stripns=True):
-    dic = etree_to_dict(xml)
-    if stripns:
-        dic = dict_key_apply(dic, strip_ns)
-    return dic
+    else:
+        return NotImplemented

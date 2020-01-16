@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, Dict
 
-from imctools.core.slide import Slide
+from imctools.data.slide import Slide
 
 
 class OverviewImageType(Enum):

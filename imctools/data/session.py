@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List
 from uuid import UUID
 
-from imctools.core.slide import Slide
+from imctools.data.slide import Slide
 
 
 class DataOrigin(Enum):

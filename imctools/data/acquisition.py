@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import Optional, Dict, List
 
-from imctools.core.channel import Channel
-from imctools.core.progress_image import ProgressImage
-from imctools.core.slide import Slide
+from imctools.data.channel import Channel
+from imctools.data.progress_image import ProgressImage
+from imctools.data.slide import Slide
 
 
 class Acquisition:

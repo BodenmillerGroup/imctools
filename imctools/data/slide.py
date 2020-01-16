@@ -1,8 +1,8 @@
 from typing import Optional, List
 
-from imctools.core.acquisition import Acquisition
-from imctools.core.overview_image import OverviewImage
-from imctools.core.session import Session
+from imctools.data.acquisition import Acquisition
+from imctools.data.overview_image import OverviewImage
+from imctools.data.session import Session
 
 
 class Slide:

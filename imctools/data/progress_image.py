@@ -1,6 +1,6 @@
 from enum import Enum
 
-from imctools.core.acquisition import Acquisition
+from imctools.data.acquisition import Acquisition
 
 
 class ProgressType(Enum):

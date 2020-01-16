@@ -1,4 +1,5 @@
-from typing import Dict
+from collections import OrderedDict
+from typing import Dict, List, Any
 
 import imctools.io.mcd_constants as const
 
@@ -19,9 +20,7 @@ class Meta:
     Represents an abstract metadata object.
     """
 
-    name = "Meta"
-
-    def __init__(self, properties: Dict[str, str], parents: list, symbol: str = None):
+    def __init__(self, meta_type: str, properties: Dict[str, str], parents: List[Any], symbol: str = None):
         """
         Initializes the metadata object, generates the
         parent-child relationships and updates to object list
@@ -36,6 +35,7 @@ class Meta:
         symbol
             Short symbol for this metadata, e.g. 's' for slide
         """
+        self._meta_type = meta_type
         self.properties = properties
         self.parents = parents
         self.symbol = symbol
@@ -53,8 +53,12 @@ class Meta:
             self._update_dict(root.objects)
 
     @property
+    def meta_type(self):
+        return self._meta_type
+
+    @property
     def ID(self):
-        return int(self.properties.get(const.ID))
+        return self.properties.get(const.ID)
 
     @property
     def is_root(self):
@@ -64,10 +68,10 @@ class Meta:
         self._update_dict(parent.children)
 
     def _update_dict(self, d: dict):
-        dict_ = d.get(self.name, None)
+        dict_ = d.get(self.meta_type, None)
         if dict_ is None:
             dict_ = dict()
-            d[self.name] = dict_
+            d[self.meta_type] = dict_
         dict_.update({self.ID: self})
 
     def get_root(self):
@@ -86,31 +90,23 @@ class Meta:
 
 
 class Slide(Meta):
-    name = const.SLIDE
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "s")
+        Meta.__init__(self, const.SLIDE, properties, parents, "s")
 
 
 class Panorama(Meta):
-    name = const.PANORAMA
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "p")
+        Meta.__init__(self, const.PANORAMA, properties, parents, "p")
 
 
 class AcquisitionRoi(Meta):
-    name = const.ACQUISITIONROI
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "r")
+        Meta.__init__(self, const.ACQUISITIONROI, properties, parents, "r")
 
 
 class Acquisition(Meta):
-    name = const.ACQUISITION
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "a")
+        Meta.__init__(self, const.ACQUISITION, properties, parents, "a")
 
     def get_channels(self):
         return self.children[const.ACQUISITIONCHANNEL]
@@ -148,31 +144,27 @@ class Acquisition(Meta):
 
 
 class RoiPoint(Meta):
-    name = const.ROIPOINT
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "rp")
+        Meta.__init__(self, const.ROIPOINT, properties, parents, "rp")
 
 
 class Channel(Meta):
-    name = const.ACQUISITIONCHANNEL
-
     def __init__(self, properties, parents):
-        Meta.__init__(self, properties, parents, "c")
+        Meta.__init__(self, const.ACQUISITIONCHANNEL, properties, parents, "c")
 
 
 """
 A dictionary to map metadata keys to metadata types
 The order reflects the dependency structure of them and the order these objects should be initialized
 """
-OBJ_DICT = dict(
+OBJ_DICT = OrderedDict(
     [
-        (Slide.name, Slide),
-        (Panorama.name, Panorama),
-        (AcquisitionRoi.name, AcquisitionRoi),
-        (Acquisition.name, Acquisition),
-        (RoiPoint.name, RoiPoint),
-        (Channel.name, Channel),
+        (const.SLIDE, Slide),
+        (const.PANORAMA, Panorama),
+        (const.ACQUISITIONROI, AcquisitionRoi),
+        (const.ACQUISITION, Acquisition),
+        (const.ROIPOINT, RoiPoint),
+        (const.ACQUISITIONCHANNEL, Channel),
     ]
 )
 

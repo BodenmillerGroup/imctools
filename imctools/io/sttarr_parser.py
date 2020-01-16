@@ -229,7 +229,8 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
     result = read_mcd_acquisition(
         # "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd", "1"
-        "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd", "1"
+        "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd",
+        "1"
         # "/home/anton/Data/2019-06-11_Tonsil/acquisitions/Tonsil/2019-06-12_ABtest_Tonsil.mcd", "1"
     )
     r = result.sel(c="ArAr(80)_80ArAr")

@@ -1,11 +1,11 @@
 from typing import Optional, Dict
 
-from imctools.core.acquisition import Acquisition
+from imctools.data.acquisition import Acquisition
 
 
 class Channel:
     """
-    Image channel
+    Acquisitions channel
     """
 
     def __init__(
@@ -20,15 +20,15 @@ class Channel:
         """
         Parameters
         ----------
-        id:
+        id
             Unique channel id
-        original_id:
+        original_id
             Original channel id
-        tag:
+        tag
             Unique channel tag (Metal)(Mass)
-        description:
+        description
             Custom channel description
-        meta:
+        meta
             Raw metadata
         """
 
@@ -40,4 +40,4 @@ class Channel:
         self.meta = meta
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id!r}, tag={self.tag!r}, description={self.description!r})"
+        return f"{self.__class__.__name__}(original_id={self.original_id}, tag={self.tag}, description={self.description})"
