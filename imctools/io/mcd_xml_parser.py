@@ -1,6 +1,5 @@
 import csv
 import os
-import xml.etree.ElementTree as ET
 
 import xmltodict
 
@@ -74,7 +73,8 @@ class McdXmlParser(Meta):
 
     def save_meta_xml(self, out_folder: str):
         filename = self.metaname + "_schema.xml"
-        ET.ElementTree(ET.fromstring(self._xml)).write(os.path.join(out_folder, filename), encoding="utf-8")
+        with open(os.path.join(out_folder, filename), "wt") as f:
+            f.write(self._xml)
 
     def save_meta_csv(self, out_folder: str):
         """

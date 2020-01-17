@@ -174,14 +174,14 @@ class McdParser:
             ac_id, self.filename, img, channel_names, channel_labels, self.xml, ac_description, "mcd", 3,
         )
 
-    def save_panorama(self, pid, out_folder, fn_out=None):
+    def save_panorama(self, panorama_id: str, out_folder: str, fn_out=None):
         """
         Save all the panorma images of the acquisition
         :param out_folder: the output folder
         """
         pano_postfix = "pano"
         image_offestfix = 161
-        p = self.meta.get_object(const.PANORAMA, pid)
+        p = self.meta.get_object(const.PANORAMA, panorama_id)
         img_start = int(p.properties.get(const.IMAGE_START_OFFSET, 0)) + image_offestfix
         img_end = int(p.properties.get(const.IMAGE_END_OFFSET, 0)) + image_offestfix
 
@@ -307,6 +307,10 @@ if __name__ == "__main__":
     # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
     with McdParser(filename) as mcd:
         imc_img = mcd.get_imc_acquisition("1")
-        imc_img.save_image("/home/anton/Downloads/test.ome.tiff")
+        # imc_img.save_image("/home/anton/Downloads/test.ome.tiff")
+        mcd.save_panorama("1", "/home/anton/Downloads")
+        mcd.save_slideimage("0", "/home/anton/Downloads")
+        mcd.save_meta_xml("/home/anton/Downloads")
+        mcd.save_acquisition_bfimage_before("1", "/home/anton/Downloads")
         pass
     print(timeit.default_timer() - tic)
