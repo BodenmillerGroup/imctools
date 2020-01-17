@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from imctools.data.acquisition import Acquisition
 from imctools.data.overview_image import OverviewImage

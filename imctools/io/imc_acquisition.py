@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import Sequence
 
 import numpy as np
 from xtiff import to_tiff
@@ -22,7 +22,7 @@ class ImcAcquisition:
         metadata=None,
         description: str = None,
         origin: str = None,
-        offset: int = 0,
+        offset: int = 3,
     ):
         """
 
@@ -49,8 +49,8 @@ class ImcAcquisition:
         self._data = data
         self._offset = offset
 
-        self._channel_names = self._validate_values(channel_names)
-        self._channel_labels = self._validate_values(channel_labels)
+        self._channel_names = channel_names
+        self._channel_labels = channel_labels
         self.metadata = metadata
         self.description = description
         self.origin = origin
@@ -111,7 +111,7 @@ class ImcAcquisition:
     def data(self):
         return self._data
 
-    def get_image_stack_cyx(self, indices=None, offset=None):
+    def get_image_stack_cyx(self, indices: Sequence[int] = None, offset: int = None):
         """
         Return the data reshaped as a stack of images
 
@@ -139,27 +139,9 @@ class ImcAcquisition:
         index = self.channel_names.index(name)
         return self.get_image_by_index(index)
 
-    def get_img_by_label(self, label: str):
+    def get_image_by_label(self, label: str):
         index = self.channel_labels.index(label)
         return self.get_image_by_index(index)
-
-    def _validate_values(self, values: List[str]):
-        if values is None:
-            return None
-        elif len(values) == self.n_channels:
-            for i in range(self._offset):
-                if i < 3:
-                    values = ["X", "Y", "Z"][i] + values
-                else:
-                    values = [str(i)] + values
-        elif len(values) == self.n_channels + self._offset:
-            pass
-        else:
-            raise ValueError("Incompatible channel names/labels!")
-
-        # remove special characters
-        values = [v.replace("(", "").replace(")", "").strip() if v is not None else "" for v in values]
-        return values
 
     def save_image(self, filename: str, metals=None, mass=None):
         if metals is not None:

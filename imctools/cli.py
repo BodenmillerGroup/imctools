@@ -2,6 +2,7 @@
 
 """Console script for imctools."""
 import sys
+
 import click
 
 

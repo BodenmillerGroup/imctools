@@ -19,7 +19,7 @@ class Session:
         creation_date: datetime,
         software_version: str,
         data_origin: str,
-        origin_path: str
+        origin_path: str,
     ):
         self.name = name
         self.description = description

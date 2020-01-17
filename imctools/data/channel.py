@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from imctools.data.acquisition import Acquisition
 
@@ -40,4 +40,6 @@ class Channel:
         self.meta = meta
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id}, tag={self.tag}, description={self.description})"
+        return (
+            f"{self.__class__.__name__}(original_id={self.original_id}, tag={self.tag}, description={self.description})"
+        )

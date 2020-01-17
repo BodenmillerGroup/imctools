@@ -1,11 +1,19 @@
-import os
 import csv
+import os
 import xml.etree.ElementTree as ET
 
 import xmltodict
 
-from imctools.io.mcd_constants import MCDSCHEMA, SLIDE, PANORAMA, ACQUISITION, ACQUISITIONCHANNEL, FILENAME, META_CSV
-from imctools.io.mcd_xml import OBJ_DICT, ID_DICT, Meta
+from imctools.io.mcd_constants import (
+    ACQUISITION,
+    ACQUISITION_CHANNEL,
+    FILENAME,
+    MCD_SCHEMA,
+    META_CSV,
+    PANORAMA,
+    SLIDE,
+)
+from imctools.io.mcd_xml import ID_DICT, OBJ_DICT, Meta
 
 
 class McdXmlParser(Meta):
@@ -16,10 +24,10 @@ class McdXmlParser(Meta):
 
     def __init__(self, xml: str, filename: str = None):
         self._xml = xml
-        meta = xmltodict.parse(xml, xml_attribs=False, force_list=(SLIDE, PANORAMA, ACQUISITION, ACQUISITIONCHANNEL))[
-            MCDSCHEMA
+        meta = xmltodict.parse(xml, xml_attribs=False, force_list=(SLIDE, PANORAMA, ACQUISITION, ACQUISITION_CHANNEL))[
+            MCD_SCHEMA
         ]
-        Meta.__init__(self, MCDSCHEMA, meta, [])
+        Meta.__init__(self, MCD_SCHEMA, meta, [])
         if filename is None:
             filename = meta[SLIDE][0][FILENAME]
         self.filename = filename

@@ -1,7 +1,7 @@
+import re
 from typing import Optional, Sequence
 
 import numpy as np
-
 
 _OME_CHANNEL_XML_FMT = '<Channel ID="Channel:0:{id:d}" SamplesPerPixel="{samples_per_pixel:d}"{channel_extra} />'
 
@@ -31,11 +31,13 @@ def reshape_long_2_cyx(
         shape = data[:, :2].max(axis=0) + 1
         if np.prod(shape) > data.shape[0]:
             shape[1] -= 1
-
         shape = shape.astype(int)
+
     if channel_indices is None:
         channel_indices = range(data.shape[1])
+
     n_channels = len(channel_indices)
+
     if is_sorted:
         tmp_data = data[:, channel_indices]
         img = np.reshape(tmp_data[: (np.prod(shape)), :], [shape[1], shape[0], n_channels], order="C")

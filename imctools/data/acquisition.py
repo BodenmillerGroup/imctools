@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
 from imctools.data.channel import Channel
 from imctools.data.progress_image import ProgressImage

@@ -12,7 +12,7 @@ Further each object is registered in the global root node, making them easy acce
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Optional, Any
+from typing import Any, Dict, Optional, Sequence
 
 import imctools.io.mcd_constants as const
 
@@ -23,7 +23,9 @@ class Meta:
 
     """
 
-    def __init__(self, meta_type: str, properties: Dict[str, str], parents: Sequence[Meta], symbol: Optional[str] = None):
+    def __init__(
+        self, meta_type: str, properties: Dict[str, str], parents: Sequence[Meta], symbol: Optional[str] = None
+    ):
         """
         Initializes the metadata object, generates the
         parent-child relationships and updates to object list
@@ -43,7 +45,7 @@ class Meta:
         self.parents = parents
         self.symbol = symbol
 
-        self.children: Dict[str, Meta] = dict()
+        self.children: Dict[str, Dict[str, Meta]] = dict()
 
         for p in parents:
             self._update_parents(p)
@@ -104,7 +106,7 @@ class Panorama(Meta):
 
 class AcquisitionRoi(Meta):
     def __init__(self, properties, parents):
-        Meta.__init__(self, const.ACQUISITIONROI, properties, parents, "r")
+        Meta.__init__(self, const.ACQUISITION_ROI, properties, parents, "r")
 
 
 class Acquisition(Meta):
@@ -112,25 +114,25 @@ class Acquisition(Meta):
         Meta.__init__(self, const.ACQUISITION, properties, parents, "a")
 
     def get_channels(self):
-        return self.children[const.ACQUISITIONCHANNEL]
+        return self.children[const.ACQUISITION_CHANNEL]
 
     def get_channel_orderdict(self):
         chan_dic = self.get_channels()
         out_dic = dict()
         for k, chan in chan_dic.items():
-            channel_name = chan.properties[const.CHANNELNAME]
-            channel_label = chan.properties.get(const.CHANNELLABEL, channel_name)
-            channel_order = int(chan.properties.get(const.ORDERNUMBER))
+            channel_name = chan.properties[const.CHANNEL_NAME]
+            channel_label = chan.properties.get(const.CHANNEL_LABEL, channel_name)
+            channel_order = int(chan.properties.get(const.ORDER_NUMBER))
             out_dic.update({channel_order: (channel_name, channel_label)})
         return out_dic
 
     @property
     def data_offset_start(self):
-        return int(self.properties[const.DATASTARTOFFSET])
+        return int(self.properties[const.DATA_START_OFFSET])
 
     @property
     def data_offset_end(self):
-        return int(self.properties[const.DATAENDOFFSET])
+        return int(self.properties[const.DATA_END_OFFSET])
 
     @property
     def data_size(self):
@@ -138,7 +140,7 @@ class Acquisition(Meta):
 
     @property
     def data_nrows(self):
-        nrow = int(self.data_size / (self.n_channels * int(self.properties[const.VALUEBYTES])))
+        nrow = int(self.data_size / (self.n_channels * int(self.properties[const.VALUE_BYTES])))
         return nrow
 
     @property
@@ -148,12 +150,12 @@ class Acquisition(Meta):
 
 class RoiPoint(Meta):
     def __init__(self, properties, parents):
-        Meta.__init__(self, const.ROIPOINT, properties, parents, "rp")
+        Meta.__init__(self, const.ROI_POINT, properties, parents, "rp")
 
 
 class Channel(Meta):
     def __init__(self, properties, parents):
-        Meta.__init__(self, const.ACQUISITIONCHANNEL, properties, parents, "c")
+        Meta.__init__(self, const.ACQUISITION_CHANNEL, properties, parents, "c")
 
 
 """
@@ -164,10 +166,10 @@ OBJ_DICT = OrderedDict(
     [
         (const.SLIDE, Slide),
         (const.PANORAMA, Panorama),
-        (const.ACQUISITIONROI, AcquisitionRoi),
+        (const.ACQUISITION_ROI, AcquisitionRoi),
         (const.ACQUISITION, Acquisition),
-        (const.ROIPOINT, RoiPoint),
-        (const.ACQUISITIONCHANNEL, Channel),
+        (const.ROI_POINT, RoiPoint),
+        (const.ACQUISITION_CHANNEL, Channel),
     ]
 )
 
@@ -176,8 +178,8 @@ A dictionary to map id keys to metadata keys
 Used for initialization of the objects
 """
 ID_DICT = {
-    const.SLIDEID: const.SLIDE,
-    const.PANORAMAID: const.PANORAMA,
-    const.ACQUISITIONROIID: const.ACQUISITIONROI,
-    const.ACQUISITIONID: const.ACQUISITION,
+    const.SLIDE_ID: const.SLIDE,
+    const.PANORAMA_ID: const.PANORAMA,
+    const.ACQUISITION_ROI_ID: const.ACQUISITION_ROI,
+    const.ACQUISITION_ID: const.ACQUISITION,
 }

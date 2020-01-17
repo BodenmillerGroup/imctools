@@ -1,106 +1,108 @@
+import re
+from typing import Sequence
+
 import numpy as np
 import pandas as pd
-import xarray as xr
-import xmltodict
 
-import re
-from pathlib import Path
-from typing import Union, List, Sequence, Generator
-import mmap
-import struct
+from imctools.io.imc_acquisition import ImcAcquisition
+from imctools.io.utils import reshape_long_2_cyx
 
 
-class ROIData:
-    """Represents image data (individual ROI) in long form. Meant to be instantiated by
-    file readers and convert long-form image data into data arrays behind the scenes."""
+class TxtParser:
+    """
+    Parses an IMC .txt file
+    """
 
-    def __init__(self, df: pd.DataFrame, name, attrs=None):
-        """df is a long-form dataarray with columns zero-indexed X, Y as a MultiIndex with
-        additional columns as channel intensities."""
-        self.df = df
-        self.name = name
-        self.attrs = attrs
+    def __init__(self, filename: str):
+        self.filename = filename
+        self.origin = "txt"
+        self.data, self.channel_names, self.channel_labels = self.parse_csv(filename)
 
-    @classmethod
-    def from_txt(cls, path):
-        """Initialize image from .txt file."""
-        # First pass to validate text file columns are consistent with IMC data
-        header_cols = pd.read_csv(path, sep="\t", nrows=0).columns
+    @property
+    def ac_id(self):
+        ac_id = fn.rstrip(".txt").split("_")[-1]
+        return ac_id
+
+    def get_imc_acquisition(self):
+        """
+        Returns the imc acquisition object
+        :return:
+        """
+        img = reshape_long_2_cyx(self.data, is_sorted=True)
+        return ImcAcquisition(
+            self.ac_id,
+            self.filename,
+            img,
+            self.channel_names,
+            self.channel_labels,
+            metadata=None,
+            description=None,
+            origin=self.origin,
+            offset=3,
+        )
+
+    def parse_csv(self, filename):
+        header_cols = pd.read_csv(filename, sep="\t", nrows=0).columns
         expected_cols = ("Start_push", "End_push", "Pushes_duration", "X", "Y", "Z")
         if tuple(header_cols[:6]) != expected_cols or len(header_cols) <= 6:
             raise ValueError(
-                f"'{str(path)}' is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data)."
+                f"'{str(filename)}' is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data)."
             )
         # Actual read, dropping irrelevant columns and casting image data to float32
-        txt = pd.read_csv(
-            path,
+        df = pd.read_csv(
+            filename,
             sep="\t",
-            usecols=lambda c: c not in ("Start_push", "End_push", "Pushes_duration", "Z"),
-            index_col=["X", "Y"],
-            dtype={c: np.float32 for c in header_cols[6:]},
+            usecols=lambda c: c not in ("Start_push", "End_push", "Pushes_duration"),
+            dtype={c: np.float32 for c in header_cols[3:]},
         )
-        # Rename columns to be consistent with .mcd format
-        txt.columns = [_parse_txt_channel(col) for col in txt.columns]
-        return cls(txt, Path(path).stem)
+        data = df.values
+        names = [col for col in header_cols if col not in ("Start_push", "End_push", "Pushes_duration")]
+        channel_names = self._extract_channel_names(names)
+        channel_labels = self._extract_channel_labels(names)
+        return data, channel_names, channel_labels
 
-    def _df_to_array(self):
-        xsz, ysz = self.df.index.to_frame().max()[["X", "Y"]] + 1
-        csz = len(self.df.columns)
-        # Ensure X/Y are fully specified, and fill in missing indices if needed
-        multiindex = pd.MultiIndex.from_product([range(xsz), range(ysz)], names=["X", "Y"])
-        # This will create nan rows if certain x/y combinations are missing:
-        df_fill = self.df.reindex(multiindex)
-        # Sort values by ascending Y, then X, so that we can reshape in C index order
-        return df_fill.sort_values(["Y", "X"]).values.reshape((ysz, xsz, csz))
+    @staticmethod
+    def _extract_channel_names(names: Sequence[str]):
+        """
+        Returns channel names in Fluidigm compatible format, i.e. Y(89) or ArAr(80)
 
-    def as_dataarray(self, fill_missing):
-        # Reshape long-form data to image
-        arr = self._df_to_array()
-        # Try to fill missing values if necessary
-        nan_mask = np.isnan(arr)
-        if fill_missing is None and nan_mask.sum() > 0:
-            raise ValueError("Image data is missing values. Try specifying 'fill_missing'.")
-        arr[np.isnan(arr)] = fill_missing
-        return xr.DataArray(
-            arr,
-            name=self.name,
-            dims=("y", "x", "c"),
-            coords={"x": range(arr.shape[1]), "y": range(arr.shape[0]), "c": self.df.columns.tolist()},
-            attrs=self.attrs,
-        )
+        Parameters
+        ----------
+        names
+            CSV file column names
 
+        """
+        r = re.compile("^.*\((.*?)\)[^(]*$")
+        r_number = re.compile("\d+")
+        result = []
+        for name in names:
+            n = r.sub("\g<1>", name.strip("\r").strip("\n").strip()).rstrip("di").rstrip("Di")
+            metal_name = r_number.sub("", n)
+            metal_mass = n.replace(metal_name, "")
+            metal_mass = f"({metal_mass})" if metal_mass != "" else ""
+            result.append(f"{metal_name}{metal_mass}")
+        return result
 
-def _parse_txt_channel(header: str) -> str:
-    """Extract channel and label from text headers and return channels as formatted by
-    MCDViewer. e.g. 80ArAr(ArAr80Di) -> ArAr(80)_80ArAr
-    Args:
-        headers: channel text header
-    Returns:
-        Channel header renamed to be consistent with MCD Viewer output
-    """
-    label, metal, mass = re.findall(r"(.+)\(([a-zA-Z]+)(\d+)Di\)", header)[0]
-    return f"{metal}({mass})_{label}"
+    @staticmethod
+    def _extract_channel_labels(names: Sequence[str]):
+        """
+        Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di)
 
+        Parameters
+        ----------
+        names
+            CSV file column names
 
-def read_txt(path: Union[Path, str], fill_missing: float = -1) -> xr.DataArray:
-    """Read a Fluidigm IMC .txt file and returns the image data as an xarray DataArray.
-    This is a convenience function which avoids instantiating ROIData.
-    Args:
-        path: path to IMC .txt file.
-        fill_missing: value to use to fill in missing image data. If not specified,
-            an error will be raised if there is missing image data.
-    Returns:
-        An xarray DataArray containing multichannel image data.
-    Raises:
-        ValueError: File is not valid IMC text data or missing values."""
-    return ROIData.from_txt(path).as_dataarray(fill_missing)
+        """
+        return [name.strip("\r").strip("\n").strip() for name in names]
 
 
 if __name__ == "__main__":
     import timeit
 
+    fn = "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_pos1_6_6.txt"
     tic = timeit.default_timer()
-    result = read_txt(
-        "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_pos1_6_6.txt"
-    )
+    imc_txt = TxtParser(fn)
+    imc_ac = imc_txt.get_imc_acquisition()
+    imc_ac.save_image("/home/anton/Downloads/test_2x.ome.tiff")
     print(timeit.default_timer() - tic)

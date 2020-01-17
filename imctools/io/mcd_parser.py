@@ -1,12 +1,12 @@
+import mmap
 import os
 from typing import BinaryIO
-import mmap
 
 import numpy as np
 
+import imctools.io.mcd_constants as const
 from imctools.io.errors import AcquisitionError
 from imctools.io.imc_acquisition import ImcAcquisition
-import imctools.io.mcd_constants as const
 from imctools.io.mcd_xml_parser import McdXmlParser
 from imctools.io.utils import reshape_long_2_cyx
 
@@ -17,6 +17,7 @@ class McdParser:
     The McdParser object should be closed using the close method
 
     """
+
     def __init__(self, filename: str, file_handle: BinaryIO = None, meta_filename: str = None):
         """
         Parameters
@@ -75,14 +76,14 @@ class McdParser:
         """
         return list(self.meta.get_acquisitions().keys())
 
-    def get_acquisition_description(self, ac_id, default=None):
+    def get_acquisition_description(self, ac_id, default: str = None):
         """
         Get the description field of the acquisition
         :param ac_id:
         :return:
         """
-        acmeta = self.meta.get_acquisition_meta(ac_id)
-        desc = acmeta.get(const.DESCRIPTION, default)
+        meta = self.meta.get_acquisition_meta(ac_id)
+        desc = meta.get(const.DESCRIPTION, default)
         return desc
 
     def get_acquisition_buffer(self, ac_id):
@@ -106,16 +107,12 @@ class McdParser:
             Acquisition ID
         """
         ac = self.meta.get_acquisitions()[acquisition_id]
-        data_offset_start = ac.data_offset_start
-        data_offset_end = ac.data_offset_end
-        data_size = ac.data_size
-        n_rows = ac.data_nrows
-        n_channel = ac.n_channels
-
-        if n_rows == 0:
+        if ac.data_nrows == 0:
             raise AcquisitionError(f"Acquisition {acquisition_id} emtpy!")
 
-        data = np.memmap(self._fh, dtype=np.float32, mode="r", offset=data_offset_start, shape=(int(n_rows), n_channel))
+        data = np.memmap(
+            self._fh, dtype=np.float32, mode="r", offset=ac.data_offset_start, shape=(int(ac.data_nrows), ac.n_channels)
+        )
         return data
 
     def _inject_imc_datafile(self, filename):
@@ -168,13 +165,13 @@ class McdParser:
         data = self.get_acquisition_raw_data(ac_id)
         nchan = data.shape[1]
         channels = self.get_acquisition_channels(ac_id)
-        channel_name, channel_label = zip(*[channels[i] for i in range(nchan)])
+        channel_names, channel_labels = zip(*[channels[i] for i in range(nchan)])
         img = reshape_long_2_cyx(data, is_sorted=True)
         if ac_description is None:
             ac_description = self.meta.get_object(const.ACQUISITION, ac_id).metaname
 
         return ImcAcquisition(
-            ac_id, self.filename, img, channel_name, channel_label, self.xml, ac_description, "mcd", 3,
+            ac_id, self.filename, img, channel_names, channel_labels, self.xml, ac_description, "mcd", 3,
         )
 
     def save_panorama(self, pid, out_folder, fn_out=None):
@@ -185,13 +182,13 @@ class McdParser:
         pano_postfix = "pano"
         image_offestfix = 161
         p = self.meta.get_object(const.PANORAMA, pid)
-        img_start = int(p.properties.get(const.IMAGESTARTOFFSET, 0)) + image_offestfix
-        img_end = int(p.properties.get(const.IMAGEENDOFFSET, 0)) + image_offestfix
+        img_start = int(p.properties.get(const.IMAGE_START_OFFSET, 0)) + image_offestfix
+        img_end = int(p.properties.get(const.IMAGE_END_OFFSET, 0)) + image_offestfix
 
         if img_start - img_end == 0:
             return 0
 
-        file_end = p.properties.get(const.IMAGEFORMAT, ".png").lower()
+        file_end = p.properties.get(const.IMAGE_FORMAT, ".png").lower()
 
         if fn_out is None:
             fn_out = p.metaname
@@ -209,9 +206,9 @@ class McdParser:
         default_format = ".png"
 
         s = self.meta.get_object(const.SLIDE, sid)
-        img_start = int(s.properties.get(const.IMAGESTARTOFFSET, 0)) + image_offestfix
-        img_end = int(s.properties.get(const.IMAGEENDOFFSET, 0)) + image_offestfix
-        slide_format = s.properties.get(const.IMAGEFILE, default_format)
+        img_start = int(s.properties.get(const.IMAGE_START_OFFSET, 0)) + image_offestfix
+        img_end = int(s.properties.get(const.IMAGE_END_OFFSET, 0)) + image_offestfix
+        slide_format = s.properties.get(const.IMAGE_FILE, default_format)
         if slide_format in [None, "", '""', "''"]:
             slide_format = default_format
 
@@ -235,15 +232,15 @@ class McdParser:
 
     def save_acquisition_bfimage_before(self, ac_id, out_folder, fn_out=None):
         ac_postfix = "before"
-        start_offkey = const.BEFOREABLATIONIMAGESTARTOFFSET
-        end_offkey = const.BEFOREABLATIONIMAGEENDOFFSET
+        start_offkey = const.BEFORE_ABLATION_IMAGE_START_OFFSET
+        end_offkey = const.BEFORE_ABLATION_IMAGE_END_OFFSET
 
         self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix, start_offkey, end_offkey, fn_out)
 
     def save_acquisition_bfimage_after(self, ac_id, out_folder, fn_out=None):
         ac_postfix = "after"
-        start_offkey = const.AFTERABLATIONIMAGESTARTOFFSET
-        end_offkey = const.AFTERABLATIONIMAGEENDOFFSET
+        start_offkey = const.AFTER_ABLATION_IMAGE_START_OFFSET
+        end_offkey = const.AFTER_ABLATION_IMAGE_END_OFFSET
 
         self._save_acquisition_bfimage(ac_id, out_folder, ac_postfix, start_offkey, end_offkey, fn_out)
 
@@ -267,7 +264,7 @@ class McdParser:
     def save_meta_xml(self, out_folder):
         self.meta.save_meta_xml(out_folder)
 
-    def get_all_imcacquistions(self):
+    def get_all_imc_acquistions(self):
         """
         Returns a list of all nonempty imc_acquisitions
         """
@@ -279,7 +276,7 @@ class McdParser:
             except AcquisitionError:
                 pass
             except:
-                print("error in acqisition: " + ac)
+                print("error in acquisition: " + ac)
         return imc_acs
 
     def _get_buffer(self, start: int, stop: int):

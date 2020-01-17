@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from imctools.data.slide import Slide
 
