@@ -1,4 +1,3 @@
-import re
 from typing import Optional, Sequence
 
 import numpy as np
@@ -13,7 +12,7 @@ def reshape_long_2_cyx(
     channel_indices: Optional[Sequence[int]] = None,
 ):
     """
-    Reshape data in long format into cyx format (channels, y, x)
+    Reshape data from long format into cyx format (channels, y, x)
 
     Parameters
     ----------

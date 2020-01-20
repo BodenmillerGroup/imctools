@@ -1,6 +1,6 @@
 import mmap
 import os
-from typing import BinaryIO
+from typing import BinaryIO, Sequence
 
 import numpy as np
 
@@ -63,16 +63,15 @@ class McdParser:
 
     @property
     def n_acquisitions(self):
-        """
-        Number of acquisitions in the file
+        """Number of acquisitions in MCD file
+
         """
         return len(self.meta.get_acquisitions())
 
     @property
-    def acquisition_ids(self):
-        """
-        Acquisition IDs
-        :return:
+    def acquisition_ids(self) -> Sequence[str]:
+        """Acquisition IDs
+
         """
         return list(self.meta.get_acquisitions().keys())
 
@@ -261,7 +260,7 @@ class McdParser:
         with open(os.path.join(out_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_meta_xml(self, out_folder):
+    def save_meta_xml(self, out_folder: str):
         self.meta.save_meta_xml(out_folder)
 
     def get_all_imc_acquistions(self):
@@ -307,10 +306,10 @@ if __name__ == "__main__":
     # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
     with McdParser(filename) as mcd:
         imc_img = mcd.get_imc_acquisition("1")
-        # imc_img.save_image("/home/anton/Downloads/test.ome.tiff")
-        mcd.save_panorama("1", "/home/anton/Downloads")
-        mcd.save_slideimage("0", "/home/anton/Downloads")
-        mcd.save_meta_xml("/home/anton/Downloads")
-        mcd.save_acquisition_bfimage_before("1", "/home/anton/Downloads")
+        imc_img.save_image("/home/anton/Downloads/test_v2.ome.tiff")
+        # mcd.save_panorama("1", "/home/anton/Downloads")
+        # mcd.save_slideimage("0", "/home/anton/Downloads")
+        # mcd.save_meta_xml("/home/anton/Downloads")
+        # mcd.save_acquisition_bfimage_before("1", "/home/anton/Downloads")
         pass
     print(timeit.default_timer() - tic)

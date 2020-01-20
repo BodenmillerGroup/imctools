@@ -1,45 +1,35 @@
-from typing import Dict, Optional
+from __future__ import annotations
 
-from imctools.data.acquisition import Acquisition
+from typing import Dict, Optional, TYPE_CHECKING
+if TYPE_CHECKING:
+    from imctools.data.acquisition import Acquisition
 
 
 class Channel:
     """
-    Acquisitions channel
+    IMC acquisition channel
+
     """
 
     def __init__(
         self,
-        acquisition: Acquisition,
-        id: str,
-        original_id: int,
-        tag: str,
-        description: Optional[str] = None,
+        acquisition_id: str,
+        original_id: str,
+        name: str,
+        label: Optional[str] = None,
         meta: Optional[Dict[str, str]] = None,
+        min_intensity: Optional[float] = None,
+        max_intensity: Optional[float] = None,
     ):
-        """
-        Parameters
-        ----------
-        id
-            Unique channel id
-        original_id
-            Original channel id
-        tag
-            Unique channel tag (Metal)(Mass)
-        description
-            Custom channel description
-        meta
-            Raw metadata
-        """
-
-        self.acquisition = acquisition
-        self.id = id
+        self.acquisition_id = acquisition_id
         self.original_id = original_id
-        self.tag = tag
-        self.description = description
+        self.name = name
+        self.label = label
         self.meta = meta
+        self.min_intensity = min_intensity
+        self.max_intensity = max_intensity
 
     def __repr__(self):
         return (
-            f"{self.__class__.__name__}(original_id={self.original_id}, tag={self.tag}, description={self.description})"
+            f"{self.__class__.__name__}(original_id={self.original_id}, name={self.name}, label={self.label})"
         )

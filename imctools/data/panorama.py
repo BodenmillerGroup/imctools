@@ -1,24 +1,20 @@
-from enum import Enum
+from __future__ import annotations
+
 from typing import Dict, Optional
 
 from imctools.data.slide import Slide
 
 
-class OverviewImageType(Enum):
-    IMPORTED = 1
-    INSTRUMENT = 2
-
-
-class OverviewImage:
+class Panorama:
     """
-    Overview image
-    """
+    Panoramic image and its description
 
+    """
     def __init__(
         self,
-        slide: Slide,
+        slide_id: str,
         original_id: int,
-        image_type: OverviewImageType,
+        image_type: str,
         description: str,
         start_position_x: float,
         start_position_y: float,
@@ -37,9 +33,9 @@ class OverviewImage:
             Image height in pixels
         image_type:
             Progress image type (before/after)
-        """
 
-        self.slide = slide
+        """
+        self.slide_id = slide_id
         self.original_id = original_id
         self.image_type = image_type
         self.description = description
@@ -52,4 +48,4 @@ class OverviewImage:
         self.meta = meta
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id!r}, image_type={self.image_type!r}, description={self.description!r})"
+        return f"{self.__class__.__name__}(original_id={self.original_id}, image_type={self.image_type}, description={self.description})"
