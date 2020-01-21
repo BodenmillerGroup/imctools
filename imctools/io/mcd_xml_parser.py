@@ -1,5 +1,6 @@
 import csv
 import os
+from typing import Dict
 
 import xmltodict
 
@@ -12,12 +13,11 @@ from imctools.io.mcd_constants import (
     PANORAMA,
     SLIDE,
 )
-from imctools.io.mcd_xml import ID_DICT, OBJ_DICT, Meta
+from imctools.io.mcd_xml import ID_DICT, OBJ_DICT, Meta, Acquisition
 
 
 class McdXmlParser(Meta):
-    """
-    Represents the full MCD XML structure
+    """Represents the full MCD XML structure
 
     """
 
@@ -52,24 +52,25 @@ class McdXmlParser(Meta):
                     parents = [self]
                 ObjClass(o, parents)
 
-    def get_objects_by_id(self, idname, objid):
-        """
-        Gets objects by idname and id
-        :param idname: an name of an id registered in the ID_DICT
-        :param objid: the id of the object
-        :returns: the described object.
-        """
-        mtype = ID_DICT[idname]
-        return self.get_object(mtype, objid)
+    def get_objects_by_id(self, id_name: str, original_id: str):
+        """Gets objects by id name and original object id
 
-    def get_object(self, meta_type, mid):
+        Parameters
+        ----------
+        id_name
+            Name of an id registered in the ID_DICT
+        original_id
+            Original object id
+
         """
-        Return an object defined by type and id
-        :param meta_type: object type
-        :param mid: object id
-        :returns: the requested object
+        meta_type = ID_DICT[id_name]
+        return self.get_object(meta_type, original_id)
+
+    def get_object(self, meta_type: str, original_id: str):
+        """Return an object defined by type and id
+
         """
-        return self.objects[meta_type][mid]
+        return self.objects[meta_type][original_id]
 
     def save_meta_xml(self, out_folder: str):
         filename = self.metaname + "_schema.xml"
@@ -90,14 +91,14 @@ class McdXmlParser(Meta):
                 for row in odict:
                     writer.writerow(row)
 
-    def get_acquisitions(self):
-        """
-        Gets a list of all acquisitions
+    def get_acquisitions(self) -> Dict[str, Acquisition]:
+        """Gets list of all acquisitions
+
         """
         return self.objects[ACQUISITION]
 
-    def get_acquisition_meta(self, acquisition_id: int):
-        """
-        Returns the acquisition metadata dict
+    def get_acquisition_meta(self, acquisition_id: str):
+        """Returns the acquisition metadata dict
+
         """
         return self.get_object(ACQUISITION, acquisition_id).properties

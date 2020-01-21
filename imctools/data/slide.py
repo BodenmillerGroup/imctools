@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 
 
 class Slide:
-    """
-    IMC slide
+    """IMC slide
 
     """
+
     def __init__(
         self,
         session_id: str,
@@ -28,6 +28,4 @@ class Slide:
         self.description = description
 
     def __repr__(self):
-        return (
-            f"{self.__class__.__name__}(original_id={self.original_id}, description={self.description})"
-        )
+        return f"{self.__class__.__name__}(original_id={self.original_id}, description={self.description})"

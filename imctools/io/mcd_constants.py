@@ -1,5 +1,4 @@
-"""
-Definitions of MCD XML keywords
+"""Definitions of MCD XML keywords
 
 """
 

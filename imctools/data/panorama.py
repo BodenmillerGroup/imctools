@@ -6,10 +6,10 @@ from imctools.data.slide import Slide
 
 
 class Panorama:
-    """
-    Panoramic image and its description
+    """Panoramic image and its description
 
     """
+
     def __init__(
         self,
         slide_id: str,
@@ -24,17 +24,6 @@ class Panorama:
         file_extension: Optional[str] = None,
         meta: Optional[Dict[str, str]] = None,
     ):
-        """
-        Parameters
-        ----------
-        width:
-            Image width in pixels
-        height:
-            Image height in pixels
-        image_type:
-            Progress image type (before/after)
-
-        """
         self.slide_id = slide_id
         self.original_id = original_id
         self.image_type = image_type

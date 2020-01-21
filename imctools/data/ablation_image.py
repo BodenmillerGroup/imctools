@@ -13,14 +13,14 @@ class AblationImageType(Enum):
 
 
 class AblationImage:
-    """
-    Ablation image (before/after)
+    """Ablation image (before/after)
 
     """
+
     def __init__(self, acquisition_id: str, image_type: AblationImageType, filename: str):
         self.acquisition_id = acquisition_id
         self.image_type = image_type
         self.filename = filename
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(progress_type={self.image_type}, filename={self.filename})"
+        return f"{self.__class__.__name__}(acquisition_id={self.acquisition_id}, image_type={self.image_type}, filename={self.filename})"

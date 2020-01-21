@@ -1,68 +1,50 @@
 import re
-from pathlib import Path
 from typing import Sequence
 
 import numpy as np
 import pandas as pd
 
-from imctools import __version__
-from imctools.data import Session, Slide, Acquisition, Channel
+from imctools.io.imc_acquisition import ImcAcquisition
 from imctools.io.utils import reshape_long_2_cyx
 
 
 class TxtParser:
-    """
-    Parses IMC .txt file
+    """Parses an IMC .txt file
 
     """
-    def __init__(self, filepath: str):
+
+    def __init__(self, filename: str):
+        self.filename = filename
         self.origin = "txt"
-        self.filepath = filepath
-
-        data, channel_names, channel_labels = self.parse_csv(self.filepath)
-        original_id = self.filepath.rstrip(".txt").split("_")[-1]
-        filename = Path(self.filepath).name
-
-        session = Session(filename, __version__, self.origin, self.filepath)
-        slide = Slide(session.id, "0")
-        session.slides[slide.original_id] = slide
-
-        img = reshape_long_2_cyx(data, is_sorted=True)
-        acquisition = Acquisition(
-            slide.original_id,
-            original_id,
-            img,
-            channel_names,
-            channel_labels,
-            None,
-            self.origin,
-            3
-        )
-        # slide.acquisitions[acquisition.original_id] = acquisition
-        session.acquisitions[acquisition.original_id] = acquisition
-        for i, channel_name in enumerate(channel_names):
-            channel_original_id = str(i + 1)
-            channel = Channel(acquisition.original_id, channel_original_id, channel_name, channel_labels[i])
-            # acquisition.channels[channel_original_id] = channel
-            session.channels[channel_original_id] = channel
-
-        self._session = session
+        self.data, self.channel_names, self.channel_labels = TxtParser.parse_csv(filename)
 
     @property
-    def session(self):
-        return self._session
+    def acquisition_id(self):
+        """Extract acquisition id from txt file name
+
+        """
+        return self.filename.rstrip(".txt").split("_")[-1]
+
+    def get_imc_acquisition(self):
+        """Returns the imc acquisition object
+
+        """
+        data = reshape_long_2_cyx(self.data, is_sorted=True)
+        return ImcAcquisition(
+            self.acquisition_id, self.filename, data, self.channel_names, self.channel_labels, origin=self.origin
+        )
 
     @staticmethod
-    def parse_csv(filepath: str):
-        header_cols = pd.read_csv(filepath, sep="\t", nrows=0).columns
+    def parse_csv(filename: str):
+        header_cols = pd.read_csv(filename, sep="\t", nrows=0).columns
         expected_cols = ("Start_push", "End_push", "Pushes_duration", "X", "Y", "Z")
         if tuple(header_cols[:6]) != expected_cols or len(header_cols) <= 6:
             raise ValueError(
-                f"'{str(filepath)}' is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data)."
+                f"'{str(filename)}' is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data)."
             )
         # Actual read, dropping irrelevant columns and casting image data to float32
         df = pd.read_csv(
-            filepath,
+            filename,
             sep="\t",
             usecols=lambda c: c not in ("Start_push", "End_push", "Pushes_duration"),
             dtype={c: np.float32 for c in header_cols[3:]},
@@ -84,11 +66,11 @@ class TxtParser:
             CSV file column names
 
         """
-        r = re.compile(r"^.*\((.*?)\)[^(]*$")
-        r_number = re.compile(r"\d+")
+        r = re.compile("^.*\((.*?)\)[^(]*$")
+        r_number = re.compile("\d+")
         result = []
         for name in names:
-            n = r.sub(r"\g<1>", name.strip("\r").strip("\n").strip()).rstrip("di").rstrip("Di")
+            n = r.sub("\g<1>", name.strip("\r").strip("\n").strip()).rstrip("di").rstrip("Di")
             metal_name = r_number.sub("", n)
             metal_mass = n.replace(metal_name, "")
             metal_mass = f"({metal_mass})" if metal_mass != "" else ""
@@ -115,7 +97,6 @@ if __name__ == "__main__":
     fn = "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_pos1_6_6.txt"
     tic = timeit.default_timer()
     parser = TxtParser(fn)
-    session = parser.session
-    # session.slides["0"].acquisitions["6"].save_image("/home/anton/Downloads/test_2x.ome.tiff")
-    session.save("/home/anton/Downloads/test.yaml")
+    imc_ac = parser.get_imc_acquisition()
+    imc_ac.save_image("/home/anton/Downloads/test_2x.ome.tiff")
     print(timeit.default_timer() - tic)

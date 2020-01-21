@@ -18,8 +18,7 @@ import imctools.io.mcd_constants as const
 
 
 class Meta:
-    """
-    Represents an abstract metadata object.
+    """Represents an abstract metadata object.
 
     """
 
@@ -80,8 +79,8 @@ class Meta:
         dict_.update({self.ID: self})
 
     def get_root(self):
-        """
-        Gets the root node of the metadata tree
+        """Gets the root node of the metadata tree
+
         """
         if self.is_root:
             return self
