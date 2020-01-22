@@ -4,10 +4,10 @@ from typing import BinaryIO, Sequence
 
 import numpy as np
 
-import imctools.io.mcd_constants as const
+import imctools.io.mcd.constants as const
+from imctools.data import Acquisition
 from imctools.io.errors import AcquisitionError
-from imctools.io.imc_acquisition import ImcAcquisition
-from imctools.io.mcd_xml_parser import McdXmlParser
+from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.utils import reshape_long_2_cyx
 
 
@@ -18,7 +18,7 @@ class McdParser:
 
     """
 
-    def __init__(self, filename: str, file_handle: BinaryIO = None, meta_filename: str = None):
+    def __init__(self, filepath: str, file_handle: BinaryIO = None, meta_filename: str = None):
         """
         Parameters
         ----------
@@ -30,7 +30,7 @@ class McdParser:
 
         """
         if file_handle is None:
-            self._fh = open(filename, mode="rb")
+            self._fh = open(filepath, mode="rb")
         else:
             self._fh = file_handle
 
@@ -44,7 +44,10 @@ class McdParser:
         footer = self._get_footer()
         public_xml_start = footer.find("<MCDPublic")
         self._xml = footer[:public_xml_start]
-        self._meta = McdXmlParser(self._xml)
+
+        self._xml_parser = McdXmlParser(self._xml, self._fh.name)
+        self._meta = self._xml_parser.meta
+        self._session = self._xml_parser.session
 
     @property
     def filename(self):
@@ -62,51 +65,54 @@ class McdParser:
         return self._meta
 
     @property
+    def session(self):
+        return self._session
+
+    @property
     def n_acquisitions(self):
         """Number of acquisitions in MCD file
 
         """
-        return len(self.meta.get_acquisitions())
+        return len(self.session.acquisitions)
 
     @property
     def acquisition_ids(self) -> Sequence[str]:
         """Acquisition IDs
 
         """
-        return list(self.meta.get_acquisitions().keys())
-
-    def get_acquisition_description(self, acquisition_id: str, default: str = None):
-        """Get the description field of the acquisition
-
-        """
-        meta = self.meta.get_acquisition_meta(acquisition_id)
-        desc = meta.get(const.DESCRIPTION, default)
-        return desc
+        return list(self.session.acquisitions.keys())
 
     def get_acquisition_buffer(self, acquisition_id: str):
         """Returns the raw buffer for the acquisition
 
         """
-        ac = self.meta.get_acquisitions().get(acquisition_id)
-        self._fh.seek(ac.data_offset_start)
-        buffer = self._fh.read(ac.data_size)
+        ac = self.session.acquisitions.get(acquisition_id)
+        start_offset = int(ac.meta.get(const.DATA_START_OFFSET))
+        end_offset = int(ac.meta.get(const.DATA_END_OFFSET))
+        data_size = end_offset - start_offset + 1
+        self._fh.seek(start_offset)
+        buffer = self._fh.read(data_size)
         return buffer
 
-    def get_acquisition_raw_data(self, acquisition_id: str):
+    def _get_acquisition_raw_data(self, acquisition: Acquisition):
         """Gets non-reshaped image data from the acquisition
 
         Parameters
         ----------
-        acquisition_id
-            Acquisition ID
+        acquisition
+            Acquisition
 
         """
-        ac = self.meta.get_acquisitions()[acquisition_id]
-        if ac.data_nrows == 0:
-            raise AcquisitionError(f"Acquisition {acquisition_id} emtpy!")
+        start_offset = int(acquisition.meta.get(const.DATA_START_OFFSET))
+        end_offset = int(acquisition.meta.get(const.DATA_END_OFFSET))
+        total_n_channels = len(acquisition.channels)
+        data_size = end_offset - start_offset + 1
+        data_nrows = int(data_size / (total_n_channels * int(acquisition.meta.get(const.VALUE_BYTES))))
+        if data_nrows == 0:
+            raise AcquisitionError(f"Acquisition {acquisition.original_id} emtpy!")
 
         data = np.memmap(
-            self._fh, dtype=np.float32, mode="r", offset=ac.data_offset_start, shape=(int(ac.data_nrows), ac.n_channels)
+            self._fh, dtype=np.float32, mode="r", offset=start_offset, shape=(data_nrows, total_n_channels)
         )
         return data
 
@@ -122,14 +128,6 @@ class McdParser:
         self.close()
         self._fh = open(filename, mode="rb")
 
-    def get_acquisition_channels(self, acquisition_id: str):
-        """Returns a dict with the channel metadata
-
-        """
-        ac = self.meta.get_acquisitions().get(acquisition_id)
-        channel_dict = ac.get_channel_orderdict()
-        return channel_dict
-
     def _get_footer(self, start_str: str = "<MCDSchema", encoding: str = "utf-16-le"):
         with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             # MCD format documentation recommends searching from end for "<MCDSchema"
@@ -140,21 +138,15 @@ class McdParser:
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def get_imc_acquisition(self, acquisition_id: str, ac_description=None):
+    def get_acquisition_with_image_data(self, acquisition_id: str, ac_description=None):
         """Returns an ImcAcquisition object corresponding to the ac_id
 
         """
-        data = self.get_acquisition_raw_data(acquisition_id)
-        n_channels = data.shape[1]
-        channels = self.get_acquisition_channels(acquisition_id)
-        channel_names, channel_labels = zip(*[channels[i] for i in range(n_channels)])
+        acquisition = self.session.acquisitions.get(acquisition_id)
+        data = self._get_acquisition_raw_data(acquisition)
         img = reshape_long_2_cyx(data, is_sorted=True)
-        if ac_description is None:
-            ac_description = self.meta.get_object(const.ACQUISITION, acquisition_id).metaname
-
-        return ImcAcquisition(
-            acquisition_id, self.filename, img, channel_names, channel_labels, self.xml, ac_description, "mcd", 3,
-        )
+        acquisition.image_data = img
+        return acquisition
 
     def save_panorama_image(self, panorama_id: str, out_folder: str, fn_out=None):
         """Save panorama image of the acquisition
@@ -162,17 +154,17 @@ class McdParser:
         """
         panorama_postfix = "pano"
         image_offset_fix = 161
-        p = self.meta.get_object(const.PANORAMA, panorama_id)
-        img_start = int(p.properties.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
-        img_end = int(p.properties.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        p = self.session.panoramas.get(panorama_id)
+        img_start = int(p.meta.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(p.meta.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
 
         if img_start - img_end == 0:
             return 0
 
-        file_end = p.properties.get(const.IMAGE_FORMAT, ".png").lower()
+        file_end = p.meta.get(const.IMAGE_FORMAT, ".png").lower()
 
         if fn_out is None:
-            fn_out = p.metaname
+            fn_out = p.meta_name
 
         if not (fn_out.endswith(file_end)):
             fn_out += "_" + panorama_postfix + "." + file_end
@@ -186,10 +178,10 @@ class McdParser:
         slide_postfix = "slide"
         default_format = ".png"
 
-        s = self.meta.get_object(const.SLIDE, slide_id)
-        img_start = int(s.properties.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
-        img_end = int(s.properties.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
-        slide_format = s.properties.get(const.IMAGE_FILE, default_format)
+        s = self.session.slides.get(slide_id)
+        img_start = int(s.meta.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(s.meta.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        slide_format = s.meta.get(const.IMAGE_FILE, default_format)
         if slide_format in [None, "", '""', "''"]:
             slide_format = default_format
 
@@ -203,7 +195,7 @@ class McdParser:
             return 0
 
         if fn_out is None:
-            fn_out = s.metaname
+            fn_out = s.meta_name
         if not (fn_out.endswith(slide_format)):
             fn_out += "_" + slide_postfix + slide_format
 
@@ -212,32 +204,38 @@ class McdParser:
             f.write(buf)
 
     def save_before_ablation_image(self, acquisition_id: str, out_folder: str, fn_out=None):
-        ac_postfix = "before"
-        start_offset = const.BEFORE_ABLATION_IMAGE_START_OFFSET
-        end_offset = const.BEFORE_ABLATION_IMAGE_END_OFFSET
-
-        self._save_ablation_image(acquisition_id, out_folder, ac_postfix, start_offset, end_offset, fn_out)
+        self._save_ablation_image(
+            acquisition_id,
+            out_folder,
+            "before",
+            const.BEFORE_ABLATION_IMAGE_START_OFFSET,
+            const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+            fn_out,
+        )
 
     def save_after_ablation_image(self, acquisition_id: str, out_folder: str, fn_out=None):
-        ac_postfix = "after"
-        start_offset = const.AFTER_ABLATION_IMAGE_START_OFFSET
-        end_offset = const.AFTER_ABLATION_IMAGE_END_OFFSET
-
-        self._save_ablation_image(acquisition_id, out_folder, ac_postfix, start_offset, end_offset, fn_out)
+        self._save_ablation_image(
+            acquisition_id,
+            out_folder,
+            "after",
+            const.AFTER_ABLATION_IMAGE_START_OFFSET,
+            const.AFTER_ABLATION_IMAGE_END_OFFSET,
+            fn_out,
+        )
 
     def _save_ablation_image(
         self, acquisition_id: str, out_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
     ):
         image_offset_fix = 161
         image_format = ".png"
-        a = self.meta.get_object(const.ACQUISITION, acquisition_id)
-        img_start = int(a.properties.get(start_offset, 0)) + image_offset_fix
-        img_end = int(a.properties.get(end_offset, 0)) + image_offset_fix
+        a = self.session.acquisitions.get(acquisition_id)
+        img_start = int(a.meta.get(start_offset, 0)) + image_offset_fix
+        img_end = int(a.meta.get(end_offset, 0)) + image_offset_fix
         if img_end - img_start == 0:
             return 0
 
         if fn_out is None:
-            fn_out = a.metaname
+            fn_out = a.meta_name
         buf = self._get_buffer(img_start, img_end)
         if not (fn_out.endswith(image_format)):
             fn_out += "_" + ac_postfix + image_format
@@ -245,22 +243,7 @@ class McdParser:
             f.write(buf)
 
     def save_meta_xml(self, out_folder: str):
-        self.meta.save_meta_xml(out_folder)
-
-    def get_all_imc_acquisitions(self):
-        """Returns a list of all nonempty imc_acquisitions
-
-        """
-        result = []
-        for id in self.acquisition_ids:
-            try:
-                ac = self.get_imc_acquisition(id)
-                result.append(ac)
-            except AcquisitionError:
-                pass
-            except:
-                print("error in acquisition: " + id)
-        return result
+        self._xml_parser.save_meta_xml(out_folder)
 
     def _get_buffer(self, start: int, stop: int):
         self._fh.seek(start)
@@ -289,11 +272,12 @@ if __name__ == "__main__":
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
     # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
     with McdParser(filename) as mcd:
-        imc_img = mcd.get_imc_acquisition("1")
-        imc_img.save_image("/home/anton/Downloads/test_v2.ome.tiff")
-        # mcd.save_panorama("1", "/home/anton/Downloads")
-        # mcd.save_slideimage("0", "/home/anton/Downloads")
-        # mcd.save_meta_xml("/home/anton/Downloads")
-        # mcd.save_acquisition_bfimage_before("1", "/home/anton/Downloads")
-        pass
+        imc_img = mcd.get_acquisition_with_image_data("1")
+        imc_img.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
+        mcd.save_panorama_image("1", "/home/anton/Downloads")
+        mcd.save_slide_image("0", "/home/anton/Downloads")
+        mcd.save_meta_xml("/home/anton/Downloads")
+        mcd.save_before_ablation_image("1", "/home/anton/Downloads")
+        mcd.save_after_ablation_image("1", "/home/anton/Downloads")
+        mcd.session.save("/home/anton/Downloads/test.json")
     print(timeit.default_timer() - tic)
