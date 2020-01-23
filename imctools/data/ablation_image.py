@@ -17,7 +17,7 @@ class AblationImage:
 
     """
 
-    def __init__(self, acquisition_id: str, image_type: AblationImageType, filename: str):
+    def __init__(self, acquisition_id: int, image_type: AblationImageType, filename: str):
         self.acquisition_id = acquisition_id
         self.image_type = image_type
         self.filename = filename

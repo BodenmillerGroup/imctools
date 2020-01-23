@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict, Optional
 
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
@@ -18,27 +18,27 @@ class Slide:
     def __init__(
         self,
         session_id: str,
-        original_id: str,
+        id: int,
         physical_width: Optional[float] = None,
         physical_height: Optional[float] = None,
         description: Optional[str] = None,
-        meta: Dict[str, str] = None,
+        metadata: Dict[str, str] = None,
     ):
         self.session_id = session_id
-        self.original_id = original_id
+        self.id = id
         self.physical_width = physical_width
         self.physical_height = physical_height
         self.description = description
-        self.meta = meta
+        self.metadata = metadata
 
         self.session: Optional[Session] = None
-        self.acquisitions: Dict[str, Acquisition] = dict()
-        self.panoramas: Dict[str, Panorama] = dict()
+        self.acquisitions: Dict[int, Acquisition] = dict()
+        self.panoramas: Dict[int, Panorama] = dict()
 
     @property
     def meta_name(self):
         parent_name = self.session.meta_name
-        return f"{parent_name}_{self.symbol}_{self.original_id}"
+        return f"{parent_name}_{self.symbol}_{self.id}"
 
     def to_dict(self):
         """Returns dictionary for JSON/YAML serialization"""
@@ -49,4 +49,4 @@ class Slide:
         return d
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id}, description={self.description})"
+        return f"{self.__class__.__name__}(id={self.id}, description={self.description})"

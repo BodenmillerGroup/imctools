@@ -18,8 +18,8 @@ class Acquisition:
 
     def __init__(
         self,
-        slide_id: str,
-        original_id: str,
+        slide_id: int,
+        id: int,
         max_x: int,
         max_y: int,
         signal_type: str,
@@ -39,11 +39,11 @@ class Acquisition:
         end_x: Optional[float] = None,
         end_y: Optional[float] = None,
         description: Optional[str] = None,
-        meta: Optional[Dict[str, str]] = None,
+        metadata: Optional[Dict[str, str]] = None,
         offset: Optional[int] = 3,
     ):
         self.slide_id = slide_id
-        self.original_id = original_id
+        self.id = id
         self.max_x = max_x
         self.max_y = max_y
         self.signal_type = signal_type
@@ -63,17 +63,17 @@ class Acquisition:
         self.end_x = end_x
         self.end_y = end_y
         self.description = description
-        self.meta = meta
+        self.metadata = metadata
         self._offset = offset
 
         self.slide: Optional[Slide] = None
-        self.channels: Optional[Dict[str, Channel]] = dict()
+        self.channels: Dict[int, Channel] = dict()
         self.image_data: Optional[np.ndarray] = None
 
     @property
     def meta_name(self):
         parent_name = self.slide.meta_name
-        return f"{parent_name}_{self.symbol}_{self.original_id}"
+        return f"{parent_name}_{self.symbol}_{self.id}"
 
     @property
     def n_channels(self):
@@ -195,4 +195,4 @@ class Acquisition:
         return d
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id}, description={self.description})"
+        return f"{self.__class__.__name__}(id={self.id}, description={self.description})"

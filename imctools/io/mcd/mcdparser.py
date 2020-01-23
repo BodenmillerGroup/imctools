@@ -1,6 +1,6 @@
 import mmap
 import os
-from typing import BinaryIO, Sequence
+from typing import BinaryIO
 
 import numpy as np
 
@@ -39,14 +39,11 @@ class McdParser:
         else:
             self._meta_fh = open(meta_filename, mode="rb")
 
-        self._acquisition_dict = None
-
         footer = self._get_footer()
         public_xml_start = footer.find("<MCDPublic")
         self._xml = footer[:public_xml_start]
 
         self._xml_parser = McdXmlParser(self._xml, self._fh.name)
-        self._meta = self._xml_parser.meta
         self._session = self._xml_parser.session
 
     @property
@@ -61,34 +58,16 @@ class McdParser:
         return self._xml
 
     @property
-    def meta(self):
-        return self._meta
-
-    @property
     def session(self):
         return self._session
 
-    @property
-    def n_acquisitions(self):
-        """Number of acquisitions in MCD file
-
-        """
-        return len(self.session.acquisitions)
-
-    @property
-    def acquisition_ids(self) -> Sequence[str]:
-        """Acquisition IDs
-
-        """
-        return list(self.session.acquisitions.keys())
-
-    def get_acquisition_buffer(self, acquisition_id: str):
+    def get_acquisition_buffer(self, acquisition_id: int):
         """Returns the raw buffer for the acquisition
 
         """
         ac = self.session.acquisitions.get(acquisition_id)
-        start_offset = int(ac.meta.get(const.DATA_START_OFFSET))
-        end_offset = int(ac.meta.get(const.DATA_END_OFFSET))
+        start_offset = int(ac.metadata.get(const.DATA_START_OFFSET))
+        end_offset = int(ac.metadata.get(const.DATA_END_OFFSET))
         data_size = end_offset - start_offset + 1
         self._fh.seek(start_offset)
         buffer = self._fh.read(data_size)
@@ -103,13 +82,13 @@ class McdParser:
             Acquisition
 
         """
-        start_offset = int(acquisition.meta.get(const.DATA_START_OFFSET))
-        end_offset = int(acquisition.meta.get(const.DATA_END_OFFSET))
+        start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
+        end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
         total_n_channels = len(acquisition.channels)
         data_size = end_offset - start_offset + 1
-        data_nrows = int(data_size / (total_n_channels * int(acquisition.meta.get(const.VALUE_BYTES))))
+        data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows == 0:
-            raise AcquisitionError(f"Acquisition {acquisition.original_id} emtpy!")
+            raise AcquisitionError(f"Acquisition {acquisition.id} emtpy!")
 
         data = np.memmap(
             self._fh, dtype=np.float32, mode="r", offset=start_offset, shape=(data_nrows, total_n_channels)
@@ -138,7 +117,7 @@ class McdParser:
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def get_acquisition_with_image_data(self, acquisition_id: str, ac_description=None):
+    def get_acquisition_with_image_data(self, acquisition_id: int, ac_description=None):
         """Returns an ImcAcquisition object corresponding to the ac_id
 
         """
@@ -148,20 +127,20 @@ class McdParser:
         acquisition.image_data = img
         return acquisition
 
-    def save_panorama_image(self, panorama_id: str, out_folder: str, fn_out=None):
+    def save_panorama_image(self, panorama_id: int, out_folder: str, fn_out=None):
         """Save panorama image of the acquisition
 
         """
         panorama_postfix = "pano"
         image_offset_fix = 161
         p = self.session.panoramas.get(panorama_id)
-        img_start = int(p.meta.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
-        img_end = int(p.meta.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
 
         if img_start - img_end == 0:
             return 0
 
-        file_end = p.meta.get(const.IMAGE_FORMAT, ".png").lower()
+        file_end = p.metadata.get(const.IMAGE_FORMAT, ".png").lower()
 
         if fn_out is None:
             fn_out = p.meta_name
@@ -173,15 +152,15 @@ class McdParser:
         with open(os.path.join(out_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_slide_image(self, slide_id: str, out_folder: str, fn_out=None):
+    def save_slide_image(self, slide_id: int, out_folder: str, fn_out=None):
         image_offset_fix = 161
         slide_postfix = "slide"
         default_format = ".png"
 
         s = self.session.slides.get(slide_id)
-        img_start = int(s.meta.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
-        img_end = int(s.meta.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
-        slide_format = s.meta.get(const.IMAGE_FILE, default_format)
+        img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
         if slide_format in [None, "", '""', "''"]:
             slide_format = default_format
 
@@ -203,7 +182,7 @@ class McdParser:
         with open(os.path.join(out_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_before_ablation_image(self, acquisition_id: str, out_folder: str, fn_out=None):
+    def save_before_ablation_image(self, acquisition_id: int, out_folder: str, fn_out=None):
         self._save_ablation_image(
             acquisition_id,
             out_folder,
@@ -213,7 +192,7 @@ class McdParser:
             fn_out,
         )
 
-    def save_after_ablation_image(self, acquisition_id: str, out_folder: str, fn_out=None):
+    def save_after_ablation_image(self, acquisition_id: int, out_folder: str, fn_out=None):
         self._save_ablation_image(
             acquisition_id,
             out_folder,
@@ -224,13 +203,13 @@ class McdParser:
         )
 
     def _save_ablation_image(
-        self, acquisition_id: str, out_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
+        self, acquisition_id: int, out_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
     ):
         image_offset_fix = 161
         image_format = ".png"
         a = self.session.acquisitions.get(acquisition_id)
-        img_start = int(a.meta.get(start_offset, 0)) + image_offset_fix
-        img_end = int(a.meta.get(end_offset, 0)) + image_offset_fix
+        img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
+        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
         if img_end - img_start == 0:
             return 0
 
@@ -271,13 +250,13 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
     # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
-    with McdParser(filename) as mcd:
-        imc_img = mcd.get_acquisition_with_image_data("1")
-        imc_img.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
-        mcd.save_panorama_image("1", "/home/anton/Downloads")
-        mcd.save_slide_image("0", "/home/anton/Downloads")
-        mcd.save_meta_xml("/home/anton/Downloads")
-        mcd.save_before_ablation_image("1", "/home/anton/Downloads")
-        mcd.save_after_ablation_image("1", "/home/anton/Downloads")
-        mcd.session.save("/home/anton/Downloads/test.json")
+    with McdParser(filename) as parser:
+        ac = parser.get_acquisition_with_image_data(1)
+        ac.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
+        parser.save_panorama_image(1, "/home/anton/Downloads")
+        parser.save_slide_image(0, "/home/anton/Downloads")
+        parser.save_meta_xml("/home/anton/Downloads")
+        parser.save_before_ablation_image(1, "/home/anton/Downloads")
+        parser.save_after_ablation_image(1, "/home/anton/Downloads")
+        parser.session.save("/home/anton/Downloads/test.json")
     print(timeit.default_timer() - tic)

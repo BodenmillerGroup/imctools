@@ -14,8 +14,8 @@ class Panorama:
 
     def __init__(
         self,
-        slide_id: str,
-        original_id: str,
+        slide_id: int,
+        id: int,
         image_type: str,
         description: str,
         start_position_x: float,
@@ -24,10 +24,10 @@ class Panorama:
         height: float,
         rotation_angle: float,
         file_extension: Optional[str] = None,
-        meta: Optional[Dict[str, str]] = None,
+        metadata: Optional[Dict[str, str]] = None,
     ):
         self.slide_id = slide_id
-        self.original_id = original_id
+        self.id = id
         self.image_type = image_type
         self.description = description
         self.start_position_x = start_position_x
@@ -36,14 +36,14 @@ class Panorama:
         self.height = height
         self.rotation_angle = rotation_angle
         self.file_extension = file_extension
-        self.meta = meta
+        self.metadata = metadata
 
         self.slide: Optional[Slide] = None
 
     @property
     def meta_name(self):
         parent_name = self.slide.meta_name
-        return f"{parent_name}_{self.symbol}_{self.original_id}"
+        return f"{parent_name}_{self.symbol}_{self.id}"
 
     def to_dict(self):
         """Returns dictionary for JSON/YAML serialization"""
@@ -52,4 +52,4 @@ class Panorama:
         return d
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(original_id={self.original_id}, image_type={self.image_type}, description={self.description})"
+        return f"{self.__class__.__name__}(id={self.id}, image_type={self.image_type}, description={self.description})"

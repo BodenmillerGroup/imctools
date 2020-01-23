@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Any
+import json
+from typing import Any, Dict, Optional
 
 from imctools.data.ablation_image import AblationImage
 from imctools.data.acquisition import Acquisition
 from imctools.data.channel import Channel
 from imctools.data.panorama import Panorama
 from imctools.data.slide import Slide
-
-import json
 
 
 class Session:
@@ -18,6 +17,7 @@ class Session:
 
     def __init__(
         self,
+        id: str,
         name: str,
         software_version: str,
         origin: str,
@@ -25,7 +25,7 @@ class Session:
         created_at: str,
         metadata: Optional[Dict[str, Any]] = None,
     ):
-        self.id = "0"
+        self.id = id
         self.name = name
         self.software_version = software_version
         self.origin = origin
@@ -33,11 +33,11 @@ class Session:
         self.created_at = created_at
         self.metadata = metadata
 
-        self.slides: Dict[str, Slide] = dict()
-        self.acquisitions: Dict[str, Acquisition] = dict()
-        self.panoramas: Dict[str, Panorama] = dict()
-        self.channels: Dict[str, Channel] = dict()
-        self.ablation_images: Dict[str, AblationImage] = dict()
+        self.slides: Dict[int, Slide] = dict()
+        self.acquisitions: Dict[int, Acquisition] = dict()
+        self.panoramas: Dict[int, Panorama] = dict()
+        self.channels: Dict[int, Channel] = dict()
+        self.ablation_images: Dict[int, AblationImage] = dict()
 
     def to_dict(self):
         """Returns dictionary for JSON/YAML serialization"""

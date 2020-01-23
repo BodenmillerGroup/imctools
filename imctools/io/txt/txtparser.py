@@ -1,13 +1,14 @@
 import re
+import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import Sequence
-from datetime import datetime
 
 import numpy as np
 import pandas as pd
 
 from imctools import __version__
-from imctools.data import Acquisition, Session, Slide, Channel
+from imctools.data import Acquisition, Channel, Session, Slide
 from imctools.io.utils import reshape_long_2_cyx
 
 
@@ -26,11 +27,14 @@ class TxtParser:
         # Extract meta name from file name
         meta_name = "_".join(Path(filenames[0]).stem.split("_")[:-1])
         origin_path = str(Path(filenames[0]).root)
-        self._session = Session(meta_name, __version__, self.origin, origin_path, datetime.utcnow().isoformat())
+        session_id = str(uuid.uuid4())
+        self._session = Session(
+            session_id, meta_name, __version__, self.origin, origin_path, datetime.utcnow().isoformat()
+        )
 
-        slide = Slide(self.session.id, "0", description=self.session.name)
+        slide = Slide(self.session.id, 0, description=self.session.name)
         slide.session = self.session
-        self.session.slides[slide.original_id] = slide
+        self.session.slides[slide.id] = slide
 
         for filename in filenames:
             self._parse_acquisition(filename)
@@ -51,25 +55,25 @@ class TxtParser:
         signal_type = "Dual" if channel_labels[0][-3:-1] == "Di" else ""
 
         # Extract acquisition id from txt file name
-        acquisition_id = filename.rstrip(".txt").split("_")[-1]
+        acquisition_id = int(filename.rstrip(".txt").split("_")[-1])
 
-        slide = self.session.slides.get("0")
+        slide = self.session.slides.get(0)
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
-        acquisition = Acquisition(slide.original_id, acquisition_id, max_x, max_y, signal_type, "Float",
-                                  description=filename, offset=0)
+        acquisition = Acquisition(
+            slide.id, acquisition_id, max_x, max_y, signal_type, "Float", description=filename, offset=0
+        )
         acquisition.image_data = image_data
         acquisition.slide = slide
-        slide.acquisitions[acquisition.original_id] = acquisition
-        self.session.acquisitions[acquisition.original_id] = acquisition
+        slide.acquisitions[acquisition.id] = acquisition
+        self.session.acquisitions[acquisition.id] = acquisition
 
         for i in range(len(channel_names)):
-            channel = Channel(acquisition.original_id, str(self._channel_id_offset), i, channel_names[i],
-                              channel_labels[i])
+            channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
             self._channel_id_offset = self._channel_id_offset + 1
             channel.acquisition = acquisition
-            acquisition.channels[channel.original_id] = channel
-            self.session.channels[channel.original_id] = channel
+            acquisition.channels[channel.id] = channel
+            self.session.channels[channel.id] = channel
 
         # Calculate channels intensity range
         for ch in acquisition.channels.values():
@@ -144,6 +148,7 @@ if __name__ == "__main__":
     fn = "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_pos1_6_6.txt"
     tic = timeit.default_timer()
     parser = TxtParser([fn])
-    imc_ac = parser.session.acquisitions["6"]
-    imc_ac.save_ome_tiff("/home/anton/Downloads/test_2x.ome.tiff")
+    ac = parser.session.acquisitions[6]
+    ac.save_ome_tiff("/home/anton/Downloads/test_2x.ome.tiff")
+    parser.session.save("/home/anton/Downloads/test.json")
     print(timeit.default_timer() - tic)
