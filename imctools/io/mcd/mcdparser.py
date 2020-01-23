@@ -12,7 +12,7 @@ from imctools.io.utils import reshape_long_2_cyx
 
 
 class McdParser:
-    """Parsing data from Fluidigm MCD files
+    """Data parsing from Fluidigm MCD files
 
     The McdParser object should be closed using the close method
 
