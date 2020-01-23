@@ -40,6 +40,9 @@ class Channel:
         parent_name = self.acquisition.meta_name
         return f"{parent_name}_{self.symbol}_{self.original_id}"
 
+    def get_image(self):
+        return self.acquisition.get_image_by_name(self.name)
+
     def to_dict(self):
         """Returns dictionary for JSON/YAML serialization"""
         d = self.__dict__.copy()

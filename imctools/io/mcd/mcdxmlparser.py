@@ -14,6 +14,8 @@ class McdXmlParser:
 
     """
 
+    origin = "mcd"
+
     def __init__(self, xml: str, origin_path: str):
         self.xml = xml
         self.meta = xmltodict.parse(
@@ -30,7 +32,7 @@ class McdXmlParser:
 
         self.filename = self.meta[const.SLIDE][0][const.FILENAME]
 
-        session = Session(self.meta_name, __version__, "mcd", origin_path, datetime.utcnow().isoformat(), self.meta)
+        session = Session(self.meta_name, __version__, self.origin, origin_path, datetime.utcnow().isoformat(), self.meta)
         for s in self.meta.get(const.SLIDE):
             slide = Slide(
                 session.id,

@@ -1,4 +1,3 @@
-from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional, Sequence
 
@@ -129,7 +128,7 @@ class Acquisition:
 
         return [order_dict[m] for m in masses]
 
-    def _get_image_stack_cyx(self, indices: Sequence[int] = None, offset: int = None):
+    def _get_image_stack_cyx(self, indices: Sequence[int] = None, offset: int = None) -> Sequence[np.ndarray]:
         """Return the data reshaped as a stack of images
 
         """
@@ -192,6 +191,7 @@ class Acquisition:
         d.pop("slide")
         d.pop("channels")
         d.pop("image_data")
+        d.pop("_offset")
         return d
 
     def __repr__(self):
