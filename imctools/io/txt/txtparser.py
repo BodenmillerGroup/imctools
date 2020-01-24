@@ -1,7 +1,7 @@
+import os
 import re
 import uuid
 from datetime import datetime
-from pathlib import Path
 from typing import Sequence
 
 import numpy as np
@@ -9,35 +9,49 @@ import pandas as pd
 
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Session, Slide
+from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
 
 
-class TxtParser:
+class TxtParser(ParserBase):
     """Parses an IMC .txt file
 
     """
 
-    origin = "txt"
-
-    def __init__(self, filenames: Sequence[str]):
-        self.filenames = filenames
-
+    def __init__(self, input_dir: str):
+        ParserBase.__init__(self)
+        self.input_dir = input_dir
         self._channel_id_offset = 1
 
-        # Extract meta name from file name
-        meta_name = "_".join(Path(filenames[0]).stem.split("_")[:-1])
-        origin_path = str(Path(filenames[0]).root)
+        filenames = [f for f in os.listdir(input_dir) if f.endswith('.txt') and f != "_____.txt"]
+        session_name = self._find_session_name()
+
         session_id = str(uuid.uuid4())
         self._session = Session(
-            session_id, meta_name, __version__, self.origin, origin_path, datetime.utcnow().isoformat()
+            session_id, session_name, __version__, self.origin, input_dir, datetime.utcnow().isoformat()
         )
 
         slide = Slide(self.session.id, 0, description=self.session.name)
         slide.session = self.session
         self.session.slides[slide.id] = slide
 
+        self.parse_files(filenames)
+
+    @property
+    def origin(self):
+        return "txt"
+
+    @property
+    def session(self):
+        return self._session
+
+    def _find_session_name(self):
+        filenames = [f for f in os.listdir(self.input_dir) if (f.endswith('.txt') or f.endswith('.mcd')) and f != "_____.txt"]
+        return os.path.commonprefix(filenames).rstrip("_")
+
+    def parse_files(self, filenames: Sequence[str]):
         for filename in filenames:
-            self._parse_acquisition(filename)
+            self._parse_acquisition(os.path.join(self.input_dir, filename))
 
     def _parse_acquisition(self, filename: str):
         long_data, channel_names, channel_labels = TxtParser.parse_csv(filename)
@@ -80,10 +94,6 @@ class TxtParser:
             img = acquisition.get_image_by_name(ch.name)
             ch.min_intensity = round(float(img.min()), 4)
             ch.max_intensity = round(float(img.max()), 4)
-
-    @property
-    def session(self):
-        return self._session
 
     @staticmethod
     def parse_csv(filename: str):
@@ -145,10 +155,9 @@ class TxtParser:
 if __name__ == "__main__":
     import timeit
 
-    fn = "/home/anton/Downloads/for Anton/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_pos1_6_6.txt"
     tic = timeit.default_timer()
-    parser = TxtParser([fn])
-    ac = parser.session.acquisitions[6]
+    parser = TxtParser("/home/anton/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE")
+    parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
+    ac = next(iter(parser.session.acquisitions.values()))
     ac.save_ome_tiff("/home/anton/Downloads/test_2x.ome.tiff")
-    parser.session.save("/home/anton/Downloads/test.json")
     print(timeit.default_timer() - tic)

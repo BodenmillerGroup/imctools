@@ -43,7 +43,7 @@ class Panorama:
     @property
     def meta_name(self):
         parent_name = self.slide.meta_name
-        return f"{parent_name}_{self.symbol}_{self.id}"
+        return f"{parent_name}_{self.symbol}{self.id}"
 
     def to_dict(self):
         """Returns dictionary for JSON/YAML serialization"""

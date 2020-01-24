@@ -1,6 +1,9 @@
 from typing import Optional, Sequence
 
+import xml.etree.ElementTree as ET
+
 import numpy as np
+import xtiff
 
 _OME_CHANNEL_XML_FMT = '<Channel ID="Channel:0:{id:d}" SamplesPerPixel="{samples_per_pixel:d}"{channel_extra} />'
 
@@ -47,26 +50,17 @@ def reshape_long_2_cyx(
         return NotImplemented
 
 
-def get_ome_channel_xml(
-    img: np.ndarray, channel_id: int, channel_names: Optional[Sequence[str]], channel_fluors: Optional[Sequence[str]]
-):
-    """
-    Function for generating an OME-XML Channel element in the OME-XML header
-
-    Parameters
-    ----------
-    img
-    channel_id
-    channel_names
-        List of channel labels
-    channel_fluors
-        List of channel metals
-
-    """
+def get_ome_xml(img: np.ndarray, image_name: Optional[str], channel_names: Optional[Sequence[str]], big_endian: bool, pixel_size: Optional[float], pixel_depth: Optional[float], creator: Optional[str] = None,
+                   channel_fluors: Optional[Sequence[str]] = None, **ome_xml_kwargs) -> ET.ElementTree:
     size_t, size_z, size_c, size_y, size_x, size_s = img.shape
-    channel_extra = ""
-    if channel_names is not None and channel_names[channel_id]:
-        channel_extra += ' Name="{name}"'.format(name=channel_names[channel_id])
-    if channel_fluors is not None and channel_fluors[channel_id]:
-        channel_extra += ' Fluor="{fluor}"'.format(fluor=channel_fluors[channel_id])
-    return _OME_CHANNEL_XML_FMT.format(id=channel_id, samples_per_pixel=size_s, channel_extra=channel_extra)
+    element_tree = xtiff.get_ome_xml(img, image_name, channel_names, big_endian, pixel_size, pixel_depth, **ome_xml_kwargs)
+    if creator is not None:
+        ome_element = element_tree.getroot()
+        ome_element.set('Creator', creator)
+    if channel_fluors is not None:
+        assert len(channel_fluors) == size_c
+        channel_elements = element_tree.findall('./Image/Pixels/Channel')
+        assert channel_elements is not None and len(channel_elements) == size_c
+        for channel_element, channel_fluor in zip(channel_elements, channel_fluors):
+            channel_element.set('Fluor', channel_fluor)
+    return element_tree

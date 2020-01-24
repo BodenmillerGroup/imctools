@@ -1,4 +1,3 @@
-import csv
 import os
 import uuid
 from datetime import datetime
@@ -8,19 +7,19 @@ import xmltodict
 import imctools.io.mcd.constants as const
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Panorama, Session, Slide
+from imctools.io.parserbase import ParserBase
 
 
-class McdXmlParser:
+class McdXmlParser(ParserBase):
     """Represents the full MCD XML structure
 
     """
 
-    origin = "mcd"
-
-    def __init__(self, xml: str, origin_path: str):
-        self.xml = xml
+    def __init__(self, xml_metadata: str, origin_path: str):
+        ParserBase.__init__(self)
+        self.xml_metadata = xml_metadata
         self.metadata = xmltodict.parse(
-            xml,
+            xml_metadata,
             xml_attribs=False,
             force_list=(
                 const.SLIDE,
@@ -31,12 +30,15 @@ class McdXmlParser:
             ),
         )[const.MCD_SCHEMA]
 
-        self.filename = self.metadata[const.SLIDE][0][const.FILENAME]
+        session_name = self.metadata[const.SLIDE][0][const.FILENAME]
+        session_name = session_name.replace("\\", "/")
+        session_name = os.path.split(session_name)[1].rstrip("_schema.xml")
+        session_name = os.path.splitext(session_name)[0]
 
         session_id = str(uuid.uuid4())
         session = Session(
             session_id,
-            self.meta_name,
+            session_name,
             __version__,
             self.origin,
             origin_path,
@@ -111,31 +113,17 @@ class McdXmlParser:
             channel.acquisition = ac
             ac.channels[channel.id] = channel
 
-        self.session = session
+        self._session = session
 
     @property
-    def meta_name(self):
-        result = self.filename
-        result = result.replace("\\", "/")
-        result = os.path.split(result)[1].rstrip("_schema.xml")
-        result = os.path.splitext(result)[0]
-        return result
+    def origin(self):
+        return "mcd"
+
+    @property
+    def session(self):
+        return self._session
 
     def save_meta_xml(self, out_folder: str):
-        filename = self.meta_name + "_schema.xml"
+        filename = self.session.name + "_schema.xml"
         with open(os.path.join(out_folder, filename), "wt") as f:
-            f.write(self.xml)
-
-    def save_meta_csv(self, out_folder: str):
-        """
-        Writes the xml data as csv tables
-        """
-        for n, o in self.session.metadata.items():
-            odict = [i.properties for k, i in o.items()]
-            filename = f"{self.meta_name}_{n}{const.META_CSV}"
-            with open(os.path.join(out_folder, filename), "wt") as f:
-                cols = odict[0].keys()
-                writer = csv.DictWriter(f, sorted(cols))
-                writer.writeheader()
-                for row in odict:
-                    writer.writerow(row)
+            f.write(self.xml_metadata)

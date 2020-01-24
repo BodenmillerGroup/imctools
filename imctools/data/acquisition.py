@@ -4,9 +4,10 @@ from typing import Dict, Optional, Sequence
 import numpy as np
 from xtiff import to_tiff
 
+from imctools import __version__
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
-from imctools.io.utils import get_ome_channel_xml
+from imctools.io.utils import get_ome_xml
 
 
 class Acquisition:
@@ -73,7 +74,7 @@ class Acquisition:
     @property
     def meta_name(self):
         parent_name = self.slide.meta_name
-        return f"{parent_name}_{self.symbol}_{self.id}"
+        return f"{parent_name}_{self.symbol}{self.id}"
 
     @property
     def n_channels(self):
@@ -175,14 +176,17 @@ class Acquisition:
 
         channel_names = [self.channel_labels[i] for i in order]
         channel_fluors = [self.channel_names[i] for i in order]
+        creator = f"imctools {__version__}"
 
         data = np.array(self._get_image_stack_cyx(order), dtype=np.float32)
         to_tiff(
             data,
             filename,
-            ome_channel_xml_fun=get_ome_channel_xml,
+            ome_xml_fun=get_ome_xml,
             channel_names=channel_names,
             channel_fluors=channel_fluors,
+            creator=creator,
+            image_date=datetime.fromisoformat(self.slide.session.created)
         )
 
     def to_dict(self):

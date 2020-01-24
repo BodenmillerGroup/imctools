@@ -8,10 +8,11 @@ import imctools.io.mcd.constants as const
 from imctools.data import Acquisition
 from imctools.io.errors import AcquisitionError
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
+from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
 
 
-class McdParser:
+class McdParser(ParserBase):
     """Data parsing from Fluidigm MCD files
 
     The McdParser object should be closed using the close method
@@ -19,16 +20,7 @@ class McdParser:
     """
 
     def __init__(self, filepath: str, file_handle: BinaryIO = None, meta_filename: str = None):
-        """
-        Parameters
-        ----------
-
-        filename
-            Filename of an .mcd file
-        file_handle
-            File handle pointing to an open .mcd file
-
-        """
+        ParserBase.__init__(self)
         if file_handle is None:
             self._fh = open(filepath, mode="rb")
         else:
@@ -41,10 +33,16 @@ class McdParser:
 
         footer = self._get_footer()
         public_xml_start = footer.find("<MCDPublic")
-        self._xml = footer[:public_xml_start]
+        xml = footer[:public_xml_start]
+        self._xml_parser = McdXmlParser(xml, self._fh.name)
 
-        self._xml_parser = McdXmlParser(self._xml, self._fh.name)
-        self._session = self._xml_parser.session
+    @property
+    def origin(self):
+        return self._xml_parser.origin
+
+    @property
+    def session(self):
+        return self._xml_parser.session
 
     @property
     def filename(self):
@@ -54,24 +52,8 @@ class McdParser:
         return self._fh.name
 
     @property
-    def xml(self):
-        return self._xml
-
-    @property
-    def session(self):
-        return self._session
-
-    def get_acquisition_buffer(self, acquisition_id: int):
-        """Returns the raw buffer for the acquisition
-
-        """
-        ac = self.session.acquisitions.get(acquisition_id)
-        start_offset = int(ac.metadata.get(const.DATA_START_OFFSET))
-        end_offset = int(ac.metadata.get(const.DATA_END_OFFSET))
-        data_size = end_offset - start_offset + 1
-        self._fh.seek(start_offset)
-        buffer = self._fh.read(data_size)
-        return buffer
+    def xml_metadata(self):
+        return self._xml_parser.xml_metadata
 
     def _get_acquisition_raw_data(self, acquisition: Acquisition):
         """Gets non-reshaped image data from the acquisition
@@ -117,14 +99,14 @@ class McdParser:
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def get_acquisition_with_image_data(self, acquisition_id: int, ac_description=None):
+    def get_acquisition_image_data(self, acquisition_id: int, ac_description=None):
         """Returns an ImcAcquisition object corresponding to the ac_id
 
         """
         acquisition = self.session.acquisitions.get(acquisition_id)
         data = self._get_acquisition_raw_data(acquisition)
-        img = reshape_long_2_cyx(data, is_sorted=True)
-        acquisition.image_data = img
+        image_data = reshape_long_2_cyx(data, is_sorted=True)
+        acquisition.image_data = image_data
         return acquisition
 
     def save_panorama_image(self, panorama_id: int, out_folder: str, fn_out=None):
@@ -237,26 +219,19 @@ class McdParser:
         except:
             pass
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.close()
-
 
 if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
-    # filename = "/home/anton/Data/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd"
     with McdParser(filename) as parser:
-        ac = parser.get_acquisition_with_image_data(1)
+        parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
+        ac = parser.get_acquisition_image_data(1)
         ac.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
         parser.save_panorama_image(1, "/home/anton/Downloads")
         parser.save_slide_image(0, "/home/anton/Downloads")
         parser.save_meta_xml("/home/anton/Downloads")
         parser.save_before_ablation_image(1, "/home/anton/Downloads")
         parser.save_after_ablation_image(1, "/home/anton/Downloads")
-        parser.session.save("/home/anton/Downloads/test.json")
     print(timeit.default_timer() - tic)

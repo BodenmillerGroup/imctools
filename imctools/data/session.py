@@ -21,16 +21,16 @@ class Session:
         name: str,
         software_version: str,
         origin: str,
-        origin_path: str,
-        created_at: str,
+        source_path: str,
+        created: str,
         metadata: Optional[Dict[str, Any]] = None,
     ):
         self.id = id
         self.name = name
         self.software_version = software_version
         self.origin = origin
-        self.origin_path = origin_path
-        self.created_at = created_at
+        self.source_path = source_path
+        self.created = created
         self.metadata = metadata
 
         self.slides: Dict[int, Slide] = dict()
@@ -62,9 +62,24 @@ class Session:
         with open(filepath, "w") as f:
             json.dump(self, f, indent=2, default=handle_default)
 
+    @staticmethod
+    def load(filepath: str):
+        with open(filepath, "r") as f:
+            d = json.load(f)
+        session = Session(d.get("id"), d.get("name"), d.get("software_version"), d.get("origin"), d.get("source_path"), d.get("created"), d.get("metadata"))
+        return session
+
     @property
     def meta_name(self):
         return self.name
 
     def __repr__(self):
         return f"{self.__class__.__name__}(name={self.name})"
+
+
+if __name__ == "__main__":
+    import timeit
+
+    tic = timeit.default_timer()
+    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json")
+    print(timeit.default_timer() - tic)

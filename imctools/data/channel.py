@@ -38,7 +38,7 @@ class Channel:
     @property
     def meta_name(self):
         parent_name = self.acquisition.meta_name
-        return f"{parent_name}_{self.symbol}_{self.id}"
+        return f"{parent_name}_{self.symbol}{self.id}"
 
     def get_image(self):
         return self.acquisition.get_image_by_name(self.name)

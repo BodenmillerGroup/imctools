@@ -11,7 +11,7 @@ from imctools.data import Acquisition, Session, Slide, Channel
 from imctools.io.parserbase import ParserBase
 
 
-class OmeTiffParser(ParserBase):
+class ImcParser(ParserBase):
     """Data parsing from OME-TIFF files
 
     """
@@ -19,21 +19,8 @@ class OmeTiffParser(ParserBase):
     def __init__(self, input_dir: str):
         ParserBase.__init__(self)
         self.input_dir = input_dir
-        self._channel_id_offset = 1
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith('.ome.tiff')]
-        session_name = self._find_session_name()
-
-        session_id = str(uuid.uuid4())
-        self._session = Session(
-            session_id, session_name, __version__, self.origin, input_dir, datetime.utcnow().isoformat()
-        )
-
-        slide = Slide(self.session.id, 0, description=self.session.name)
-        slide.session = self.session
-        self.session.slides[slide.id] = slide
-
-        self.parse_files(filenames)
+        self._session =
 
     @property
     def origin(self):

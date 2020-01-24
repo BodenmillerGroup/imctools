@@ -546,7 +546,7 @@ description = "A tiny Python 3 library for writing multi-channel TIFF stacks"
 name = "xtiff"
 optional = false
 python-versions = ">=3.7"
-version = "0.5.0"
+version = "0.6.0"
 
 [package.dependencies]
 numpy = "*"
@@ -568,7 +568,7 @@ more-itertools = "*"
 docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 
 [metadata]
-content-hash = "b2673a84ed9d80d66f7968406a57abca258170f64c7c77653d5b82eb400b5d81"
+content-hash = "47c1e322d6889baef88aab67ae504ab053903cc0c6362c2a5163967d2999008c"
 python-versions = ">=3.7"
 
 [metadata.files]
@@ -995,7 +995,7 @@ xmltodict = [
     {file = "xmltodict-0.12.0.tar.gz", hash = "sha256:50d8c638ed7ecb88d90561beedbf720c9b4e851a9fa6c47ebd64e99d166d8a21"},
 ]
 xtiff = [
-    {file = "xtiff-0.5.0-py3-none-any.whl", hash = "sha256:982756b11ca2e3de83a3244af752735576f84fd286cc7b9d106331e73ee8b19e"},
+    {file = "xtiff-0.6.0-py3-none-any.whl", hash = "sha256:605b5cf540523d26dec6fa4fff090818619eb9563d65c266aff9af85b41bd3d5"},
 ]
 zipp = [
     {file = "zipp-2.0.1-py3-none-any.whl", hash = "sha256:e013e7800f60ec4dde789ebf4e9f7a54236e4bbf5df2a1a4e20ce9e1d9609d67"},
