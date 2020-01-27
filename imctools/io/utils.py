@@ -1,3 +1,5 @@
+import json
+from collections import OrderedDict
 from typing import Optional, Sequence
 
 import xml.etree.ElementTree as ET
@@ -64,3 +66,7 @@ def get_ome_xml(img: np.ndarray, image_name: Optional[str], channel_names: Optio
         for channel_element, channel_fluor in zip(channel_elements, channel_fluors):
             channel_element.set('Fluor', channel_fluor)
     return element_tree
+
+
+def convert_to_dict(input):
+    return json.loads(json.dumps(input))

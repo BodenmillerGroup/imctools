@@ -226,7 +226,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
     with McdParser(filename) as parser:
-        parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
+        parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".yaml"))
         ac = parser.get_acquisition_image_data(1)
         ac.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
         parser.save_panorama_image(1, "/home/anton/Downloads")

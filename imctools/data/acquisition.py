@@ -3,6 +3,7 @@ from typing import Dict, Optional, Sequence
 
 import numpy as np
 from xtiff import to_tiff
+from yaml import YAMLObject
 
 from imctools import __version__
 from imctools.data.channel import Channel
@@ -10,11 +11,10 @@ from imctools.data.slide import Slide
 from imctools.io.utils import get_ome_xml
 
 
-class Acquisition:
-    """Image acquisition
+class Acquisition(YAMLObject):
+    """Image acquisition"""
 
-    """
-
+    yaml_tag = "!Acquisition"
     symbol = "a"
 
     def __init__(
@@ -189,14 +189,14 @@ class Acquisition:
             image_date=datetime.fromisoformat(self.slide.session.created)
         )
 
-    def to_dict(self):
+    def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
-        d = self.__dict__.copy()
-        d.pop("slide")
-        d.pop("channels")
-        d.pop("image_data")
-        d.pop("_offset")
-        return d
+        s = self.__dict__.copy()
+        del s["slide"]
+        del s["channels"]
+        del s["image_data"]
+        del s["_offset"]
+        return s
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, description={self.description})"

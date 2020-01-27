@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import json
+import yaml
 from typing import Any, Dict, Optional
 
 from imctools.data.ablation_image import AblationImage
@@ -10,10 +10,10 @@ from imctools.data.panorama import Panorama
 from imctools.data.slide import Slide
 
 
-class Session:
-    """IMC session data
+class Session(yaml.YAMLObject):
+    """IMC session data"""
 
-    """
+    yaml_tag = "!Session"
 
     def __init__(
         self,
@@ -39,10 +39,23 @@ class Session:
         self.channels: Dict[int, Channel] = dict()
         self.ablation_images: Dict[int, AblationImage] = dict()
 
-    def to_dict(self):
-        """Returns dictionary for JSON/YAML serialization"""
-        d = self.__dict__.copy()
-        return d
+    def __getstate__(self):
+        s = self.__dict__.copy()
+        return s
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """
+        Convert a representation node to a Python object.
+        """
+        return loader.construct_yaml_object(node, cls)
+
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """
+        Convert a Python object to a representation node.
+        """
+        return dumper.represent_yaml_object(cls.yaml_tag, data, cls, flow_style=cls.yaml_flow_style)
 
     def save(self, filepath: str):
         """Save session data in JSON format
@@ -53,21 +66,14 @@ class Session:
             output file path
 
         """
-
-        def handle_default(obj):
-            if isinstance(obj, (Session, Slide, Panorama, Acquisition, AblationImage, Channel)):
-                return obj.to_dict()
-            return None
-
         with open(filepath, "w") as f:
-            json.dump(self, f, indent=2, default=handle_default)
+            yaml.dump(self, f)
 
     @staticmethod
     def load(filepath: str):
         with open(filepath, "r") as f:
-            d = json.load(f)
-        session = Session(d.get("id"), d.get("name"), d.get("software_version"), d.get("origin"), d.get("source_path"), d.get("created"), d.get("metadata"))
-        return session
+            session = yaml.load(f, Loader=yaml.Loader)
+            return session
 
     @property
     def meta_name(self):
@@ -81,5 +87,5 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json")
+    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.yaml")
     print(timeit.default_timer() - tic)

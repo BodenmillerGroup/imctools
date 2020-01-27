@@ -8,6 +8,7 @@ import imctools.io.mcd.constants as const
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Panorama, Session, Slide
 from imctools.io.parserbase import ParserBase
+from imctools.io.utils import convert_to_dict
 
 
 class McdXmlParser(ParserBase):
@@ -43,16 +44,16 @@ class McdXmlParser(ParserBase):
             self.origin,
             origin_path,
             datetime.utcnow().isoformat(),
-            self.metadata,
+            convert_to_dict(self.metadata),
         )
         for s in self.metadata.get(const.SLIDE):
             slide = Slide(
                 session.id,
                 int(s.get(const.ID)),
-                s.get(const.WIDTH_UM),
-                s.get(const.HEIGHT_UM),
-                s.get(const.DESCRIPTION),
-                metadata=s,
+                description=s.get(const.DESCRIPTION),
+                width_um=int(s.get(const.WIDTH_UM)),
+                height_um=int(s.get(const.HEIGHT_UM)),
+                metadata=dict(s),
             )
             slide.session = session
             session.slides[slide.id] = slide
@@ -70,7 +71,7 @@ class McdXmlParser(ParserBase):
                 width,
                 height,
                 float(p.get(const.ROTATION_ANGLE)),
-                metadata=p,
+                metadata=dict(p),
             )
             slide = session.slides.get(panorama.slide_id)
             panorama.slide = slide
@@ -88,11 +89,11 @@ class McdXmlParser(ParserBase):
             acquisition = Acquisition(
                 slide_id,
                 int(a.get(const.ID)),
-                a.get(const.MAX_X),
-                a.get(const.MAX_Y),
+                int(a.get(const.MAX_X)),
+                int(a.get(const.MAX_Y)),
                 a.get(const.SIGNAL_TYPE),
                 a.get(const.SEGMENT_DATA_FORMAT),
-                metadata=a,
+                metadata=dict(a),
             )
             slide = session.slides.get(acquisition.slide_id)
             acquisition.slide = slide
@@ -106,7 +107,7 @@ class McdXmlParser(ParserBase):
                 int(c.get(const.ORDER_NUMBER)),
                 c.get(const.CHANNEL_NAME),
                 c.get(const.CHANNEL_LABEL),
-                metadata=c,
+                metadata=dict(c),
             )
             session.channels[channel.id] = channel
             ac = session.acquisitions.get(channel.acquisition_id)

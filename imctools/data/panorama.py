@@ -2,14 +2,17 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
+from yaml import YAMLObject
+
 from imctools.data.slide import Slide
 
 
-class Panorama:
+class Panorama(YAMLObject):
     """Panoramic image and its description
 
     """
 
+    yaml_tag = "!Panorama"
     symbol = "p"
 
     def __init__(
@@ -45,11 +48,11 @@ class Panorama:
         parent_name = self.slide.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
 
-    def to_dict(self):
+    def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
-        d = self.__dict__.copy()
-        d.pop("slide")
-        return d
+        s = self.__dict__.copy()
+        del s["slide"]
+        return s
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, image_type={self.image_type}, description={self.description})"

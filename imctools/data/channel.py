@@ -2,15 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Optional
 
+from yaml import YAMLObject
+
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
 
 
-class Channel:
+class Channel(YAMLObject):
     """IMC acquisition channel
 
     """
 
+    yaml_tag = "!Channel"
     symbol = "c"
 
     def __init__(
@@ -43,11 +46,11 @@ class Channel:
     def get_image(self):
         return self.acquisition.get_image_by_name(self.name)
 
-    def to_dict(self):
+    def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
-        d = self.__dict__.copy()
-        d.pop("acquisition")
-        return d
+        s = self.__dict__.copy()
+        del s["acquisition"]
+        return s
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name}, label={self.label})"
