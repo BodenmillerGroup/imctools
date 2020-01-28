@@ -1,6 +1,4 @@
-"""Definitions of MCD XML keywords
-
-"""
+"""Definitions of MCD XML keywords"""
 
 ABLATION_DISTANCE_BETWEEN_SHOTS_X = "AblationDistanceBetweenShotsX"
 ABLATION_DISTANCE_BETWEEN_SHOTS_Y = "AblationDistanceBetweenShotsY"
@@ -33,6 +31,7 @@ MCD_SCHEMA = "MCDSchema"
 MAX_X = "MaxX"
 MAX_Y = "MaxY"
 MOVEMENT_TYPE = "MovementType"
+NAME = "Name"
 ORDER_NUMBER = "OrderNumber"
 PANORAMA = "Panorama"
 PANORAMA_ID = "PanoramaID"
@@ -66,6 +65,7 @@ SLIDE_Y3_POS_UM = "SlideY3PosUm"
 SLIDE_Y4_POS_UM = "SlideY4PosUm"
 SLIDE_Y_POS_UM = "SlideYPosUm"
 START_TIME_STAMP = "StartTimeStamp"
+SW_VERSION = "SwVersion"
 TEMPLATE = "Template"
 TYPE = "Type"
 UID = "UID"

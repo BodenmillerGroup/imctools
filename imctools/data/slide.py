@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Dict, Optional
 
 from yaml import YAMLObject
 
+import imctools.io.mcd.constants as const
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
     from imctools.data.panorama import Panorama
@@ -11,8 +12,7 @@ if TYPE_CHECKING:
 
 
 class Slide(YAMLObject):
-    """IMC slide
-    """
+    """IMC slide (container for IMC acquisitions, panoramas and other entities)."""
 
     yaml_tag = "!Slide"
     symbol = "s"
@@ -24,8 +24,24 @@ class Slide(YAMLObject):
         description: Optional[str] = None,
         width_um: Optional[int] = None,
         height_um: Optional[int] = None,
-        metadata: Dict[str, str] = None,
+        metadata: Optional[Dict[str, str]] = None,
     ):
+        """
+        Parameters
+        ----------
+        session_id
+            Parent session id (UUID)
+        id
+            Original slide ID
+        description
+            Description
+        width_um
+            Slide width (in μm)
+        height_um
+            Slide height (in μm)
+        metadata
+            Original (raw) metadata as a dictionary
+        """
         self.session_id = session_id
         self.id = id
         self.description = description
@@ -33,14 +49,35 @@ class Slide(YAMLObject):
         self.height_um = height_um
         self.metadata = metadata
 
-        self.session: Optional[Session] = None
-        self.acquisitions: Dict[int, Acquisition] = dict()
-        self.panoramas: Dict[int, Panorama] = dict()
+        self.session: Optional[Session] = None  # Parent session object
+        self.acquisitions: Dict[int, Acquisition] = dict()  # Children acquisitions
+        self.panoramas: Dict[int, Panorama] = dict()  # Children panoramas
 
     @property
     def meta_name(self):
+        """Meta name fully describing the entity"""
         parent_name = self.session.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
+
+    @property
+    def name(self):
+        """Slide name (if available)"""
+        return self.metadata.get(const.NAME, None)
+
+    @property
+    def uid(self):
+        """Slide UUID (if available)"""
+        return self.metadata.get(const.UID, None)
+
+    @property
+    def filename(self):
+        """Slide original source filename (if available)"""
+        return self.metadata.get(const.FILENAME, None)
+
+    @property
+    def sw_version(self):
+        """CyTOF software version (if available)"""
+        return self.metadata.get(const.SW_VERSION, None)
 
     def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
@@ -51,4 +88,4 @@ class Slide(YAMLObject):
         return s
 
     def __repr__(self):
-            return f"{self.__class__.__name__}(id={self.id}, description={self.description})"
+        return f"{self.__class__.__name__}(id={self.id}, description={self.description})"

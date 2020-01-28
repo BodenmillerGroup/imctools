@@ -12,7 +12,7 @@ from imctools.io.utils import get_ome_xml
 
 
 class Acquisition(YAMLObject):
-    """Image acquisition"""
+    """IMC acquisition as a collection of acquisition channels."""
 
     yaml_tag = "!Acquisition"
     symbol = "a"
@@ -23,150 +23,159 @@ class Acquisition(YAMLObject):
         id: int,
         max_x: int,
         max_y: int,
-        signal_type: str,
-        data_format: str,
-        ablation_freq: Optional[float] = None,
+        signal_type: Optional[str] = None,
+        segment_data_format: Optional[str] = None,
+        ablation_frequency: Optional[float] = None,
         ablation_power: Optional[float] = None,
-        ablation_start_time: Optional[datetime] = None,
-        ablation_end_time: Optional[datetime] = None,
+        start_timestamp: Optional[datetime] = None,
+        end_timestamp: Optional[datetime] = None,
         movement_type: Optional[str] = None,
-        pixel_size_x: Optional[float] = None,
-        pixel_size_y: Optional[float] = None,
-        pixel_spacing_x: Optional[float] = None,
-        pixel_spacing_y: Optional[float] = None,
+        ablation_distance_between_shots_x: Optional[float] = None,
+        ablation_distance_between_shots_y: Optional[float] = None,
         template: Optional[str] = None,
-        start_x: Optional[float] = None,
-        start_y: Optional[float] = None,
-        end_x: Optional[float] = None,
-        end_y: Optional[float] = None,
+        roi_start_x_pos_um: Optional[float] = None,
+        roi_start_y_pos_um: Optional[float] = None,
+        roi_end_x_pos_um: Optional[float] = None,
+        roi_end_y_pos_um: Optional[float] = None,
         description: Optional[str] = None,
         metadata: Optional[Dict[str, str]] = None,
-        offset: Optional[int] = 3,
     ):
+        """
+        Parameters
+        ----------
+        slide_id
+            Parent slide ID
+        id
+            Original acquisition ID
+        max_x
+            Acquisition width in pixels
+        max_y
+            Acquisition height in pixels
+        signal_type
+            Signal type (Dual, etc)
+        segment_data_format
+            Data format (Float, etc)
+        ablation_frequency
+            Ablation frequency
+        ablation_power
+            Ablation power
+        start_timestamp
+            Acquisition start timestamp
+        end_timestamp
+            Acquisition end timestamp
+        movement_type
+            Movement type (XRaster, YRaster, etc)
+        ablation_distance_between_shots_x
+            Horizontal ablation distance between shots (in μm)
+        ablation_distance_between_shots_y
+            Vertical ablation distance between shots (in μm)
+        template
+            Template name
+        roi_start_x_pos_um
+            Start X position on the slide (in μm)
+        roi_start_y_pos_um
+            Start Y position on the slide (in μm)
+        roi_end_x_pos_um
+            End X position on the slide (in μm)
+        roi_end_y_pos_um
+            End Y position on the slide (in μm)
+        description
+            Acquisition description
+        metadata
+            Original (raw) metadata as a dictionary
+        """
         self.slide_id = slide_id
         self.id = id
         self.max_x = max_x
         self.max_y = max_y
         self.signal_type = signal_type
-        self.data_format = data_format
-        self.ablation_freq = ablation_freq
+        self.segment_data_format = segment_data_format
+        self.ablation_frequency = ablation_frequency
         self.ablation_power = ablation_power
-        self.ablation_start_time = ablation_start_time
-        self.ablation_end_time = ablation_end_time
+        self.start_timestamp = start_timestamp
+        self.end_timestamp = end_timestamp
         self.movement_type = movement_type
-        self.pixel_size_x = pixel_size_x
-        self.pixel_size_y = pixel_size_y
-        self.pixel_spacing_x = pixel_spacing_x
-        self.pixel_spacing_y = pixel_spacing_y
+        self.ablation_distance_between_shots_x = ablation_distance_between_shots_x
+        self.ablation_distance_between_shots_y = ablation_distance_between_shots_y
         self.template = template
-        self.start_x = start_x
-        self.start_y = start_y
-        self.end_x = end_x
-        self.end_y = end_y
+        self.roi_start_x_pos_um = roi_start_x_pos_um
+        self.roi_start_y_pos_um = roi_start_y_pos_um
+        self.roi_end_x_pos_um = roi_end_x_pos_um
+        self.roi_end_y_pos_um = roi_end_y_pos_um
         self.description = description
         self.metadata = metadata
-        self._offset = offset
 
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
+
         self.image_data: Optional[np.ndarray] = None
 
     @property
     def meta_name(self):
+        """Meta name fully describing the entity"""
         parent_name = self.slide.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
 
     @property
     def n_channels(self):
-        return len(self.channels) - self._offset
+        """Number of channels"""
+        return len(self.channels)
 
     @property
     def channel_names(self):
-        """Channel names
-
-        Offset is taken into account (in order to skip X, Y, Z channels)
-
-        """
+        """Channel names"""
         channel_names = [c.name for c in self.channels.values()]
-        return channel_names[self._offset :]
+        return channel_names
 
     @property
     def channel_labels(self):
-        """Channel labels
-
-        Offset is taken into account (in order to skip X, Y, Z channels)
-
-        """
+        """Channel labels"""
         channel_labels = [c.label for c in self.channels.values()]
-        return channel_labels[self._offset :]
+        return channel_labels
 
     @property
     def channel_masses(self):
-        """Channel masses
-
-        Offset is taken into account (in order to skip X, Y, Z channels)
-
-        """
+        """Channel masses"""
         return ["".join([n for n in name if n.isdigit()]) for name in self.channel_names]
 
     def get_name_indices(self, names: Sequence[str]):
-        """Returns a list with the indices from names
-
-        """
+        """Returns a list with the indices from names"""
         order_dict = dict()
         for i, v in enumerate(self.channel_names):
             order_dict.update({v: i})
-
         return [order_dict[n] for n in names]
 
     def get_mass_indices(self, masses: Sequence[str]):
-        """Returns the channel indices from the queried mass
-
-        """
+        """Returns the channel indices from the queried mass"""
         order_dict = dict()
         for i, v in enumerate(self.channel_masses):
             order_dict.update({v: i})
-
         return [order_dict[m] for m in masses]
 
-    def _get_image_stack_cyx(self, indices: Sequence[int] = None, offset: int = None) -> Sequence[np.ndarray]:
-        """Return the data reshaped as a stack of images
-
-        """
-        if offset is None:
-            offset = self._offset
-
+    def _get_image_stack_cyx(self, indices: Sequence[int] = None) -> Sequence[np.ndarray]:
+        """Return the data reshaped as a stack of images"""
         if indices is None:
             indices = range(self.n_channels)
-
-        img = [self.image_data[i + offset] for i in indices]
+        img = [self.image_data[i] for i in indices]
         return img
 
     def get_image_by_index(self, index: int):
-        """Get channel image by its index
-
-        """
+        """Get channel image by its index"""
         stack = self._get_image_stack_cyx(indices=[index])
         return stack[0]
 
     def get_image_by_name(self, name: str):
-        """Get channel image by its name
-
-        """
+        """Get channel image by its name"""
         index = self.channel_names.index(name)
         return self.get_image_by_index(index)
 
     def get_image_by_label(self, label: str):
-        """Get channel image by its label
-
-        """
+        """Get channel image by its label"""
         index = self.channel_labels.index(label)
         return self.get_image_by_index(index)
 
     def save_ome_tiff(self, filename: str, names: Sequence[str] = None, masses: Sequence[str] = None):
-        """Save OME TIFF file
-
-        """
+        """Save OME TIFF file"""
         if names is not None:
             order = self.get_name_indices(names)
         elif masses is not None:
@@ -186,7 +195,7 @@ class Acquisition(YAMLObject):
             channel_names=channel_names,
             channel_fluors=channel_fluors,
             creator=creator,
-            image_date=datetime.fromisoformat(self.slide.session.created)
+            image_date=self.start_timestamp,
         )
 
     def __getstate__(self):
@@ -195,7 +204,6 @@ class Acquisition(YAMLObject):
         del s["slide"]
         del s["channels"]
         del s["image_data"]
-        del s["_offset"]
         return s
 
     def __repr__(self):

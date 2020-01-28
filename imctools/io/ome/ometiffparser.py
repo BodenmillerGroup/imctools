@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Sequence
 import xml.etree.ElementTree as ET
 
@@ -21,19 +21,19 @@ class OmeTiffParser(ParserBase):
         self.input_dir = input_dir
         self._channel_id_offset = 1
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith('.ome.tiff')]
+        filenames = [f for f in os.listdir(input_dir) if f.endswith(".ome.tiff")]
         session_name = self._find_session_name()
 
         session_id = str(uuid.uuid4())
         self._session = Session(
-            session_id, session_name, __version__, self.origin, input_dir, datetime.utcnow().isoformat()
+            session_id, session_name, __version__, self.origin, input_dir, datetime.now(timezone.utc)
         )
 
         slide = Slide(self.session.id, 0, description=self.session.name)
         slide.session = self.session
         self.session.slides[slide.id] = slide
 
-        self.parse_files(filenames)
+        self._parse_files(filenames)
 
     @property
     def origin(self):
@@ -47,7 +47,7 @@ class OmeTiffParser(ParserBase):
         filenames = [f for f in os.listdir(self.input_dir)]
         return os.path.commonprefix(filenames).rstrip("_")
 
-    def parse_files(self, filenames: Sequence[str]):
+    def _parse_files(self, filenames: Sequence[str]):
         for filename in filenames:
             self._parse_acquisition(os.path.join(self.input_dir, filename))
 
@@ -68,7 +68,7 @@ class OmeTiffParser(ParserBase):
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
         acquisition = Acquisition(
-            slide.id, acquisition_id, max_x, max_y, signal_type, "Float", description=image_name, offset=0
+            slide.id, acquisition_id, max_x, max_y, signal_type, "Float", description=image_name
         )
         acquisition.image_data = image_data
         acquisition.slide = slide
@@ -91,15 +91,16 @@ class OmeTiffParser(ParserBase):
     @staticmethod
     def _parse_ome_tiff_metadata(xml: str):
         ome = ET.fromstring(xml)
-        ns = '{' + ome.tag.split('}')[0].strip('{') + '}'
+        ns = "{" + ome.tag.split("}")[0].strip("{") + "}"
 
-        img = ome.find(ns + 'Image')
-        pixels = img.find(ns + 'Pixels')
-        channels = pixels.findall(ns + 'Channel')
-        chan_dict = {int(chan.attrib['ID'].split(':')[2]):
-                         (chan.attrib['Name'], chan.attrib['Fluor']) for chan in channels}
+        img = ome.find(ns + "Image")
+        pixels = img.find(ns + "Pixels")
+        channels = pixels.findall(ns + "Channel")
+        chan_dict = {
+            int(chan.attrib["ID"].split(":")[2]): (chan.attrib["Name"], chan.attrib["Fluor"]) for chan in channels
+        }
 
-        image_name = img.attrib['Name']
+        image_name = img.attrib["Name"]
         channel_names = [chan_dict[i][1] for i in range(len(channels))]
         channel_labels = [chan_dict[i][0] for i in range(len(channels))]
 
@@ -110,9 +111,9 @@ class OmeTiffParser(ParserBase):
         with tifffile.TiffFile(filepath) as tif:
             data = tif.asarray(out="memmap")
             try:
-                ome = tif.pages[0].tags['ImageDescription'].value
+                ome = tif.pages[0].tags["ImageDescription"].value
             except:
-                ome = tif.pages[0].tags['image_description'].value
+                ome = tif.pages[0].tags["image_description"].value
             return data, ome
 
 
@@ -120,6 +121,8 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    parser = OmeTiffParser("/home/anton/Data/20190723_measurements/ImcSegmentationPipeline/output/ometiff/20190723_SilverNitrate_Tonsil_TH")
+    parser = OmeTiffParser(
+        "/home/anton/Data/20190723_measurements/ImcSegmentationPipeline/output/ometiff/20190723_SilverNitrate_Tonsil_TH"
+    )
     parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
     print(timeit.default_timer() - tic)

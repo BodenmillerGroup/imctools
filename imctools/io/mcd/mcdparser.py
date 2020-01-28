@@ -16,20 +16,18 @@ class McdParser(ParserBase):
     """Data parsing from Fluidigm MCD files
 
     The McdParser object should be closed using the close method
-
     """
-
-    def __init__(self, filepath: str, file_handle: BinaryIO = None, meta_filename: str = None):
+    def __init__(self, filepath: str, file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
         ParserBase.__init__(self)
         if file_handle is None:
             self._fh = open(filepath, mode="rb")
         else:
             self._fh = file_handle
 
-        if meta_filename is None:
+        if xml_metadata_filepath is None:
             self._meta_fh = self._fh
         else:
-            self._meta_fh = open(meta_filename, mode="rb")
+            self._meta_fh = open(xml_metadata_filepath, mode="rb")
 
         footer = self._get_footer()
         public_xml_start = footer.find("<MCDPublic")
@@ -62,11 +60,11 @@ class McdParser(ParserBase):
         ----------
         acquisition
             Acquisition
-
         """
         start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
         end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
-        total_n_channels = len(acquisition.channels)
+        # Taking into account 3 dropped channels X, Y, Z!
+        total_n_channels = len(acquisition.channels) + 3
         data_size = end_offset - start_offset + 1
         data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows == 0:
@@ -99,20 +97,18 @@ class McdParser(ParserBase):
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def get_acquisition_image_data(self, acquisition_id: int, ac_description=None):
-        """Returns an ImcAcquisition object corresponding to the ac_id
-
-        """
+    def get_acquisition_image_data(self, acquisition_id: int):
+        """Returns an ImcAcquisition object corresponding to the ac_id"""
         acquisition = self.session.acquisitions.get(acquisition_id)
         data = self._get_acquisition_raw_data(acquisition)
         image_data = reshape_long_2_cyx(data, is_sorted=True)
+        # Drop first three channels X, Y, Z
+        image_data = image_data[3:]
         acquisition.image_data = image_data
         return acquisition
 
     def save_panorama_image(self, panorama_id: int, out_folder: str, fn_out=None):
-        """Save panorama image of the acquisition
-
-        """
+        """Save panorama image of the acquisition"""
         panorama_postfix = "pano"
         image_offset_fix = 161
         p = self.session.panoramas.get(panorama_id)
@@ -203,8 +199,8 @@ class McdParser(ParserBase):
         with open(os.path.join(out_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_meta_xml(self, out_folder: str):
-        self._xml_parser.save_meta_xml(out_folder)
+    def save_raw_metadata_xml(self, out_folder: str):
+        self._xml_parser.save_raw_metadata_xml(out_folder)
 
     def _get_buffer(self, start: int, stop: int):
         self._fh.seek(start)
@@ -231,7 +227,7 @@ if __name__ == "__main__":
         ac.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
         parser.save_panorama_image(1, "/home/anton/Downloads")
         parser.save_slide_image(0, "/home/anton/Downloads")
-        parser.save_meta_xml("/home/anton/Downloads")
+        parser.save_raw_metadata_xml("/home/anton/Downloads")
         parser.save_before_ablation_image(1, "/home/anton/Downloads")
         parser.save_after_ablation_image(1, "/home/anton/Downloads")
     print(timeit.default_timer() - tic)

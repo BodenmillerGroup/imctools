@@ -4,7 +4,7 @@ from imctools.data import Session
 
 
 class ParserBase(abc.ABC):
-
+    """Abstract base parser class"""
     @property
     @abc.abstractmethod
     def origin(self) -> str:
@@ -18,6 +18,7 @@ class ParserBase(abc.ABC):
         raise NotImplemented
 
     def close(self):
+        """Override this method in order to support context manager functionality"""
         pass
 
     def __enter__(self):

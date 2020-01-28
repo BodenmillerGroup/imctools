@@ -1,4 +1,2 @@
 class AcquisitionError(Exception):
-    """An error with the acquisition
-
-    """
+    """An error with the acquisition"""

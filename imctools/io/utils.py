@@ -52,19 +52,30 @@ def reshape_long_2_cyx(
         return NotImplemented
 
 
-def get_ome_xml(img: np.ndarray, image_name: Optional[str], channel_names: Optional[Sequence[str]], big_endian: bool, pixel_size: Optional[float], pixel_depth: Optional[float], creator: Optional[str] = None,
-                   channel_fluors: Optional[Sequence[str]] = None, **ome_xml_kwargs) -> ET.ElementTree:
+def get_ome_xml(
+    img: np.ndarray,
+    image_name: Optional[str],
+    channel_names: Optional[Sequence[str]],
+    big_endian: bool,
+    pixel_size: Optional[float],
+    pixel_depth: Optional[float],
+    creator: Optional[str] = None,
+    channel_fluors: Optional[Sequence[str]] = None,
+    **ome_xml_kwargs,
+) -> ET.ElementTree:
     size_t, size_z, size_c, size_y, size_x, size_s = img.shape
-    element_tree = xtiff.get_ome_xml(img, image_name, channel_names, big_endian, pixel_size, pixel_depth, **ome_xml_kwargs)
+    element_tree = xtiff.get_ome_xml(
+        img, image_name, channel_names, big_endian, pixel_size, pixel_depth, **ome_xml_kwargs
+    )
     if creator is not None:
         ome_element = element_tree.getroot()
-        ome_element.set('Creator', creator)
+        ome_element.set("Creator", creator)
     if channel_fluors is not None:
         assert len(channel_fluors) == size_c
-        channel_elements = element_tree.findall('./Image/Pixels/Channel')
+        channel_elements = element_tree.findall("./Image/Pixels/Channel")
         assert channel_elements is not None and len(channel_elements) == size_c
         for channel_element, channel_fluor in zip(channel_elements, channel_fluors):
-            channel_element.set('Fluor', channel_fluor)
+            channel_element.set("Fluor", channel_fluor)
     return element_tree
 
 

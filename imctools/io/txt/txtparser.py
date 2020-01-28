@@ -1,7 +1,7 @@
 import os
 import re
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Sequence
 
 import numpy as np
@@ -23,19 +23,24 @@ class TxtParser(ParserBase):
         self.input_dir = input_dir
         self._channel_id_offset = 1
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith('.txt') and f != "_____.txt"]
+        filenames = [f for f in os.listdir(input_dir) if f.endswith(".txt") and f != "_____.txt"]
         session_name = self._find_session_name()
 
         session_id = str(uuid.uuid4())
         self._session = Session(
-            session_id, session_name, __version__, self.origin, input_dir, datetime.utcnow().isoformat()
+            session_id,
+            session_name,
+            __version__,
+            self.origin,
+            input_dir,
+            datetime.now(timezone.utc),
         )
 
         slide = Slide(self.session.id, 0, description=self.session.name)
         slide.session = self.session
         self.session.slides[slide.id] = slide
 
-        self.parse_files(filenames)
+        self._parse_files(filenames)
 
     @property
     def origin(self):
@@ -46,10 +51,12 @@ class TxtParser(ParserBase):
         return self._session
 
     def _find_session_name(self):
-        filenames = [f for f in os.listdir(self.input_dir) if (f.endswith('.txt') or f.endswith('.mcd')) and f != "_____.txt"]
+        filenames = [
+            f for f in os.listdir(self.input_dir) if (f.endswith(".txt") or f.endswith(".mcd")) and f != "_____.txt"
+        ]
         return os.path.commonprefix(filenames).rstrip("_")
 
-    def parse_files(self, filenames: Sequence[str]):
+    def _parse_files(self, filenames: Sequence[str]):
         for filename in filenames:
             self._parse_acquisition(os.path.join(self.input_dir, filename))
 
@@ -75,7 +82,11 @@ class TxtParser(ParserBase):
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
         acquisition = Acquisition(
-            slide.id, acquisition_id, max_x, max_y, signal_type, "Float", description=filename, offset=0
+            slide.id,
+            acquisition_id,
+            max_x,
+            max_y,
+            description=filename
         )
         acquisition.image_data = image_data
         acquisition.slide = slide
@@ -157,7 +168,7 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
     parser = TxtParser("/home/anton/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE")
-    parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
+    parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".yaml"))
     ac = next(iter(parser.session.acquisitions.values()))
     ac.save_ome_tiff("/home/anton/Downloads/test_2x.ome.tiff")
     print(timeit.default_timer() - tic)

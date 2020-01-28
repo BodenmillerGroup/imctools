@@ -9,9 +9,7 @@ if TYPE_CHECKING:
 
 
 class Channel(YAMLObject):
-    """IMC acquisition channel
-
-    """
+    """IMC acquisition channel. Represents an image intensity."""
 
     yaml_tag = "!Channel"
     symbol = "c"
@@ -27,6 +25,26 @@ class Channel(YAMLObject):
         min_intensity: Optional[float] = None,
         max_intensity: Optional[float] = None,
     ):
+        """
+        Parameters
+        ----------
+        acquisition_id
+            Parent acquisition ID
+        id
+            Original channel ID
+        order_number
+            Channel order number in acquisition
+        name
+            Channel name (unique per acquisition)
+        label
+            Channel label
+        metadata
+            Original (raw) channel metadata
+        min_intensity
+            Minimal intensity value
+        max_intensity
+            Maximum intensity value
+        """
         self.acquisition_id = acquisition_id
         self.id = id
         self.order_number = order_number
@@ -36,14 +54,16 @@ class Channel(YAMLObject):
         self.min_intensity = min_intensity
         self.max_intensity = max_intensity
 
-        self.acquisition: Optional[Acquisition] = None
+        self.acquisition: Optional[Acquisition] = None  # Parent acquisition
 
     @property
     def meta_name(self):
+        """Meta name fully describing the entity"""
         parent_name = self.acquisition.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
 
     def get_image(self):
+        """Get raster channel image"""
         return self.acquisition.get_image_by_name(self.name)
 
     def __getstate__(self):

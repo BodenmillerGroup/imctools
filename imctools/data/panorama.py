@@ -8,9 +8,7 @@ from imctools.data.slide import Slide
 
 
 class Panorama(YAMLObject):
-    """Panoramic image and its description
-
-    """
+    """Panoramic image (manually attached or automatically generated)."""
 
     yaml_tag = "!Panorama"
     symbol = "p"
@@ -26,9 +24,32 @@ class Panorama(YAMLObject):
         width: float,
         height: float,
         rotation_angle: float,
-        file_extension: Optional[str] = None,
         metadata: Optional[Dict[str, str]] = None,
     ):
+        """
+        Parameters
+        ----------
+        slide_id
+            Parent slide ID
+        id
+            Original panorama ID
+        image_type
+            Image type (Imported, Instrument, Default)
+        description
+            Panorama description
+        start_position_x
+            X coordinate of start panorama position on the slide (in μm)
+        start_position_y
+            Y coordinate of start panorama position on the slide (in μm)
+        width
+            Panorama physical width (in μm)
+        height
+            Panorama physical height (in μm)
+        rotation_angle
+            Panorama rotation angle (degrees)
+        metadata
+            Original (raw) metadata as a dictionary
+        """
         self.slide_id = slide_id
         self.id = id
         self.image_type = image_type
@@ -38,13 +59,13 @@ class Panorama(YAMLObject):
         self.width = width
         self.height = height
         self.rotation_angle = rotation_angle
-        self.file_extension = file_extension
         self.metadata = metadata
 
         self.slide: Optional[Slide] = None
 
     @property
     def meta_name(self):
+        """Meta name fully describing the entity"""
         parent_name = self.slide.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
 
