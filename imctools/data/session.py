@@ -3,12 +3,9 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from yaml import YAMLObject, load, dump
-# In order to use LibYAML based parser and emitter, use the classes CParser and CEmitter.
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
+import json
+
+from dateutil.parser import parse
 
 from imctools.data.ablation_image import AblationImage
 from imctools.data.acquisition import Acquisition
@@ -17,10 +14,8 @@ from imctools.data.panorama import Panorama
 from imctools.data.slide import Slide
 
 
-class Session(YAMLObject):
+class Session:
     """IMC session data. Container for all slides, acquisitions, panoramas, etc."""
-
-    yaml_tag = "!Session"
 
     def __init__(
         self,
@@ -64,20 +59,30 @@ class Session(YAMLObject):
         self.channels: Dict[int, Channel] = dict()
         self.ablation_images: Dict[int, AblationImage] = dict()
 
+    @staticmethod
+    def from_dict(d: Dict[str, Any]):
+        """Recreate an object from dictionary"""
+        result = Session(
+            d.get("id"),
+            d.get("name"),
+            d.get("imctools_version"),
+            d.get("origin"),
+            d.get("source_path"),
+            parse(d.get("created")),
+            d.get("metadata")
+        )
+        return result
+
     def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
         s = self.__dict__.copy()
+        s["created"] = s["created"].isoformat()
+        s["slides"] = list(s["slides"].values())
+        s["acquisitions"] = list(s["acquisitions"].values())
+        s["panoramas"] = list(s["panoramas"].values())
+        s["channels"] = list(s["channels"].values())
+        s["ablation_images"] = list(s["ablation_images"].values())
         return s
-
-    @classmethod
-    def from_yaml(cls, loader, node):
-        """Convert a representation node to a Python object."""
-        return loader.construct_yaml_object(node, cls)
-
-    @classmethod
-    def to_yaml(cls, dumper, data):
-        """Convert a Python object to a representation node."""
-        return dumper.represent_yaml_object(cls.yaml_tag, data, cls, flow_style=cls.yaml_flow_style)
 
     def save(self, filepath: str):
         """Save session data in YAML format
@@ -87,8 +92,13 @@ class Session(YAMLObject):
         filepath
             Output YAML file path
         """
+        def handle_default(obj):
+            if isinstance(obj, (Session, Slide, Panorama, Acquisition, AblationImage, Channel)):
+                return obj.__getstate__()
+            return None
+
         with open(filepath, "w") as f:
-            dump(self, f, sort_keys=False)
+            json.dump(self, f, indent=2, default=handle_default)
 
     @staticmethod
     def load(filepath: str):
@@ -100,37 +110,42 @@ class Session(YAMLObject):
             Input YAML file path
         """
         with open(filepath, "r") as f:
-            session = load(f, Loader=Loader)
-            session = Session._rebuild_object_tree(session)
-            return session
+            data = json.load(f)
+            return Session._rebuild_object_tree(data)
 
     @staticmethod
-    def _rebuild_object_tree(se: Session):
+    def _rebuild_object_tree(data: Dict[str, Any]):
         """Helper function that re-creates parents/children relations between entities"""
-        for sl in se.slides.values():
-            sl.session = se
 
-        for pa in se.panoramas.values():
-            sl = se.slides.get(pa.slide_id)
-            if not hasattr(sl, "panoramas"):
-                sl.panoramas = dict()
-            sl.panoramas[pa.id] = pa
-            pa.slide = sl
+        session = Session.from_dict(data)
 
-        for ac in se.acquisitions.values():
-            sl = se.slides.get(ac.slide_id)
-            if not hasattr(sl, "acquisitions"):
-                sl.acquisitions = dict()
-            sl.acquisitions[ac.id] = ac
-            ac.slide = sl
+        for item in data.get("slides"):
+            slide = Slide.from_dict(item)
+            slide.session = session
+            session.slides[slide.id] = slide
 
-        for ch in se.channels.values():
-            ac = se.acquisitions.get(ch.acquisition_id)
-            if not hasattr(ac, "channels"):
-                ac.channels = dict()
-            ac.channels[ch.id] = ch
-            ch.acquisition = ac
-        return se
+        for item in data.get("panoramas"):
+            panorama = Panorama.from_dict(item)
+            slide = session.slides.get(panorama.slide_id)
+            panorama.slide = slide
+            slide.panoramas[panorama.id] = panorama
+            session.panoramas[panorama.id] = panorama
+
+        for item in data.get("acquisitions"):
+            acquisition = Acquisition.from_dict(item)
+            slide = session.slides.get(acquisition.slide_id)
+            acquisition.slide = slide
+            slide.acquisitions[acquisition.id] = acquisition
+            session.acquisitions[acquisition.id] = acquisition
+
+        for item in data.get("channels"):
+            channel = Channel.from_dict(item)
+            acquisition = session.acquisitions.get(channel.acquisition_id)
+            channel.acquisition = acquisition
+            acquisition.channels[channel.id] = channel
+            session.channels[channel.id] = channel
+
+        return session
 
     @property
     def meta_name(self):
@@ -145,5 +160,5 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.yaml")
+    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json")
     print(timeit.default_timer() - tic)

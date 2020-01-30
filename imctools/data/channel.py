@@ -1,17 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional
-
-from yaml import YAMLObject
+from typing import TYPE_CHECKING, Dict, Optional, Any
 
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
 
 
-class Channel(YAMLObject):
+class Channel:
     """IMC acquisition channel. Represents an image intensity."""
 
-    yaml_tag = "!Channel"
     symbol = "c"
 
     def __init__(
@@ -55,6 +52,21 @@ class Channel(YAMLObject):
         self.max_intensity = max_intensity
 
         self.acquisition: Optional[Acquisition] = None  # Parent acquisition
+
+    @staticmethod
+    def from_dict(d: Dict[str, Any]):
+        """Recreate an object from dictionary"""
+        result = Channel(
+            int(d.get("acquisition_id")),
+            int(d.get("id")),
+            int(d.get("order_number")),
+            d.get("name"),
+            d.get("label"),
+            d.get("metadata"),
+            float(d.get("min_intensity")) if d.get("min_intensity") is not None else None,
+            float(d.get("max_intensity")) if d.get("max_intensity") is not None else None,
+        )
+        return result
 
     @property
     def meta_name(self):

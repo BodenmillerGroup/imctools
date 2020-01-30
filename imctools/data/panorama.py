@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
-
-from yaml import YAMLObject
+from typing import Dict, Optional, Any
 
 from imctools.data.slide import Slide
 
 
-class Panorama(YAMLObject):
+class Panorama:
     """Panoramic image (manually attached or automatically generated)."""
 
-    yaml_tag = "!Panorama"
     symbol = "p"
 
     def __init__(
@@ -62,6 +59,23 @@ class Panorama(YAMLObject):
         self.metadata = metadata
 
         self.slide: Optional[Slide] = None
+
+    @staticmethod
+    def from_dict(d: Dict[str, Any]):
+        """Recreate an object from dictionary"""
+        result = Panorama(
+            int(d.get("slide_id")),
+            int(d.get("id")),
+            d.get("image_type"),
+            d.get("description"),
+            float(d.get("start_position_x")),
+            float(d.get("start_position_y")),
+            float(d.get("width")),
+            float(d.get("height")),
+            float(d.get("rotation_angle")),
+            d.get("metadata")
+        )
+        return result
 
     @property
     def meta_name(self):

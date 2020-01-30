@@ -14,18 +14,14 @@ from imctools.io.utils import reshape_long_2_cyx
 
 
 class TxtParser(ParserBase):
-    """Parses an IMC .txt file
-
-    """
+    """Parses an IMC .txt file"""
 
     def __init__(self, input_dir: str):
         ParserBase.__init__(self)
         self.input_dir = input_dir
         self._channel_id_offset = 1
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith(".txt") and f != "_____.txt"]
         session_name = self._find_session_name()
-
         session_id = str(uuid.uuid4())
         self._session = Session(
             session_id,
@@ -40,6 +36,7 @@ class TxtParser(ParserBase):
         slide.session = self.session
         self.session.slides[slide.id] = slide
 
+        filenames = [f for f in os.listdir(input_dir) if f.endswith(".txt") and f != "_____.txt"]
         self._parse_files(filenames)
 
     @property
@@ -86,6 +83,7 @@ class TxtParser(ParserBase):
             acquisition_id,
             max_x,
             max_y,
+            signal_type=signal_type,
             description=filename
         )
         acquisition.image_data = image_data

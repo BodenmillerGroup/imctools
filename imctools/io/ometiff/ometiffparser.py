@@ -12,9 +12,7 @@ from imctools.io.parserbase import ParserBase
 
 
 class OmeTiffParser(ParserBase):
-    """Data parsing from OME-TIFF files
-
-    """
+    """Data parsing from OME-TIFF files"""
 
     def __init__(self, input_dir: str):
         ParserBase.__init__(self)

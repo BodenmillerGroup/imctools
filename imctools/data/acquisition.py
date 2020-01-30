@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Dict, Optional, Sequence
+from typing import Dict, Optional, Sequence, Any
 
 import numpy as np
+from dateutil.parser import parse
 from xtiff import to_tiff
-from yaml import YAMLObject
 
 from imctools import __version__
 from imctools.data.channel import Channel
@@ -11,10 +11,9 @@ from imctools.data.slide import Slide
 from imctools.io.utils import get_ome_xml
 
 
-class Acquisition(YAMLObject):
+class Acquisition:
     """IMC acquisition as a collection of acquisition channels."""
 
-    yaml_tag = "!Acquisition"
     symbol = "a"
 
     def __init__(
@@ -110,6 +109,33 @@ class Acquisition(YAMLObject):
 
         self.image_data: Optional[np.ndarray] = None
 
+    @staticmethod
+    def from_dict(d: Dict[str, Any]):
+        """Recreate an object from dictionary"""
+        result = Acquisition(
+            int(d.get("slide_id")),
+            int(d.get("id")),
+            int(d.get("max_x")),
+            int(d.get("max_y")),
+            d.get("signal_type"),
+            d.get("segment_data_format"),
+            float(d.get("ablation_frequency")),
+            float(d.get("ablation_power")),
+            parse(d.get("start_timestamp")),
+            parse(d.get("end_timestamp")),
+            d.get("movement_type"),
+            float(d.get("ablation_distance_between_shots_x")),
+            float(d.get("ablation_distance_between_shots_y")),
+            d.get("template"),
+            float(d.get("roi_start_x_pos_um")),
+            float(d.get("roi_start_y_pos_um")),
+            float(d.get("roi_end_x_pos_um")),
+            float(d.get("roi_end_y_pos_um")),
+            d.get("description"),
+            d.get("metadata")
+        )
+        return result
+
     @property
     def meta_name(self):
         """Meta name fully describing the entity"""
@@ -201,6 +227,8 @@ class Acquisition(YAMLObject):
     def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
         s = self.__dict__.copy()
+        s["start_timestamp"] = s["start_timestamp"].isoformat()
+        s["end_timestamp"] = s["end_timestamp"].isoformat()
         del s["slide"]
         del s["channels"]
         del s["image_data"]

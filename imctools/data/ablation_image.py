@@ -3,8 +3,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
-from yaml import YAMLObject
-
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
 
@@ -14,10 +12,8 @@ class AblationImageType(Enum):
     AFTER = "after"
 
 
-class AblationImage(YAMLObject):
+class AblationImage:
     """Ablation image (before/after)."""
-
-    yaml_tag = "!AblationImage"
 
     def __init__(self, acquisition_id: int, image_type: AblationImageType, filename: str):
         self.acquisition_id = acquisition_id

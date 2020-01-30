@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional
-
-from yaml import YAMLObject
+from typing import TYPE_CHECKING, Dict, Optional, Any
 
 import imctools.io.mcd.constants as const
 if TYPE_CHECKING:
@@ -11,10 +9,9 @@ if TYPE_CHECKING:
     from imctools.data.session import Session
 
 
-class Slide(YAMLObject):
+class Slide:
     """IMC slide (container for IMC acquisitions, panoramas and other entities)."""
 
-    yaml_tag = "!Slide"
     symbol = "s"
 
     def __init__(
@@ -52,6 +49,19 @@ class Slide(YAMLObject):
         self.session: Optional[Session] = None  # Parent session object
         self.acquisitions: Dict[int, Acquisition] = dict()  # Children acquisitions
         self.panoramas: Dict[int, Panorama] = dict()  # Children panoramas
+
+    @staticmethod
+    def from_dict(d: Dict[str, Any]):
+        """Recreate an object from dictionary"""
+        result = Slide(
+            d.get("session_id"),
+            int(d.get("id")),
+            d.get("description"),
+            int(d.get("width_um")),
+            int(d.get("height_um")),
+            d.get("metadata")
+        )
+        return result
 
     @property
     def meta_name(self):

@@ -9,7 +9,6 @@ import imctools.io.mcd.constants as const
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Panorama, Session, Slide
 from imctools.io.parserbase import ParserBase
-from imctools.io.utils import convert_to_dict
 
 
 class McdXmlParser(ParserBase):
@@ -51,7 +50,7 @@ class McdXmlParser(ParserBase):
             self.origin,
             origin_path,
             datetime.now(timezone.utc),
-            metadata=convert_to_dict(self.metadata),
+            metadata=self.metadata,
         )
         for s in self.metadata.get(const.SLIDE):
             slide = Slide(
