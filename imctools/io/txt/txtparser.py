@@ -1,43 +1,52 @@
-import os
 import re
 import uuid
 from datetime import datetime, timezone
-from typing import Sequence
+from pathlib import Path
+from typing import Sequence, Optional
 
 import numpy as np
 import pandas as pd
 
 from imctools import __version__
-from imctools.data import Acquisition, Channel, Session, Slide
+from imctools.data import Acquisition, Channel, Slide, Session
 from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
 
 
 class TxtParser(ParserBase):
-    """Parses an IMC .txt file"""
+    """MCD compatible .txt file parser.
 
-    def __init__(self, input_dir: str):
-        ParserBase.__init__(self)
-        self.input_dir = input_dir
-        self._channel_id_offset = 1
+    Allows to get a single IMC acquisition from a single TXT file.
+    """
 
-        session_name = self._find_session_name()
-        session_id = str(uuid.uuid4())
-        self._session = Session(
-            session_id,
-            session_name,
-            __version__,
-            self.origin,
-            input_dir,
-            datetime.now(timezone.utc),
-        )
+    def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
+        self._filepath = filepath
 
-        slide = Slide(self.session.id, 0, description=self.session.name)
-        slide.session = self.session
-        self.session.slides[slide.id] = slide
+        if parent_slide is not None:
+            self._session = parent_slide.session
+        else:
+            split = Path(filepath).stem.split("_")
+            session_name = "_".join(split[:-1])
+            session_id = str(uuid.uuid4())
+            session = Session(
+                session_id,
+                session_name,
+                __version__,
+                self.origin,
+                filepath,
+                datetime.now(timezone.utc),
+            )
+            slide = Slide(
+                session.id,
+                0,
+                description=filepath
+            )
+            slide.session = session
+            session.slides[slide.id] = slide
+            self._session = session
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith(".txt") and f != "_____.txt"]
-        self._parse_files(filenames)
+        self._channel_id_offset = len(self.session.channels)
+        self._acquisition = self._parse_acquisition(filepath)
 
     @property
     def origin(self):
@@ -47,18 +56,17 @@ class TxtParser(ParserBase):
     def session(self):
         return self._session
 
-    def _find_session_name(self):
-        filenames = [
-            f for f in os.listdir(self.input_dir) if (f.endswith(".txt") or f.endswith(".mcd")) and f != "_____.txt"
-        ]
-        return os.path.commonprefix(filenames).rstrip("_")
+    @property
+    def acquisition(self):
+        """IMC acquisition"""
+        return self._acquisition
 
-    def _parse_files(self, filenames: Sequence[str]):
-        for filename in filenames:
-            self._parse_acquisition(os.path.join(self.input_dir, filename))
+    @property
+    def filepath(self):
+        return self._filepath
 
     def _parse_acquisition(self, filename: str):
-        long_data, channel_names, channel_labels = TxtParser.parse_csv(filename)
+        long_data, channel_names, channel_labels = TxtParser._parse_csv(filename)
         image_data = reshape_long_2_cyx(long_data, is_sorted=True)
 
         # Delete 'X', 'Y', 'Z' channels data
@@ -87,16 +95,17 @@ class TxtParser(ParserBase):
             description=filename
         )
         acquisition.image_data = image_data
+
         acquisition.slide = slide
         slide.acquisitions[acquisition.id] = acquisition
-        self.session.acquisitions[acquisition.id] = acquisition
+        slide.session.acquisitions[acquisition.id] = acquisition
 
         for i in range(len(channel_names)):
             channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
             self._channel_id_offset = self._channel_id_offset + 1
             channel.acquisition = acquisition
             acquisition.channels[channel.id] = channel
-            self.session.channels[channel.id] = channel
+            slide.session.channels[channel.id] = channel
 
         # Calculate channels intensity range
         for ch in acquisition.channels.values():
@@ -104,8 +113,10 @@ class TxtParser(ParserBase):
             ch.min_intensity = round(float(img.min()), 4)
             ch.max_intensity = round(float(img.max()), 4)
 
+        return acquisition
+
     @staticmethod
-    def parse_csv(filename: str):
+    def _parse_csv(filename: str):
         header_cols = pd.read_csv(filename, sep="\t", nrows=0).columns
         expected_cols = ("Start_push", "End_push", "Pushes_duration", "X", "Y", "Z")
         if tuple(header_cols[:6]) != expected_cols or len(header_cols) <= 6:
@@ -134,7 +145,6 @@ class TxtParser(ParserBase):
         ----------
         names
             CSV file column names
-
         """
         r = re.compile("^.*\((.*?)\)[^(]*$")
         r_number = re.compile("\d+")
@@ -149,24 +159,22 @@ class TxtParser(ParserBase):
 
     @staticmethod
     def _extract_channel_labels(names: Sequence[str]):
-        """
-        Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di)
+        """Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di)
 
         Parameters
         ----------
         names
             CSV file column names
-
         """
         return [name.strip("\r").strip("\n").strip() for name in names]
 
 
 if __name__ == "__main__":
     import timeit
+    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
-    parser = TxtParser("/home/anton/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE")
-    parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".yaml"))
-    ac = next(iter(parser.session.acquisitions.values()))
-    ac.save_ome_tiff("/home/anton/Downloads/test_2x.ome.tiff")
+    parser = TxtParser("/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt")
+    imc_writer = ImcWriter(parser.session)
+    imc_writer.write_to_folder("/home/anton/Downloads/imc_from_txt")
     print(timeit.default_timer() - tic)

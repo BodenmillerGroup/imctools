@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from typing import Dict, Optional, Sequence, Any
 
@@ -9,6 +10,8 @@ from imctools import __version__
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
 from imctools.io.utils import get_ome_xml
+
+logger = logging.getLogger(__name__)
 
 
 class Acquisition:
@@ -102,7 +105,7 @@ class Acquisition:
         self.roi_end_x_pos_um = roi_end_x_pos_um
         self.roi_end_y_pos_um = roi_end_y_pos_um
         self.description = description
-        self.metadata = metadata
+        self.metadata = metadata if metadata is not None else dict()
 
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
@@ -202,6 +205,11 @@ class Acquisition:
 
     def save_ome_tiff(self, filename: str, names: Sequence[str] = None, masses: Sequence[str] = None):
         """Save OME TIFF file"""
+
+        if self.image_data is None:
+            logger.error(f"Image data are missing for Acquisition {self.id}")
+            return 
+
         if names is not None:
             order = self.get_name_indices(names)
         elif masses is not None:
@@ -227,8 +235,8 @@ class Acquisition:
     def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
         s = self.__dict__.copy()
-        s["start_timestamp"] = s["start_timestamp"].isoformat()
-        s["end_timestamp"] = s["end_timestamp"].isoformat()
+        s["start_timestamp"] = s["start_timestamp"].isoformat() if s["start_timestamp"] is not None else None
+        s["end_timestamp"] = s["end_timestamp"].isoformat() if s["end_timestamp"] is not None else None
         del s["slide"]
         del s["channels"]
         del s["image_data"]

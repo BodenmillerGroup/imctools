@@ -1,7 +1,7 @@
-import os
 import uuid
 from datetime import datetime, timezone
-from typing import Sequence
+from pathlib import Path
+from typing import Optional
 import xml.etree.ElementTree as ET
 
 import tifffile
@@ -12,26 +12,39 @@ from imctools.io.parserbase import ParserBase
 
 
 class OmeTiffParser(ParserBase):
-    """Data parsing from OME-TIFF files"""
+    """MCD compatible OME-TIFF file parser.
 
-    def __init__(self, input_dir: str):
-        ParserBase.__init__(self)
-        self.input_dir = input_dir
-        self._channel_id_offset = 1
+     Allows to get a single IMC acquisition from a single OME-TIFF file.
+     """
 
-        filenames = [f for f in os.listdir(input_dir) if f.endswith(".ome.tiff")]
-        session_name = self._find_session_name()
+    def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
+        self._filepath = filepath
 
-        session_id = str(uuid.uuid4())
-        self._session = Session(
-            session_id, session_name, __version__, self.origin, input_dir, datetime.now(timezone.utc)
-        )
+        if parent_slide is not None:
+            self._session = parent_slide.session
+        else:
+            split = Path(filepath).stem.split("_")
+            session_name = "_".join(split[:-1])
+            session_id = str(uuid.uuid4())
+            session = Session(
+                session_id,
+                session_name,
+                __version__,
+                self.origin,
+                filepath,
+                datetime.now(timezone.utc),
+            )
+            slide = Slide(
+                session.id,
+                0,
+                description=filepath
+            )
+            slide.session = session
+            session.slides[slide.id] = slide
+            self._session = session
 
-        slide = Slide(self.session.id, 0, description=self.session.name)
-        slide.session = self.session
-        self.session.slides[slide.id] = slide
-
-        self._parse_files(filenames)
+        self._channel_id_offset = len(self.session.channels)
+        self._acquisition = self._parse_acquisition(filepath)
 
     @property
     def origin(self):
@@ -41,13 +54,14 @@ class OmeTiffParser(ParserBase):
     def session(self):
         return self._session
 
-    def _find_session_name(self):
-        filenames = [f for f in os.listdir(self.input_dir)]
-        return os.path.commonprefix(filenames).rstrip("_")
+    @property
+    def acquisition(self):
+        """IMC acquisition"""
+        return self._acquisition
 
-    def _parse_files(self, filenames: Sequence[str]):
-        for filename in filenames:
-            self._parse_acquisition(os.path.join(self.input_dir, filename))
+    @property
+    def filepath(self):
+        return self._filepath
 
     def _parse_acquisition(self, filename: str):
         image_data, ome = OmeTiffParser._read_file(filename)
@@ -66,25 +80,33 @@ class OmeTiffParser(ParserBase):
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
         acquisition = Acquisition(
-            slide.id, acquisition_id, max_x, max_y, signal_type, "Float", description=image_name
+            slide.id,
+            acquisition_id,
+            max_x,
+            max_y,
+            signal_type=signal_type,
+            description=image_name
         )
         acquisition.image_data = image_data
+
         acquisition.slide = slide
         slide.acquisitions[acquisition.id] = acquisition
-        self.session.acquisitions[acquisition.id] = acquisition
+        slide.session.acquisitions[acquisition.id] = acquisition
 
         for i in range(len(channel_names)):
             channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
             self._channel_id_offset = self._channel_id_offset + 1
             channel.acquisition = acquisition
             acquisition.channels[channel.id] = channel
-            self.session.channels[channel.id] = channel
+            slide.session.channels[channel.id] = channel
 
         # Calculate channels intensity range
         for ch in acquisition.channels.values():
             img = acquisition.get_image_by_name(ch.name)
             ch.min_intensity = round(float(img.min()), 4)
             ch.max_intensity = round(float(img.max()), 4)
+
+        return acquisition
 
     @staticmethod
     def _parse_ome_tiff_metadata(xml: str):
@@ -117,10 +139,12 @@ class OmeTiffParser(ParserBase):
 
 if __name__ == "__main__":
     import timeit
+    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
     parser = OmeTiffParser(
-        "/home/anton/Data/20190723_measurements/ImcSegmentationPipeline/output/ometiff/20190723_SilverNitrate_Tonsil_TH"
+        "/home/anton/Downloads/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035 converted/IMMUcan_Batch20191023_S-190701-00035_s0_p15_r2_a2_ac.ome.tiff"
     )
-    parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
+    imc_writer = ImcWriter(parser.session)
+    imc_writer.write_to_folder("/home/anton/Downloads/imc_from_ometiff")
     print(timeit.default_timer() - tic)

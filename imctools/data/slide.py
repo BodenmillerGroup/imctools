@@ -44,7 +44,7 @@ class Slide:
         self.description = description
         self.width_um = width_um
         self.height_um = height_um
-        self.metadata = metadata
+        self.metadata = metadata if metadata is not None else dict()
 
         self.session: Optional[Session] = None  # Parent session object
         self.acquisitions: Dict[int, Acquisition] = dict()  # Children acquisitions

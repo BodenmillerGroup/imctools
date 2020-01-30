@@ -1,3 +1,4 @@
+import logging
 import mmap
 import os
 from typing import BinaryIO
@@ -11,9 +12,11 @@ from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
 
+logger = logging.getLogger(__name__)
+
 
 class McdParser(ParserBase):
-    """Data parsing from Fluidigm MCD files
+    """Raw MCD file parser.
 
     The McdParser object should be closed using the close method
     """
@@ -68,7 +71,9 @@ class McdParser(ParserBase):
         data_size = end_offset - start_offset + 1
         data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows == 0:
-            raise AcquisitionError(f"Acquisition {acquisition.id} emtpy!")
+            logger.error(f"Acquisition {acquisition.id} is emtpy!")
+            return None
+            # raise AcquisitionError(f"Acquisition {acquisition.id} is emtpy!")
 
         data = np.memmap(
             self._fh, dtype=np.float32, mode="r", offset=start_offset, shape=(data_nrows, total_n_channels)
@@ -82,7 +87,6 @@ class McdParser(ParserBase):
         be loaded with the mcdparser and then the corrupted mcd-data file loaded
         using this function. This will replace the mcd file data in the backend (containing only
         the schema data) with the real mcd file (not containing the mcd xml).
-
         """
         self.close()
         self._fh = open(filename, mode="rb")
@@ -97,14 +101,14 @@ class McdParser(ParserBase):
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def get_acquisition_image_data(self, acquisition_id: int):
+    def read_acquisition_image_data(self, acquisition: Acquisition):
         """Returns an ImcAcquisition object corresponding to the ac_id"""
-        acquisition = self.session.acquisitions.get(acquisition_id)
         data = self._get_acquisition_raw_data(acquisition)
-        image_data = reshape_long_2_cyx(data, is_sorted=True)
-        # Drop first three channels X, Y, Z
-        image_data = image_data[3:]
-        acquisition.image_data = image_data
+        if data is not None:
+            image_data = reshape_long_2_cyx(data, is_sorted=True)
+            # Drop first three channels X, Y, Z
+            image_data = image_data[3:]
+            acquisition.image_data = image_data
         return acquisition
 
     def save_panorama_image(self, panorama_id: int, out_folder: str, fn_out=None):
@@ -215,19 +219,28 @@ class McdParser(ParserBase):
         except:
             pass
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
 
 if __name__ == "__main__":
     import timeit
+    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
     with McdParser(filename) as parser:
-        parser.session.save(os.path.join("/home/anton/Downloads", parser.session.meta_name + ".json"))
-        ac = parser.get_acquisition_image_data(1)
-        ac.save_ome_tiff("/home/anton/Downloads/test_v2.ome.tiff")
+
         parser.save_panorama_image(1, "/home/anton/Downloads")
         parser.save_slide_image(0, "/home/anton/Downloads")
         parser.save_raw_metadata_xml("/home/anton/Downloads")
         parser.save_before_ablation_image(1, "/home/anton/Downloads")
         parser.save_after_ablation_image(1, "/home/anton/Downloads")
+        for acquisition in parser.session.acquisitions.values():
+            parser.read_acquisition_image_data(acquisition)
+        imc_writer = ImcWriter(parser.session, parser.xml_metadata)
+        imc_writer.write_to_folder("/home/anton/Downloads/imc_from_mcd")
     print(timeit.default_timer() - tic)
