@@ -1,6 +1,6 @@
 import abc
 
-from imctools.data import Session
+from imctools.data import Session, Optional
 
 
 class ParserBase(abc.ABC):
@@ -8,17 +8,29 @@ class ParserBase(abc.ABC):
     @property
     @abc.abstractmethod
     def origin(self) -> str:
-        """Save the data object to the output."""
+        """Data origin type, like `txt`, `mcd`, etc."""
         raise NotImplemented
 
     @property
     @abc.abstractmethod
     def session(self) -> Session:
-        """Save the data object to the output."""
+        """Session data as a container for all slides, panoramas, acquisitions and other data types."""
         raise NotImplemented
 
+    @property
+    def xml_metadata(self) -> Optional[str]:
+        """Optional original (raw) metadata in XML format."""
+        return None
+
+    def save_artifacts(self, output_folder: str):
+        """Override this method in order to support writing parser-specific data to IMC compatible folder.
+
+        Example: before/after ablation images, panorama images, etc.
+        """
+        pass
+
     def close(self):
-        """Override this method in order to support context manager functionality"""
+        """Override this method in order to support context manager resource disposal"""
         pass
 
     def __enter__(self):

@@ -1,11 +1,11 @@
+from io import StringIO, BytesIO
 from typing import Optional, Sequence
 
 import xml.etree.ElementTree as ET
+from xml.sax import saxutils
 
 import numpy as np
 import xtiff
-
-_OME_CHANNEL_XML_FMT = '<Channel ID="Channel:0:{id:d}" SamplesPerPixel="{samples_per_pixel:d}"{channel_extra} />'
 
 
 def reshape_long_2_cyx(
@@ -58,20 +58,40 @@ def get_ome_xml(
     pixel_size: Optional[float],
     pixel_depth: Optional[float],
     creator: Optional[str] = None,
+    acquisition_date: Optional[str] = None,
     channel_fluors: Optional[Sequence[str]] = None,
+    xml_metadata: Optional[str] = None,
     **ome_xml_kwargs,
 ) -> ET.ElementTree:
     size_t, size_z, size_c, size_y, size_x, size_s = img.shape
     element_tree = xtiff.get_ome_xml(
         img, image_name, channel_names, big_endian, pixel_size, pixel_depth, **ome_xml_kwargs
     )
+
     if creator is not None:
         ome_element = element_tree.getroot()
         ome_element.set("Creator", creator)
+
+    if acquisition_date is not None:
+        image_element = element_tree.find("./Image")
+        ET.SubElement(image_element, "AcquisitionDate").text = acquisition_date
+
     if channel_fluors is not None:
         assert len(channel_fluors) == size_c
         channel_elements = element_tree.findall("./Image/Pixels/Channel")
         assert channel_elements is not None and len(channel_elements) == size_c
         for channel_element, channel_fluor in zip(channel_elements, channel_fluors):
             channel_element.set("Fluor", channel_fluor)
+
+    if xml_metadata is not None:
+        ome_element = element_tree.getroot()
+        structured_annotations_element = ET.SubElement(ome_element, "StructuredAnnotations")
+        xml_annotation_element = ET.SubElement(structured_annotations_element, "XMLAnnotation")
+        xml_annotation_element.set("ID", "Annotation:0")
+        xml_annotation_value_element = ET.SubElement(xml_annotation_element, "Value")
+        original_metadata_element = ET.SubElement(xml_annotation_value_element, "OriginalMetadata")
+        ET.SubElement(original_metadata_element, "Key").text = "MCD-XML"
+        ET.SubElement(original_metadata_element, "Value").text = xml_metadata.replace("\n", "").replace("\r", "")
+
+    ET.dump(element_tree)
     return element_tree

@@ -8,6 +8,7 @@ import tifffile
 
 from imctools import __version__
 from imctools.data import Acquisition, Session, Slide, Channel
+from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.parserbase import ParserBase
 
 
@@ -18,6 +19,7 @@ class OmeTiffParser(ParserBase):
      """
 
     def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
+        ParserBase.__init__(self)
         self._filepath = filepath
 
         if parent_slide is not None:
@@ -62,6 +64,10 @@ class OmeTiffParser(ParserBase):
     @property
     def filepath(self):
         return self._filepath
+
+    def save_imc_folder(self, output_folder: str):
+        imc_writer = ImcWriter(self)
+        imc_writer.save_imc_folder(output_folder)
 
     def _parse_acquisition(self, filename: str):
         image_data, ome = OmeTiffParser._read_file(filename)
@@ -139,12 +145,13 @@ class OmeTiffParser(ParserBase):
 
 if __name__ == "__main__":
     import timeit
-    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
+
     parser = OmeTiffParser(
         "/home/anton/Downloads/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035 converted/IMMUcan_Batch20191023_S-190701-00035_s0_p15_r2_a2_ac.ome.tiff"
     )
-    imc_writer = ImcWriter(parser.session)
-    imc_writer.write_to_folder("/home/anton/Downloads/imc_from_ometiff")
+    imc_writer = ImcWriter(parser)
+    imc_writer.save_imc_folder("/home/anton/Downloads/imc_from_ometiff")
+
     print(timeit.default_timer() - tic)

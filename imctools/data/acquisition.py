@@ -203,12 +203,11 @@ class Acquisition:
         index = self.channel_labels.index(label)
         return self.get_image_by_index(index)
 
-    def save_ome_tiff(self, filename: str, names: Sequence[str] = None, masses: Sequence[str] = None):
+    def save_ome_tiff(self, filename: str, names: Sequence[str] = None, masses: Sequence[str] = None, xml_metadata: Optional[str] = None):
         """Save OME TIFF file"""
 
         if self.image_data is None:
-            logger.error(f"Image data are missing for Acquisition {self.id}")
-            return 
+            return
 
         if names is not None:
             order = self.get_name_indices(names)
@@ -229,7 +228,9 @@ class Acquisition:
             channel_names=channel_names,
             channel_fluors=channel_fluors,
             creator=creator,
+            acquisition_date=self.start_timestamp.isoformat() if self.start_timestamp else None,
             image_date=self.start_timestamp,
+            xml_metadata=xml_metadata,
         )
 
     def __getstate__(self):

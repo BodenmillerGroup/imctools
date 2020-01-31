@@ -7,7 +7,7 @@ import numpy as np
 
 import imctools.io.mcd.constants as const
 from imctools.data import Acquisition
-from imctools.io.errors import AcquisitionError
+from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
@@ -71,7 +71,7 @@ class McdParser(ParserBase):
         data_size = end_offset - start_offset + 1
         data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows == 0:
-            logger.error(f"Acquisition {acquisition.id} is emtpy!")
+            logger.error(f"Acquisition {acquisition.meta_name} is emtpy")
             return None
             # raise AcquisitionError(f"Acquisition {acquisition.id} is emtpy!")
 
@@ -101,7 +101,7 @@ class McdParser(ParserBase):
             footer: str = mm.read().decode(encoding)
             return footer
 
-    def read_acquisition_image_data(self, acquisition: Acquisition):
+    def get_acquisition_image_data(self, acquisition: Acquisition):
         """Returns an ImcAcquisition object corresponding to the ac_id"""
         data = self._get_acquisition_raw_data(acquisition)
         if data is not None:
@@ -185,7 +185,7 @@ class McdParser(ParserBase):
         )
 
     def _save_ablation_image(
-        self, acquisition_id: int, out_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
+        self, acquisition_id: int, output_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
     ):
         image_offset_fix = 161
         image_format = ".png"
@@ -200,11 +200,38 @@ class McdParser(ParserBase):
         buf = self._get_buffer(img_start, img_end)
         if not (fn_out.endswith(image_format)):
             fn_out += "_" + ac_postfix + image_format
-        with open(os.path.join(out_folder, fn_out), "wb") as f:
+        with open(os.path.join(output_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_raw_metadata_xml(self, out_folder: str):
-        self._xml_parser.save_raw_metadata_xml(out_folder)
+    def save_xml_metadata(self, output_folder: str):
+        """Save original raw XML metadata from .mcd file into a separate .xml file
+
+        Parameters
+        ----------
+        output_folder
+            Output file directory. Filename will be generated automatically using IMC session name.
+        """
+        filename = self.session.meta_name + ".xml"
+        with open(os.path.join(output_folder, filename), "wt") as f:
+            f.write(self.xml_metadata)
+
+    def save_artifacts(self, output_folder: str):
+        """Save MCD file-specific artifacts like ablation images, panoramas, slide images, etc."""
+        for key in self.session.slides.keys():
+            self.save_slide_image(key, output_folder)
+
+        for key in self.session.panoramas.keys():
+            self.save_panorama_image(key, output_folder)
+
+        for key in self.session.acquisitions.keys():
+            self.save_before_ablation_image(key, output_folder)
+            self.save_after_ablation_image(key, output_folder)
+
+    def save_imc_folder(self, output_folder: str):
+        for acquisition in self.session.acquisitions.values():
+            self.get_acquisition_image_data(acquisition)
+        imc_writer = ImcWriter(self)
+        imc_writer.save_imc_folder(output_folder)
 
     def _get_buffer(self, start: int, stop: int):
         self._fh.seek(start)
@@ -228,19 +255,11 @@ class McdParser(ParserBase):
 
 if __name__ == "__main__":
     import timeit
-    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
+
     filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
     with McdParser(filename) as parser:
+        parser.save_imc_folder("/home/anton/Downloads/imc_from_mcd")
 
-        parser.save_panorama_image(1, "/home/anton/Downloads")
-        parser.save_slide_image(0, "/home/anton/Downloads")
-        parser.save_raw_metadata_xml("/home/anton/Downloads")
-        parser.save_before_ablation_image(1, "/home/anton/Downloads")
-        parser.save_after_ablation_image(1, "/home/anton/Downloads")
-        for acquisition in parser.session.acquisitions.values():
-            parser.read_acquisition_image_data(acquisition)
-        imc_writer = ImcWriter(parser.session, parser.xml_metadata)
-        imc_writer.write_to_folder("/home/anton/Downloads/imc_from_mcd")
     print(timeit.default_timer() - tic)

@@ -9,6 +9,7 @@ import pandas as pd
 
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Slide, Session
+from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.parserbase import ParserBase
 from imctools.io.utils import reshape_long_2_cyx
 
@@ -20,6 +21,8 @@ class TxtParser(ParserBase):
     """
 
     def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
+        ParserBase.__init__(self)
+
         self._filepath = filepath
 
         if parent_slide is not None:
@@ -64,6 +67,10 @@ class TxtParser(ParserBase):
     @property
     def filepath(self):
         return self._filepath
+
+    def save_imc_folder(self, output_folder: str):
+        imc_writer = ImcWriter(self)
+        imc_writer.save_imc_folder(output_folder)
 
     def _parse_acquisition(self, filename: str):
         long_data, channel_names, channel_labels = TxtParser._parse_csv(filename)
@@ -171,10 +178,10 @@ class TxtParser(ParserBase):
 
 if __name__ == "__main__":
     import timeit
-    from imctools.io.imc.imcwriter import ImcWriter
 
     tic = timeit.default_timer()
+
     parser = TxtParser("/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt")
-    imc_writer = ImcWriter(parser.session)
-    imc_writer.write_to_folder("/home/anton/Downloads/imc_from_txt")
+    parser.save_imc_folder("/home/anton/Downloads/imc_from_txt")
+
     print(timeit.default_timer() - tic)

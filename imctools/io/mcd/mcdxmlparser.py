@@ -24,7 +24,7 @@ class McdXmlParser(ParserBase):
             Path to original input .mcd file
         """
         ParserBase.__init__(self)
-        self.xml_metadata = xml_metadata
+        self._xml_metadata = xml_metadata
         self.metadata = xmltodict.parse(
             xml_metadata,
             xml_attribs=False,
@@ -147,14 +147,7 @@ class McdXmlParser(ParserBase):
         """Root session data"""
         return self._session
 
-    def save_raw_metadata_xml(self, output_folder: str):
-        """Save original raw XML metadata from .mcd file into a separate .xml file
-
-        Parameters
-        ----------
-        output_folder
-            Output file directory. Filename will be generated automatically using IMC session name.
-        """
-        filename = self.session.meta_name + ".xml"
-        with open(os.path.join(output_folder, filename), "wt") as f:
-            f.write(self.xml_metadata)
+    @property
+    def xml_metadata(self):
+        """Optional original (raw) metadata in XML format."""
+        return self._xml_metadata
