@@ -69,7 +69,7 @@ class Session:
             d.get("origin"),
             d.get("source_path"),
             parse(d.get("created")),
-            d.get("metadata")
+            d.get("metadata"),
         )
         return result
 
@@ -92,6 +92,7 @@ class Session:
         filepath
             Output YAML file path
         """
+
         def handle_default(obj):
             if isinstance(obj, (Session, Slide, Panorama, Acquisition, AblationImage, Channel)):
                 return obj.__getstate__()

@@ -135,7 +135,7 @@ class Acquisition:
             float(d.get("roi_end_x_pos_um")),
             float(d.get("roi_end_y_pos_um")),
             d.get("description"),
-            d.get("metadata")
+            d.get("metadata"),
         )
         return result
 
@@ -203,7 +203,13 @@ class Acquisition:
         index = self.channel_labels.index(label)
         return self.get_image_by_index(index)
 
-    def save_ome_tiff(self, filename: str, names: Sequence[str] = None, masses: Sequence[str] = None, xml_metadata: Optional[str] = None):
+    def save_ome_tiff(
+        self,
+        filename: str,
+        names: Sequence[str] = None,
+        masses: Sequence[str] = None,
+        xml_metadata: Optional[str] = None,
+    ):
         """Save OME TIFF file"""
 
         if self.image_data is None:

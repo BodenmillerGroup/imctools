@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Optional, Any
 
 import imctools.io.mcd.constants as const
+
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
     from imctools.data.panorama import Panorama
@@ -59,7 +60,7 @@ class Slide:
             d.get("description"),
             int(d.get("width_um")),
             int(d.get("height_um")),
-            d.get("metadata")
+            d.get("metadata"),
         )
         return result
 

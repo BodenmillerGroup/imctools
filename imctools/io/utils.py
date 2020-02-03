@@ -91,7 +91,7 @@ def get_ome_xml(
         xml_annotation_value_element = ET.SubElement(xml_annotation_element, "Value")
         original_metadata_element = ET.SubElement(xml_annotation_value_element, "OriginalMetadata")
         ET.SubElement(original_metadata_element, "Key").text = "MCD-XML"
-        ET.SubElement(original_metadata_element, "Value").text = xml_metadata.replace("\n", "").replace("\r", "")
+        ET.SubElement(original_metadata_element, "Value").text = str(xml_metadata.encode("utf-8"))
 
     ET.dump(element_tree)
     return element_tree

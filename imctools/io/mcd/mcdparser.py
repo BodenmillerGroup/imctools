@@ -20,6 +20,7 @@ class McdParser(ParserBase):
 
     The McdParser object should be closed using the close method
     """
+
     def __init__(self, filepath: str, file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
         ParserBase.__init__(self)
         if file_handle is None:

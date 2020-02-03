@@ -44,7 +44,9 @@ class ImcWriter:
 
         # Save acquisition images in OME-TIFF format
         for acquisition in session.acquisitions.values():
-            acquisition.save_ome_tiff(os.path.join(output_folder, acquisition.meta_name + ".ome.tiff"), xml_metadata=self.parser.xml_metadata)
+            acquisition.save_ome_tiff(
+                os.path.join(output_folder, acquisition.meta_name + ".ome.tiff"), xml_metadata=self.parser.xml_metadata
+            )
 
         # Save parser-specific artifacts, like panorama images, before/after ablation images, etc.
         self.parser.save_artifacts(output_folder)

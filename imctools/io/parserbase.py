@@ -5,6 +5,7 @@ from imctools.data import Session, Optional
 
 class ParserBase(abc.ABC):
     """Abstract base parser class"""
+
     @property
     @abc.abstractmethod
     def origin(self) -> str:

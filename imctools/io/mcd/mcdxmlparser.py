@@ -112,7 +112,7 @@ class McdXmlParser(ParserBase):
                 roi_end_x_pos_um=float(a.get(const.ROI_END_X_POS_UM, 0)),
                 roi_end_y_pos_um=float(a.get(const.ROI_END_Y_POS_UM, 0)),
                 description=a.get(const.DESCRIPTION, "ROI"),
-                metadata=dict(a)
+                metadata=dict(a),
             )
             slide = session.slides.get(acquisition.slide_id)
             acquisition.slide = slide

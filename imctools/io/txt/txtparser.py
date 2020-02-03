@@ -31,19 +31,8 @@ class TxtParser(ParserBase):
             split = Path(filepath).stem.split("_")
             session_name = "_".join(split[:-1])
             session_id = str(uuid.uuid4())
-            session = Session(
-                session_id,
-                session_name,
-                __version__,
-                self.origin,
-                filepath,
-                datetime.now(timezone.utc),
-            )
-            slide = Slide(
-                session.id,
-                0,
-                description=filepath
-            )
+            session = Session(session_id, session_name, __version__, self.origin, filepath, datetime.now(timezone.utc),)
+            slide = Slide(session.id, 0, description=filepath)
             slide.session = session
             session.slides[slide.id] = slide
             self._session = session
@@ -93,14 +82,7 @@ class TxtParser(ParserBase):
         slide = self.session.slides.get(0)
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
-        acquisition = Acquisition(
-            slide.id,
-            acquisition_id,
-            max_x,
-            max_y,
-            signal_type=signal_type,
-            description=filename
-        )
+        acquisition = Acquisition(slide.id, acquisition_id, max_x, max_y, signal_type=signal_type, description=filename)
         acquisition.image_data = image_data
 
         acquisition.slide = slide
