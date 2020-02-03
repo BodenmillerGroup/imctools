@@ -7,7 +7,6 @@ import json
 
 from dateutil.parser import parse
 
-from imctools.data.ablation_image import AblationImage
 from imctools.data.acquisition import Acquisition
 from imctools.data.channel import Channel
 from imctools.data.panorama import Panorama
@@ -57,7 +56,6 @@ class Session:
         self.acquisitions: Dict[int, Acquisition] = dict()
         self.panoramas: Dict[int, Panorama] = dict()
         self.channels: Dict[int, Channel] = dict()
-        self.ablation_images: Dict[int, AblationImage] = dict()
 
     @staticmethod
     def from_dict(d: Dict[str, Any]):
@@ -81,7 +79,6 @@ class Session:
         s["acquisitions"] = list(s["acquisitions"].values())
         s["panoramas"] = list(s["panoramas"].values())
         s["channels"] = list(s["channels"].values())
-        s["ablation_images"] = list(s["ablation_images"].values())
         return s
 
     def save(self, filepath: str):
@@ -94,7 +91,7 @@ class Session:
         """
 
         def handle_default(obj):
-            if isinstance(obj, (Session, Slide, Panorama, Acquisition, AblationImage, Channel)):
+            if isinstance(obj, (Session, Slide, Panorama, Acquisition, Channel)):
                 return obj.__getstate__()
             return None
 
@@ -153,6 +150,10 @@ class Session:
         """Meta name fully describing the entity"""
         return self.name
 
+    @property
+    def acquisition_indices(self):
+        return tuple(self.acquisitions.keys())
+
     def __repr__(self):
         return f"{self.__class__.__name__}(name={self.name})"
 
@@ -161,5 +162,7 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    session = Session.load("/home/anton/Downloads/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json")
+    session = Session.load(
+        "/home/anton/Downloads/imc_from_mcd/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json"
+    )
     print(timeit.default_timer() - tic)

@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from enum import Enum
 from typing import Dict, Optional, Sequence, Any
 
 import numpy as np
@@ -12,6 +13,11 @@ from imctools.data.slide import Slide
 from imctools.io.utils import get_ome_xml
 
 logger = logging.getLogger(__name__)
+
+
+class AblationImageType(Enum):
+    BEFORE = "before"
+    AFTER = "after"
 
 
 class Acquisition:
@@ -41,6 +47,8 @@ class Acquisition:
         roi_end_y_pos_um: Optional[float] = None,
         description: Optional[str] = None,
         metadata: Optional[Dict[str, str]] = None,
+        before_ablation_image_exists: bool = False,
+        after_ablation_image_exists: bool = False,
     ):
         """
         Parameters
@@ -106,6 +114,8 @@ class Acquisition:
         self.roi_end_y_pos_um = roi_end_y_pos_um
         self.description = description
         self.metadata = metadata if metadata is not None else dict()
+        self.before_ablation_image_exists = before_ablation_image_exists
+        self.after_ablation_image_exists = after_ablation_image_exists
 
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
@@ -136,6 +146,8 @@ class Acquisition:
             float(d.get("roi_end_y_pos_um")),
             d.get("description"),
             d.get("metadata"),
+            bool(d.get("before_ablation_image_exists")),
+            bool(d.get("after_ablation_image_exists")),
         )
         return result
 

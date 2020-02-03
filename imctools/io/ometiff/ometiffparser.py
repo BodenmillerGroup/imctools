@@ -127,15 +127,20 @@ class OmeTiffParser(ParserBase):
             return data, ome
 
 
+def convert_ometiff_to_imc_folder(input_filename: str, output_folder: str):
+    """High-level function for OME-TIFF-to-IMC conversion"""
+    with OmeTiffParser(input_filename) as parser:
+        parser.save_imc_folder(output_folder)
+
+
 if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
 
-    parser = OmeTiffParser(
-        "/home/anton/Downloads/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035 converted/IMMUcan_Batch20191023_S-190701-00035_s0_p15_r2_a2_ac.ome.tiff"
+    convert_ometiff_to_imc_folder(
+        "/home/anton/Downloads/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035 converted/IMMUcan_Batch20191023_S-190701-00035_s0_p15_r2_a2_ac.ome.tiff",
+        "/home/anton/Downloads/imc_from_ometiff",
     )
-    imc_writer = ImcWriter(parser)
-    imc_writer.save_imc_folder("/home/anton/Downloads/imc_from_ometiff")
 
     print(timeit.default_timer() - tic)

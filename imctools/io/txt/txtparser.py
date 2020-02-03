@@ -158,12 +158,19 @@ class TxtParser(ParserBase):
         return [name.strip("\r").strip("\n").strip() for name in names]
 
 
+def convert_txt_to_imc_folder(input_filename: str, output_folder: str):
+    """High-level function for TXT-to-IMC conversion"""
+    with TxtParser(input_filename) as parser:
+        parser.save_imc_folder(output_folder)
+
+
 if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
 
-    parser = TxtParser("/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt")
-    parser.save_imc_folder("/home/anton/Downloads/imc_from_txt")
+    convert_txt_to_imc_folder(
+        "/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt", "/home/anton/Downloads/imc_from_txt"
+    )
 
     print(timeit.default_timer() - tic)

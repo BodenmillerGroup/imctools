@@ -93,5 +93,4 @@ def get_ome_xml(
         ET.SubElement(original_metadata_element, "Key").text = "MCD-XML"
         ET.SubElement(original_metadata_element, "Value").text = str(xml_metadata.encode("utf-8"))
 
-    ET.dump(element_tree)
     return element_tree

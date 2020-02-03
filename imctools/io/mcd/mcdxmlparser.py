@@ -92,6 +92,16 @@ class McdXmlParser(ParserBase):
             roi = rois.get(int(a.get(const.ACQUISITION_ROI_ID)))
             panorama = session.panoramas.get(int(roi.get(const.PANORAMA_ID)))
             slide_id = panorama.slide_id
+
+            before_ablation_image_exists = (
+                int(a.get(const.BEFORE_ABLATION_IMAGE_END_OFFSET, 0))
+                - int(a.get(const.BEFORE_ABLATION_IMAGE_START_OFFSET, 0))
+            ) != 0
+            after_ablation_image_exists = (
+                int(a.get(const.AFTER_ABLATION_IMAGE_END_OFFSET, 0))
+                - int(a.get(const.AFTER_ABLATION_IMAGE_START_OFFSET, 0))
+            ) != 0
+
             acquisition = Acquisition(
                 slide_id,
                 int(a.get(const.ID)),
@@ -113,6 +123,8 @@ class McdXmlParser(ParserBase):
                 roi_end_y_pos_um=float(a.get(const.ROI_END_Y_POS_UM, 0)),
                 description=a.get(const.DESCRIPTION, "ROI"),
                 metadata=dict(a),
+                before_ablation_image_exists=before_ablation_image_exists,
+                after_ablation_image_exists=after_ablation_image_exists,
             )
             slide = session.slides.get(acquisition.slide_id)
             acquisition.slide = slide

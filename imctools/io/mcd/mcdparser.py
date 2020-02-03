@@ -1,12 +1,12 @@
 import logging
 import mmap
 import os
-from typing import BinaryIO
+from typing import BinaryIO, Optional
 
 import numpy as np
 
 import imctools.io.mcd.constants as const
-from imctools.data import Acquisition
+from imctools.data import Acquisition, AblationImageType
 from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.parserbase import ParserBase
@@ -165,28 +165,34 @@ class McdParser(ParserBase):
         with open(os.path.join(out_folder, fn_out), "wb") as f:
             f.write(buf)
 
-    def save_before_ablation_image(self, acquisition_id: int, out_folder: str, fn_out=None):
-        self._save_ablation_image(
+    def save_before_ablation_image(self, acquisition_id: int, out_folder: str, output_filename: Optional[str] = None):
+        return self._save_ablation_image(
             acquisition_id,
             out_folder,
-            "before",
+            AblationImageType.BEFORE,
             const.BEFORE_ABLATION_IMAGE_START_OFFSET,
             const.BEFORE_ABLATION_IMAGE_END_OFFSET,
-            fn_out,
+            output_filename,
         )
 
-    def save_after_ablation_image(self, acquisition_id: int, out_folder: str, fn_out=None):
-        self._save_ablation_image(
+    def save_after_ablation_image(self, acquisition_id: int, out_folder: str, output_filename: Optional[str] = None):
+        return self._save_ablation_image(
             acquisition_id,
             out_folder,
-            "after",
+            AblationImageType.AFTER,
             const.AFTER_ABLATION_IMAGE_START_OFFSET,
             const.AFTER_ABLATION_IMAGE_END_OFFSET,
-            fn_out,
+            output_filename,
         )
 
     def _save_ablation_image(
-        self, acquisition_id: int, output_folder: str, ac_postfix: str, start_offset: str, end_offset: str, fn_out=None
+        self,
+        acquisition_id: int,
+        output_folder: str,
+        ac_postfix: AblationImageType,
+        start_offset: str,
+        end_offset: str,
+        output_filename: Optional[str] = None,
     ):
         image_offset_fix = 161
         image_format = ".png"
@@ -194,15 +200,16 @@ class McdParser(ParserBase):
         img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
         img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
         if img_end - img_start == 0:
-            return 0
+            return False
 
-        if fn_out is None:
-            fn_out = a.meta_name
+        if output_filename is None:
+            output_filename = a.meta_name
         buf = self._get_buffer(img_start, img_end)
-        if not (fn_out.endswith(image_format)):
-            fn_out += "_" + ac_postfix + image_format
-        with open(os.path.join(output_folder, fn_out), "wb") as f:
+        if not (output_filename.endswith(image_format)):
+            output_filename += "_" + ac_postfix.value + image_format
+        with open(os.path.join(output_folder, output_filename), "wb") as f:
             f.write(buf)
+        return True
 
     def save_xml_metadata(self, output_folder: str):
         """Save original raw XML metadata from .mcd file into a separate .xml file
@@ -254,13 +261,20 @@ class McdParser(ParserBase):
         self.close()
 
 
+def convert_mcd_to_imc_folder(input_filename: str, output_folder: str):
+    """High-level function for MCD-to-IMC conversion"""
+    with McdParser(input_filename) as parser:
+        parser.save_imc_folder(output_folder)
+
+
 if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
 
-    filename = "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd"
-    with McdParser(filename) as parser:
-        parser.save_imc_folder("/home/anton/Downloads/imc_from_mcd")
+    convert_mcd_to_imc_folder(
+        "/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd",
+        "/home/anton/Downloads/imc_from_mcd",
+    )
 
     print(timeit.default_timer() - tic)

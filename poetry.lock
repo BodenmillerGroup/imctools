@@ -514,7 +514,7 @@ description = "Find dead code"
 name = "vulture"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "1.2"
+version = "1.3"
 
 [[package]]
 category = "dev"
@@ -566,7 +566,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "39a809257c3a755147c52542267b3f620f0813480d1173734452d73fd80bab1d"
+content-hash = "56b50bbc2c5b26f08e7c98216b8c7c7b7569de6d0fc21473f9af5301300e0e19"
 python-versions = ">=3.7"
 
 [metadata.files]
@@ -978,8 +978,8 @@ typing-extensions = [
     {file = "typing_extensions-3.7.4.1.tar.gz", hash = "sha256:091ecc894d5e908ac75209f10d5b4f118fbdb2eb1ede6a63544054bb1edb41f2"},
 ]
 vulture = [
-    {file = "vulture-1.2-py2.py3-none-any.whl", hash = "sha256:d303d4778b44aebd4de76080138b9dd9b1c9c50b94bb9aaa5508f1abd7d94220"},
-    {file = "vulture-1.2.tar.gz", hash = "sha256:c200a01ec47c05d75c5feffe096aeb85a4d3f0e18563be125fae72c13b584ea5"},
+    {file = "vulture-1.3-py2.py3-none-any.whl", hash = "sha256:54f013779e071c7e1657e3a0b567f7400e046a8beb08585179ffbe762661fb5e"},
+    {file = "vulture-1.3.tar.gz", hash = "sha256:4da42bee8968906fb1f47c64008817515baec8ccff0c31746d1573103a6e920c"},
 ]
 wcwidth = [
     {file = "wcwidth-0.1.8-py2.py3-none-any.whl", hash = "sha256:8fd29383f539be45b20bd4df0dc29c20ba48654a41e661925e612311e9f3c603"},
