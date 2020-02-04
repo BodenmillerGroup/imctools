@@ -95,15 +95,14 @@ def convert_imcfolders2tiff(folders, output_folder, common_filepart=None,
 
     for fol in folders:
         for fn in glob.glob(os.path.join(fol, '*')):
-            if (common_filepart in fn) & (fn.endswith(IMC_FILENDINGS) |
+            if (common_filepart in os.path.basename(fn)) & (fn.endswith(IMC_FILENDINGS) |
                                           fn.endswith(ZIP_FILENDING)):
-                txtname = os.path.join(fol, fn)
+                txtname = fn
                 try:
                     save_imc_to_tiff(txtname,
                                      outpath=output_folder, **kwargs)
                 except:
                     failed_images.append(txtname)
-
 
     if len(failed_images) > 0:
         print('Failed images:\n')
