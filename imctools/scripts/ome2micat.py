@@ -2,6 +2,7 @@
 from imctools.io import ometiffparser
 import argparse
 import os
+import glob
 import shutil
 import re
 
@@ -57,9 +58,9 @@ def omefolder2micatfolder(fol_ome, outfolder, fol_masks=None, mask_suffix=None, 
     if mask_suffix is None:
         mask_suffix = '_mask.tiff'
 
-    ome_files = [fn for fn in os.listdir(fol_ome) if fn.endswith('.ome.tiff')]
+    ome_files = [fn for fn in glob.glob(os.path.join(fol_ome, '*')) if fn.endswith('.ome.tiff')]
     if fol_masks is not None:
-        fn_masks = [fn for fn in os.listdir(fol_masks) if fn.endswith(mask_suffix)]
+        fn_masks = [fn for fn in glob.glob(os.path.join(fol_masks, '*')) if fn.endswith(mask_suffix)]
     else:
         fn_masks = []
 

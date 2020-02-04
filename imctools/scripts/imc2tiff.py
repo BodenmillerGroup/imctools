@@ -3,6 +3,7 @@ from imctools.io import mcdparser
 from imctools.io import txtparser
 import argparse
 import os
+import glob
 from imctools.external import temporarydirectory
 import zipfile
 
@@ -93,7 +94,7 @@ def convert_imcfolders2tiff(folders, output_folder, common_filepart=None,
         common_filepart = ''
 
     for fol in folders:
-        for fn in os.listdir(fol):
+        for fn in glob.glob(os.path.join(fol, '*')):
             if (common_filepart in fn) & (fn.endswith(IMC_FILENDINGS) |
                                           fn.endswith(ZIP_FILENDING)):
                 txtname = os.path.join(fol, fn)
