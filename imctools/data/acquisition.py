@@ -10,6 +10,7 @@ from xtiff import to_tiff
 from imctools import __version__
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
+from imctools.io.errors import AcquisitionError
 from imctools.io.utils import get_ome_xml
 
 logger = logging.getLogger(__name__)
@@ -120,7 +121,7 @@ class Acquisition:
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
 
-        self.image_data: Optional[np.ndarray] = None
+        self._image_data: Optional[np.ndarray] = None
 
     @staticmethod
     def from_dict(d: Dict[str, Any]):
@@ -156,6 +157,14 @@ class Acquisition:
         """Meta name fully describing the entity"""
         parent_name = self.slide.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
+
+    @property
+    def image_data(self):
+        return self._image_data
+
+    @image_data.setter
+    def image_data(self, value: Optional[np.ndarray]):
+        self._image_data = value
 
     @property
     def n_channels(self):
@@ -195,6 +204,8 @@ class Acquisition:
 
     def _get_image_stack_cyx(self, indices: Sequence[int] = None) -> Sequence[np.ndarray]:
         """Return the data reshaped as a stack of images"""
+        if self.image_data is None:
+            raise AcquisitionError(f"Image data missing in acquisition {self.meta_name}")
         if indices is None:
             indices = range(self.n_channels)
         img = [self.image_data[i] for i in indices]

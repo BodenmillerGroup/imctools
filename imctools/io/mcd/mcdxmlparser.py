@@ -14,7 +14,7 @@ from imctools.io.parserbase import ParserBase
 class McdXmlParser(ParserBase):
     """Converts MCD XML structure into IMC session format."""
 
-    def __init__(self, xml_metadata: str, origin_path: str):
+    def __init__(self, mcd_xml: str, origin_path: str):
         """
         Parameters
         ----------
@@ -24,9 +24,9 @@ class McdXmlParser(ParserBase):
             Path to original input .mcd file
         """
         ParserBase.__init__(self)
-        self._xml_metadata = xml_metadata
+        self._mcd_xml = mcd_xml
         self.metadata = xmltodict.parse(
-            xml_metadata,
+            mcd_xml,
             xml_attribs=False,
             force_list=(
                 const.SLIDE,
@@ -159,7 +159,6 @@ class McdXmlParser(ParserBase):
         """Root session data"""
         return self._session
 
-    @property
-    def xml_metadata(self):
-        """Optional original (raw) metadata in XML format."""
-        return self._xml_metadata
+    def get_mcd_xml(self):
+        """Original (raw) metadata from MCD file in XML format."""
+        return self._mcd_xml

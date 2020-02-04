@@ -1,8 +1,6 @@
-from io import StringIO, BytesIO
 from typing import Optional, Sequence
 
 import xml.etree.ElementTree as ET
-from xml.sax import saxutils
 
 import numpy as np
 import xtiff

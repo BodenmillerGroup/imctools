@@ -18,9 +18,8 @@ class ParserBase(abc.ABC):
         """Session data as a container for all slides, panoramas, acquisitions and other data types."""
         raise NotImplemented
 
-    @property
-    def xml_metadata(self) -> Optional[str]:
-        """Optional original (raw) metadata in XML format."""
+    def get_mcd_xml(self) -> Optional[str]:
+        """Original (raw) metadata from MCD file in XML format."""
         return None
 
     def save_artifacts(self, output_folder: str):

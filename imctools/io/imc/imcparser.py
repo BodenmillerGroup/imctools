@@ -29,14 +29,14 @@ class ImcParser(ParserBase):
     def session(self):
         return self._session
 
-    def get_xml_metadata(self):
-        """Load original (raw) XML metadata"""
+    def get_mcd_xml(self):
+        """Original (raw) metadata from MCD file in XML format."""
         xml_metadata_filename = self.session.meta_name + XML_META_SUFFIX
         with open(os.path.join(self.input_dir, xml_metadata_filename), "rt") as f:
             return f.read()
 
     def get_acquisition_image_data(self, acquisition_id: int):
-        """Returns an ImcAcquisition object corresponding to the acquisition id"""
+        """Returns an Acquisition object with relevant image data"""
         ac = self.session.acquisitions.get(acquisition_id)
         filename = ac.meta_name + OME_TIFF_SUFFIX
         ac.image_data = ImcParser._read_file(os.path.join(self.input_dir, filename))
@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
     with ImcParser("/home/anton/Downloads/imc_from_mcd") as parser:
         session = parser.session
-        xml = parser.get_xml_metadata()
+        xml = parser.get_mcd_xml()
         ac = parser.get_acquisition_image_data(1)
-        pass
+        img = ac.get_image_by_index(1)
 
     print(timeit.default_timer() - tic)

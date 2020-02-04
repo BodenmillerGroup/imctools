@@ -43,15 +43,16 @@ class ImcWriter:
         session.save(os.path.join(output_folder, session.meta_name + JSON_META_SUFFIX))
 
         # Save XML metadata if available
-        if self.parser.xml_metadata is not None:
+        mcd_xml = self.parser.get_mcd_xml()
+        if mcd_xml is not None:
             with open(os.path.join(output_folder, session.meta_name + XML_META_SUFFIX), "wt") as f:
-                f.write(self.parser.xml_metadata)
+                f.write(mcd_xml)
 
         # Save acquisition images in OME-TIFF format
         for acquisition in session.acquisitions.values():
             acquisition.save_ome_tiff(
                 os.path.join(output_folder, acquisition.meta_name + OME_TIFF_SUFFIX),
-                xml_metadata=self.parser.xml_metadata,
+                xml_metadata=mcd_xml,
             )
 
         # Save parser-specific artifacts, like panorama images, before/after ablation images, etc.

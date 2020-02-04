@@ -53,9 +53,9 @@ class McdParser(ParserBase):
         """
         return self._fh.name
 
-    @property
-    def xml_metadata(self):
-        return self._xml_parser.xml_metadata
+    def get_mcd_xml(self):
+        """Original (raw) metadata from MCD file in XML format."""
+        return self._xml_parser.get_mcd_xml()
 
     def _get_acquisition_raw_data(self, acquisition: Acquisition):
         """Gets non-reshaped image data from the acquisition
