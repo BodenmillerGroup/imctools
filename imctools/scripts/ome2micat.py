@@ -2,6 +2,7 @@
 from imctools.io import ometiffparser
 import argparse
 import os
+import glob
 import shutil
 import re
 
@@ -38,7 +39,7 @@ def ome2micatfolder(path_ome, basefolder, path_mask=None, dtype=None):
     outfolder = os.path.join(basefolder, fn)
     if not(os.path.exists(outfolder)):
         os.makedirs(outfolder)
-    ome2singletiff(path_ome, outfolder,basename='', dtype=dtype)
+    ome2singletiff(path_ome, outfolder, basename='', dtype=dtype)
     if path_mask is not None:
         fn_mask_base = os.path.split(path_mask)[1]
         fn_mask_new = os.path.join(outfolder, fn_mask_base)
@@ -57,14 +58,15 @@ def omefolder2micatfolder(fol_ome, outfolder, fol_masks=None, mask_suffix=None, 
     if mask_suffix is None:
         mask_suffix = '_mask.tiff'
 
-    ome_files = [fn for fn in os.listdir(fol_ome) if fn.endswith('.ome.tiff')]
+    ome_files = [os.path.basename(fn) for fn in glob.glob(os.path.join(fol_ome, '*')) if fn.endswith('.ome.tiff')]
     if fol_masks is not None:
-        fn_masks = [fn for fn in os.listdir(fol_masks) if fn.endswith(mask_suffix)]
+        fn_masks = [os.path.basename(fn) for fn in glob.glob(os.path.join(fol_masks, '*')) if fn.endswith(mask_suffix)]
     else:
         fn_masks = []
 
     for fn_ome in ome_files:
-        basename_ome = fn_ome.rstrip('.ome.tiff')
+        len_suffix = len('.ome.tiff')
+        basename_ome = fn_ome[:-len_suffix]
         cur_mask = [fn for fn in fn_masks if fn.startswith(basename_ome)]
         if len(cur_mask) > 0:
             path_mask = os.path.join(fol_masks, cur_mask[0])
