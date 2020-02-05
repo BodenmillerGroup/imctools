@@ -1,10 +1,10 @@
 [build-system]
-requires = ["poetry>=0.12.17"]
+requires = ["poetry>=1.0.3"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "1.0.5"
+version = "1.0.6"
 description = "Tools to handle IMC data"
 license = "LICENSE"
 authors = [
