@@ -57,10 +57,10 @@ class Slide:
         result = Slide(
             d.get("session_id"),
             int(d.get("id")),
-            d.get("description"),
-            int(d.get("width_um")),
-            int(d.get("height_um")),
-            d.get("metadata"),
+            description=d.get("description"),
+            width_um=int(d.get("width_um")),
+            height_um=int(d.get("height_um")),
+            metadata=d.get("metadata"),
         )
         return result
 

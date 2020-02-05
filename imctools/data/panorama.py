@@ -73,7 +73,7 @@ class Panorama:
             float(d.get("width")),
             float(d.get("height")),
             float(d.get("rotation_angle")),
-            d.get("metadata"),
+            metadata=d.get("metadata"),
         )
         return result
 

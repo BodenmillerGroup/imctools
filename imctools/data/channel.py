@@ -18,9 +18,9 @@ class Channel:
         order_number: int,
         name: str,
         label: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
         min_intensity: Optional[float] = None,
         max_intensity: Optional[float] = None,
+        metadata: Optional[Dict[str, str]] = None,
     ):
         """
         Parameters
@@ -35,21 +35,21 @@ class Channel:
             Channel name (unique per acquisition)
         label
             Channel label
-        metadata
-            Original (raw) channel metadata
         min_intensity
             Minimal intensity value
         max_intensity
             Maximum intensity value
+        metadata
+            Original (raw) channel metadata
         """
         self.acquisition_id = acquisition_id
         self.id = id
         self.order_number = order_number
         self.name = name
         self.label = label
-        self.metadata = metadata
         self.min_intensity = min_intensity
         self.max_intensity = max_intensity
+        self.metadata = metadata
 
         self.acquisition: Optional[Acquisition] = None  # Parent acquisition
 
@@ -61,10 +61,10 @@ class Channel:
             int(d.get("id")),
             int(d.get("order_number")),
             d.get("name"),
-            d.get("label"),
-            d.get("metadata"),
-            float(d.get("min_intensity")) if d.get("min_intensity") is not None else None,
-            float(d.get("max_intensity")) if d.get("max_intensity") is not None else None,
+            label=d.get("label"),
+            min_intensity=float(d.get("min_intensity")) if d.get("min_intensity") is not None else None,
+            max_intensity=float(d.get("max_intensity")) if d.get("max_intensity") is not None else None,
+            metadata=d.get("metadata"),
         )
         return result
 

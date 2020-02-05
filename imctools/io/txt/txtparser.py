@@ -1,3 +1,4 @@
+import os
 import re
 import uuid
 from datetime import datetime, timezone
@@ -9,20 +10,20 @@ import pandas as pd
 
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Slide, Session
-from imctools.io.imc.imcwriter import ImcWriter
-from imctools.io.parserbase import ParserBase
-from imctools.io.utils import reshape_long_2_cyx
+from imctools.data.acquisitiondata import AcquisitionData
+from imctools.io.utils import reshape_long_2_cyx, SESSION_JSON_SUFFIX, OME_TIFF_SUFFIX
 
 
-class TxtParser(ParserBase):
+TXT_FILE_EXTENSION = '.txt'
+
+
+class TxtParser:
     """MCD compatible .txt file parser.
 
     Allows to get a single IMC acquisition from a single TXT file.
     """
 
     def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
-        ParserBase.__init__(self)
-
         self._filepath = filepath
 
         if parent_slide is not None:
@@ -38,7 +39,7 @@ class TxtParser(ParserBase):
             self._session = session
 
         self._channel_id_offset = len(self.session.channels)
-        self._acquisition = self._parse_acquisition(filepath)
+        self._acquisition_data = self._parse_acquisition(filepath)
 
     @property
     def origin(self):
@@ -48,18 +49,32 @@ class TxtParser(ParserBase):
     def session(self):
         return self._session
 
-    @property
-    def acquisition(self):
-        """IMC acquisition"""
-        return self._acquisition
+    def get_acquisition_data(self):
+        """Returns AcquisitionData object with binary image data"""
+        return self._acquisition_data
 
     @property
     def filepath(self):
         return self._filepath
 
     def save_imc_folder(self, output_folder: str):
-        imc_writer = ImcWriter(self)
-        imc_writer.save_imc_folder(output_folder)
+        """Save IMC session data into folder with IMC-compatible structure.
+
+        This method usually should be overwritten by parser implementation.
+
+        Parameters
+        ----------
+        output_folder
+            Output directory where all files will be stored
+        """
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        self.session.save(os.path.join(output_folder, self.session.meta_name + SESSION_JSON_SUFFIX))
+
+        self.get_acquisition_data().save_ome_tiff(
+            os.path.join(output_folder, self._acquisition_data.acquisition.meta_name + OME_TIFF_SUFFIX),
+        )
 
     def _parse_acquisition(self, filename: str):
         long_data, channel_names, channel_labels = TxtParser._parse_csv(filename)
@@ -77,14 +92,12 @@ class TxtParser(ParserBase):
         signal_type = "Dual" if channel_labels[0][-3:-1] == "Di" else ""
 
         # Extract acquisition id from txt file name
-        acquisition_id = int(filename.rstrip(".txt").split("_")[-1])
+        acquisition_id = TxtParser.extract_acquisition_id(filename)
 
         slide = self.session.slides.get(0)
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
         acquisition = Acquisition(slide.id, acquisition_id, max_x, max_y, signal_type=signal_type, description=filename)
-        acquisition.image_data = image_data
-
         acquisition.slide = slide
         slide.acquisitions[acquisition.id] = acquisition
         slide.session.acquisitions[acquisition.id] = acquisition
@@ -96,13 +109,18 @@ class TxtParser(ParserBase):
             acquisition.channels[channel.id] = channel
             slide.session.channels[channel.id] = channel
 
+        acquisition_data = AcquisitionData(acquisition, image_data)
         # Calculate channels intensity range
         for ch in acquisition.channels.values():
-            img = acquisition.get_image_by_name(ch.name)
+            img = acquisition_data.get_image_by_name(ch.name)
             ch.min_intensity = round(float(img.min()), 4)
             ch.max_intensity = round(float(img.max()), 4)
 
-        return acquisition
+        return acquisition_data
+
+    @staticmethod
+    def extract_acquisition_id(filename: str):
+        return int(filename.rstrip(TXT_FILE_EXTENSION).split("_")[-1])
 
     @staticmethod
     def _parse_csv(filename: str):
@@ -156,6 +174,12 @@ class TxtParser(ParserBase):
             CSV file column names
         """
         return [name.strip("\r").strip("\n").strip() for name in names]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
 
 
 def convert_txt_to_imc_folder(input_filename: str, output_folder: str):

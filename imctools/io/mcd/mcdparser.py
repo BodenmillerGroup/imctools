@@ -7,22 +7,20 @@ import numpy as np
 
 import imctools.io.mcd.constants as const
 from imctools.data import Acquisition, AblationImageType
-from imctools.io.imc.imcwriter import ImcWriter
+from imctools.data.acquisitiondata import AcquisitionData
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
-from imctools.io.parserbase import ParserBase
-from imctools.io.utils import reshape_long_2_cyx
+from imctools.io.utils import reshape_long_2_cyx, SESSION_JSON_SUFFIX, SCHEMA_XML_SUFFIX, OME_TIFF_SUFFIX
 
 logger = logging.getLogger(__name__)
 
 
-class McdParser(ParserBase):
+class McdParser:
     """Raw MCD file parser.
 
     The McdParser object should be closed using the close method
     """
 
     def __init__(self, filepath: str, file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
-        ParserBase.__init__(self)
         if file_handle is None:
             self._fh = open(filepath, mode="rb")
         else:
@@ -46,16 +44,25 @@ class McdParser(ParserBase):
     def session(self):
         return self._xml_parser.session
 
-    @property
-    def filename(self):
-        """Return the name of the open file
-
-        """
-        return self._fh.name
-
     def get_mcd_xml(self):
         """Original (raw) metadata from MCD file in XML format."""
         return self._xml_parser.get_mcd_xml()
+
+    @property
+    def mcd_filename(self):
+        """Name of the open MCD file"""
+        return self._fh.name
+
+    def get_acquisition_data(self, acquisition_id: int):
+        """Returns AcquisitionData object with binary image data for given acquisition ID"""
+        acquisition = self.session.acquisitions.get(acquisition_id)
+        data = self._get_acquisition_raw_data(acquisition)
+        if data is not None:
+            image_data = reshape_long_2_cyx(data, is_sorted=True)
+            # Drop first three channels X, Y, Z
+            image_data = image_data[3:]
+            return AcquisitionData(acquisition, image_data)
+        return None
 
     def _get_acquisition_raw_data(self, acquisition: Acquisition):
         """Gets non-reshaped image data from the acquisition
@@ -68,7 +75,7 @@ class McdParser(ParserBase):
         start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
         end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
         # Taking into account 3 dropped channels X, Y, Z!
-        total_n_channels = len(acquisition.channels) + 3
+        total_n_channels = acquisition.n_channels + 3
         data_size = end_offset - start_offset + 1
         data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows == 0:
@@ -81,38 +88,7 @@ class McdParser(ParserBase):
         )
         return data
 
-    def _inject_imc_datafile(self, filename: str):
-        """
-        This function is used in cases where the MCD file is corrupted (missing MCD schema)
-        but there is a MCD schema file available. In this case the .schema file can
-        be loaded with the mcdparser and then the corrupted mcd-data file loaded
-        using this function. This will replace the mcd file data in the backend (containing only
-        the schema data) with the real mcd file (not containing the mcd xml).
-        """
-        self.close()
-        self._fh = open(filename, mode="rb")
-
-    def _get_footer(self, start_str: str = "<MCDSchema", encoding: str = "utf-16-le"):
-        with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
-            # MCD format documentation recommends searching from end for "<MCDSchema"
-            offset = mm.rfind(start_str.encode(encoding))
-            if offset == -1:
-                raise ValueError(f"'{self.filename}' does not contain MCDSchema XML footer (try different encoding?).")
-            mm.seek(offset)
-            footer: str = mm.read().decode(encoding)
-            return footer
-
-    def get_acquisition_image_data(self, acquisition: Acquisition):
-        """Returns an ImcAcquisition object corresponding to the ac_id"""
-        data = self._get_acquisition_raw_data(acquisition)
-        if data is not None:
-            image_data = reshape_long_2_cyx(data, is_sorted=True)
-            # Drop first three channels X, Y, Z
-            image_data = image_data[3:]
-            acquisition.image_data = image_data
-        return acquisition
-
-    def save_panorama_image(self, panorama_id: int, out_folder: str, fn_out=None):
+    def save_panorama_image(self, panorama_id: int, output_folder: str, output_filename: Optional[str] = None):
         """Save panorama image of the acquisition"""
         panorama_postfix = "pano"
         image_offset_fix = 161
@@ -125,17 +101,17 @@ class McdParser(ParserBase):
 
         file_end = p.metadata.get(const.IMAGE_FORMAT, ".png").lower()
 
-        if fn_out is None:
-            fn_out = p.meta_name
+        if output_filename is None:
+            output_filename = p.meta_name
 
-        if not (fn_out.endswith(file_end)):
-            fn_out += "_" + panorama_postfix + "." + file_end
+        if not (output_filename.endswith(file_end)):
+            output_filename += "_" + panorama_postfix + "." + file_end
 
         buf = self._get_buffer(img_start, img_end)
-        with open(os.path.join(out_folder, fn_out), "wb") as f:
+        with open(os.path.join(output_folder, output_filename), "wb") as f:
             f.write(buf)
 
-    def save_slide_image(self, slide_id: int, out_folder: str, fn_out=None):
+    def save_slide_image(self, slide_id: int, output_folder: str, output_filename: Optional[str] = None):
         image_offset_fix = 161
         slide_postfix = "slide"
         default_format = ".png"
@@ -156,29 +132,29 @@ class McdParser(ParserBase):
         if img_start - img_end == 0:
             return 0
 
-        if fn_out is None:
-            fn_out = s.meta_name
-        if not (fn_out.endswith(slide_format)):
-            fn_out += "_" + slide_postfix + slide_format
+        if output_filename is None:
+            output_filename = s.meta_name
+        if not (output_filename.endswith(slide_format)):
+            output_filename += "_" + slide_postfix + slide_format
 
         buf = self._get_buffer(img_start, img_end)
-        with open(os.path.join(out_folder, fn_out), "wb") as f:
+        with open(os.path.join(output_folder, output_filename), "wb") as f:
             f.write(buf)
 
-    def save_before_ablation_image(self, acquisition_id: int, out_folder: str, output_filename: Optional[str] = None):
+    def save_before_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
         return self._save_ablation_image(
             acquisition_id,
-            out_folder,
+            output_folder,
             AblationImageType.BEFORE,
             const.BEFORE_ABLATION_IMAGE_START_OFFSET,
             const.BEFORE_ABLATION_IMAGE_END_OFFSET,
             output_filename,
         )
 
-    def save_after_ablation_image(self, acquisition_id: int, out_folder: str, output_filename: Optional[str] = None):
+    def save_after_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
         return self._save_ablation_image(
             acquisition_id,
-            out_folder,
+            output_folder,
             AblationImageType.AFTER,
             const.AFTER_ABLATION_IMAGE_START_OFFSET,
             const.AFTER_ABLATION_IMAGE_END_OFFSET,
@@ -211,20 +187,43 @@ class McdParser(ParserBase):
             f.write(buf)
         return True
 
-    def save_xml_metadata(self, output_folder: str):
-        """Save original raw XML metadata from .mcd file into a separate .xml file
+    def save_imc_folder(self, output_folder: str):
+        """Save IMC session data into folder with IMC-compatible structure.
+
+        This method usually should be overwritten by parser implementation.
 
         Parameters
         ----------
         output_folder
-            Output file directory. Filename will be generated automatically using IMC session name.
+            Output directory where all files will be stored
         """
-        filename = self.session.meta_name + ".xml"
-        with open(os.path.join(output_folder, filename), "wt") as f:
-            f.write(self.xml_metadata)
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
 
-    def save_artifacts(self, output_folder: str):
-        """Save MCD file-specific artifacts like ablation images, panoramas, slide images, etc."""
+        # Save XML metadata if available
+        mcd_xml = self.get_mcd_xml()
+        if mcd_xml is not None:
+            with open(os.path.join(output_folder, self.session.meta_name + SCHEMA_XML_SUFFIX), "wt") as f:
+                f.write(mcd_xml)
+
+        # Save acquisition images in OME-TIFF format
+        for acquisition in self.session.acquisitions.values():
+            acquisition_data = self.get_acquisition_data(acquisition.id)
+            if acquisition_data is not None:
+                # Calculate channels intensity range
+                for ch in acquisition.channels.values():
+                    img = acquisition_data.get_image_by_name(ch.name)
+                    if img is not None:
+                        ch.min_intensity = round(float(img.min()), 4)
+                        ch.max_intensity = round(float(img.max()), 4)
+                acquisition_data.save_ome_tiff(
+                    os.path.join(output_folder, acquisition.meta_name + OME_TIFF_SUFFIX),
+                    xml_metadata=self.get_mcd_xml(),
+                )
+
+        self.session.save(os.path.join(output_folder, self.session.meta_name + SESSION_JSON_SUFFIX))
+
+        # Save MCD file-specific artifacts like ablation images, panoramas, slide images, etc.
         for key in self.session.slides.keys():
             self.save_slide_image(key, output_folder)
 
@@ -235,19 +234,35 @@ class McdParser(ParserBase):
             self.save_before_ablation_image(key, output_folder)
             self.save_after_ablation_image(key, output_folder)
 
-    def save_imc_folder(self, output_folder: str):
-        for acquisition in self.session.acquisitions.values():
-            self.get_acquisition_image_data(acquisition)
-        imc_writer = ImcWriter(self)
-        imc_writer.save_imc_folder(output_folder)
-
     def _get_buffer(self, start: int, stop: int):
+        """Read binary data block from memory-mapped file"""
         self._fh.seek(start)
         buf = self._fh.read(stop - start)
         return buf
 
+    def _inject_imc_datafile(self, filename: str):
+        """
+        This function is used in cases where the MCD file is corrupted (missing MCD schema)
+        but there is a MCD schema file available. In this case the .schema file can
+        be loaded with the mcdparser and then the corrupted mcd-data file loaded
+        using this function. This will replace the mcd file data in the backend (containing only
+        the schema data) with the real mcd file (not containing the mcd xml).
+        """
+        self.close()
+        self._fh = open(filename, mode="rb")
+
+    def _get_footer(self, start_str: str = "<MCDSchema", encoding: str = "utf-16-le"):
+        with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+            # MCD format documentation recommends searching from end for "<MCDSchema"
+            offset = mm.rfind(start_str.encode(encoding))
+            if offset == -1:
+                raise ValueError(f"'{self.mcd_filename}' does not contain MCDSchema XML footer (try different encoding?).")
+            mm.seek(offset)
+            footer: str = mm.read().decode(encoding)
+            return footer
+
     def close(self):
-        """Close file handles"""
+        """Close file handles. Override this method in order to support context manager resource disposal."""
         self._fh.close()
         try:
             self._meta_fh.close()

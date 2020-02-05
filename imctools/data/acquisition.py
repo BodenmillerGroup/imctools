@@ -3,20 +3,15 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional, Sequence, Any
 
-import numpy as np
 from dateutil.parser import parse
-from xtiff import to_tiff
-
-from imctools import __version__
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
-from imctools.io.errors import AcquisitionError
-from imctools.io.utils import get_ome_xml
 
 logger = logging.getLogger(__name__)
 
 
 class AblationImageType(Enum):
+    """Before / after ablation types of images"""
     BEFORE = "before"
     AFTER = "after"
 
@@ -47,9 +42,9 @@ class Acquisition:
         roi_end_x_pos_um: Optional[float] = None,
         roi_end_y_pos_um: Optional[float] = None,
         description: Optional[str] = None,
-        metadata: Optional[Dict[str, str]] = None,
         before_ablation_image_exists: bool = False,
         after_ablation_image_exists: bool = False,
+        metadata: Optional[Dict[str, str]] = None,
     ):
         """
         Parameters
@@ -92,6 +87,10 @@ class Acquisition:
             End Y position on the slide (in μm)
         description
             Acquisition description
+        before_ablation_image_exists
+            Whether before ablation image exists
+        after_ablation_image_exists
+            Whether after ablation image exists
         metadata
             Original (raw) metadata as a dictionary
         """
@@ -114,14 +113,12 @@ class Acquisition:
         self.roi_end_x_pos_um = roi_end_x_pos_um
         self.roi_end_y_pos_um = roi_end_y_pos_um
         self.description = description
-        self.metadata = metadata if metadata is not None else dict()
         self.before_ablation_image_exists = before_ablation_image_exists
         self.after_ablation_image_exists = after_ablation_image_exists
+        self.metadata = metadata if metadata is not None else dict()
 
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
-
-        self._image_data: Optional[np.ndarray] = None
 
     @staticmethod
     def from_dict(d: Dict[str, Any]):
@@ -131,24 +128,24 @@ class Acquisition:
             int(d.get("id")),
             int(d.get("max_x")),
             int(d.get("max_y")),
-            d.get("signal_type"),
-            d.get("segment_data_format"),
-            float(d.get("ablation_frequency")),
-            float(d.get("ablation_power")),
-            parse(d.get("start_timestamp")),
-            parse(d.get("end_timestamp")),
-            d.get("movement_type"),
-            float(d.get("ablation_distance_between_shots_x")),
-            float(d.get("ablation_distance_between_shots_y")),
-            d.get("template"),
-            float(d.get("roi_start_x_pos_um")),
-            float(d.get("roi_start_y_pos_um")),
-            float(d.get("roi_end_x_pos_um")),
-            float(d.get("roi_end_y_pos_um")),
-            d.get("description"),
-            d.get("metadata"),
-            bool(d.get("before_ablation_image_exists")),
-            bool(d.get("after_ablation_image_exists")),
+            signal_type=d.get("signal_type"),
+            segment_data_format=d.get("segment_data_format"),
+            ablation_frequency=float(d.get("ablation_frequency")),
+            ablation_power=float(d.get("ablation_power")),
+            start_timestamp=parse(d.get("start_timestamp")),
+            end_timestamp=parse(d.get("end_timestamp")),
+            movement_type=d.get("movement_type"),
+            ablation_distance_between_shots_x=float(d.get("ablation_distance_between_shots_x")),
+            ablation_distance_between_shots_y=float(d.get("ablation_distance_between_shots_y")),
+            template=d.get("template"),
+            roi_start_x_pos_um=float(d.get("roi_start_x_pos_um")),
+            roi_start_y_pos_um=float(d.get("roi_start_y_pos_um")),
+            roi_end_x_pos_um=float(d.get("roi_end_x_pos_um")),
+            roi_end_y_pos_um=float(d.get("roi_end_y_pos_um")),
+            description=d.get("description"),
+            before_ablation_image_exists=bool(d.get("before_ablation_image_exists")),
+            after_ablation_image_exists=bool(d.get("after_ablation_image_exists")),
+            metadata=d.get("metadata"),
         )
         return result
 
@@ -157,14 +154,6 @@ class Acquisition:
         """Meta name fully describing the entity"""
         parent_name = self.slide.meta_name
         return f"{parent_name}_{self.symbol}{self.id}"
-
-    @property
-    def image_data(self):
-        return self._image_data
-
-    @image_data.setter
-    def image_data(self, value: Optional[np.ndarray]):
-        self._image_data = value
 
     @property
     def n_channels(self):
@@ -202,66 +191,6 @@ class Acquisition:
             order_dict.update({v: i})
         return [order_dict[m] for m in masses]
 
-    def _get_image_stack_cyx(self, indices: Sequence[int] = None) -> Sequence[np.ndarray]:
-        """Return the data reshaped as a stack of images"""
-        if self.image_data is None:
-            raise AcquisitionError(f"Image data missing in acquisition {self.meta_name}")
-        if indices is None:
-            indices = range(self.n_channels)
-        img = [self.image_data[i] for i in indices]
-        return img
-
-    def get_image_by_index(self, index: int):
-        """Get channel image by its index"""
-        stack = self._get_image_stack_cyx(indices=[index])
-        return stack[0]
-
-    def get_image_by_name(self, name: str):
-        """Get channel image by its name"""
-        index = self.channel_names.index(name)
-        return self.get_image_by_index(index)
-
-    def get_image_by_label(self, label: str):
-        """Get channel image by its label"""
-        index = self.channel_labels.index(label)
-        return self.get_image_by_index(index)
-
-    def save_ome_tiff(
-        self,
-        filename: str,
-        names: Sequence[str] = None,
-        masses: Sequence[str] = None,
-        xml_metadata: Optional[str] = None,
-    ):
-        """Save OME TIFF file"""
-
-        if self.image_data is None:
-            return
-
-        if names is not None:
-            order = self.get_name_indices(names)
-        elif masses is not None:
-            order = self.get_mass_indices(masses)
-        else:
-            order = [i for i in range(self.n_channels)]
-
-        channel_names = [self.channel_labels[i] for i in order]
-        channel_fluors = [self.channel_names[i] for i in order]
-        creator = f"imctools {__version__}"
-
-        data = np.array(self._get_image_stack_cyx(order), dtype=np.float32)
-        to_tiff(
-            data,
-            filename,
-            ome_xml_fun=get_ome_xml,
-            channel_names=channel_names,
-            channel_fluors=channel_fluors,
-            creator=creator,
-            acquisition_date=self.start_timestamp.isoformat() if self.start_timestamp else None,
-            image_date=self.start_timestamp,
-            xml_metadata=xml_metadata,
-        )
-
     def __getstate__(self):
         """Returns dictionary for JSON/YAML serialization"""
         s = self.__dict__.copy()
@@ -269,7 +198,6 @@ class Acquisition:
         s["end_timestamp"] = s["end_timestamp"].isoformat() if s["end_timestamp"] is not None else None
         del s["slide"]
         del s["channels"]
-        del s["image_data"]
         return s
 
     def __repr__(self):

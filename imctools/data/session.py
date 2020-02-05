@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import json
 
@@ -151,7 +151,7 @@ class Session:
         return self.name
 
     @property
-    def acquisition_indices(self):
+    def acquisition_indices(self) -> Tuple[int, ...]:
         return tuple(self.acquisitions.keys())
 
     def __repr__(self):

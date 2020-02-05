@@ -6,6 +6,11 @@ import numpy as np
 import xtiff
 
 
+SESSION_JSON_SUFFIX = "_session.json"
+SCHEMA_XML_SUFFIX = "_schema.xml"
+OME_TIFF_SUFFIX = "_ac.ome.tiff"
+
+
 def reshape_long_2_cyx(
     data: np.memmap,
     is_sorted: bool = True,
@@ -61,6 +66,7 @@ def get_ome_xml(
     xml_metadata: Optional[str] = None,
     **ome_xml_kwargs,
 ) -> ET.ElementTree:
+    """Helper function for xtiff library to get a proper OME-TIFF XML"""
     size_t, size_z, size_c, size_y, size_x, size_s = img.shape
     element_tree = xtiff.get_ome_xml(
         img, image_name, channel_names, big_endian, pixel_size, pixel_depth, **ome_xml_kwargs
@@ -89,6 +95,6 @@ def get_ome_xml(
         xml_annotation_value_element = ET.SubElement(xml_annotation_element, "Value")
         original_metadata_element = ET.SubElement(xml_annotation_value_element, "OriginalMetadata")
         ET.SubElement(original_metadata_element, "Key").text = "MCD-XML"
-        ET.SubElement(original_metadata_element, "Value").text = str(xml_metadata.encode("utf-8"))
+        ET.SubElement(original_metadata_element, "Value").text = xml_metadata.replace("\r\n", "")
 
     return element_tree

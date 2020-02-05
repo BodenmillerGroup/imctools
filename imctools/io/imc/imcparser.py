@@ -4,21 +4,16 @@ from pathlib import Path
 import tifffile
 
 from imctools.data import Session
-from imctools.io.imc.imcwriter import JSON_META_SUFFIX, XML_META_SUFFIX, OME_TIFF_SUFFIX
-from imctools.io.parserbase import ParserBase
+from imctools.io.utils import SESSION_JSON_SUFFIX, SCHEMA_XML_SUFFIX, OME_TIFF_SUFFIX
 
 
-class ImcParser(ParserBase):
-    """IMC folder parser.
-
-    The ImcParser object should be closed using the close method
-    """
+class ImcParser:
+    """IMC folder parser."""
 
     def __init__(self, input_dir: str):
-        ParserBase.__init__(self)
         self.input_dir = input_dir
 
-        session_json = str(next(Path(input_dir).glob("*" + JSON_META_SUFFIX)))
+        session_json = str(next(Path(input_dir).glob("*" + SESSION_JSON_SUFFIX)))
         self._session = Session.load(session_json)
 
     @property
@@ -31,7 +26,7 @@ class ImcParser(ParserBase):
 
     def get_mcd_xml(self):
         """Original (raw) metadata from MCD file in XML format."""
-        xml_metadata_filename = self.session.meta_name + XML_META_SUFFIX
+        xml_metadata_filename = self.session.meta_name + SCHEMA_XML_SUFFIX
         with open(os.path.join(self.input_dir, xml_metadata_filename), "rt") as f:
             return f.read()
 
@@ -46,6 +41,12 @@ class ImcParser(ParserBase):
     def _read_file(filepath: str):
         with tifffile.TiffFile(filepath) as tif:
             return tif.asarray(out="memmap")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
 
 
 if __name__ == "__main__":

@@ -8,22 +8,20 @@ from dateutil.parser import parse
 import imctools.io.mcd.constants as const
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Panorama, Session, Slide
-from imctools.io.parserbase import ParserBase
 
 
-class McdXmlParser(ParserBase):
+class McdXmlParser:
     """Converts MCD XML structure into IMC session format."""
 
     def __init__(self, mcd_xml: str, origin_path: str):
         """
         Parameters
         ----------
-        xml_metadata
+        mcd_xml
             Metadata in MCD XML text format
         origin_path
             Path to original input .mcd file
         """
-        ParserBase.__init__(self)
         self._mcd_xml = mcd_xml
         self.metadata = xmltodict.parse(
             mcd_xml,
