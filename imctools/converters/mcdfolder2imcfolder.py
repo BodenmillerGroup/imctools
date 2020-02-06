@@ -1,6 +1,6 @@
 import os
+import glob
 import zipfile
-import argparse
 import logging
 from tempfile import TemporaryDirectory
 
@@ -28,10 +28,9 @@ def mcd_folder_2_imc_folder(input: str, output_folder: str, create_zip=True):
         input_folder = input
 
     try:
-        files = [os.path.join(root, fn) for root, dirs, files in os.walk(input_folder) for fn in files]
-        mcd_files = [f for f in files if f.endswith(MCD_FILENDING)]
+        mcd_files = glob.glob(os.path.join(input_folder, f"*{MCD_FILENDING}"))
         assert(len(mcd_files) == 1)
-        schema_files = [f for f in files if f.endswith(SCHEMA_FILENDING)]
+        schema_files = glob.glob(os.path.join(input_folder, f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
         try:
             mcd = McdParser(mcd_files[0])
@@ -42,13 +41,13 @@ def mcd_folder_2_imc_folder(input: str, output_folder: str, create_zip=True):
             else:
                 raise
 
-        txt_ac_ids = {TxtParser.extract_acquisition_id(f): f for f in files if f.endswith(TXT_FILE_EXTENSION)}
-        mcd_ac_ids = set(mcd.session.acquisition_indices)
-        txt_only_acs = set(txt_ac_ids.keys()).difference(mcd_ac_ids)
-        for txt_ac in txt_only_acs:
-            logger.warning('Using TXT file for acquisition: ' + txt_ac)
+        txt_files = glob.glob(os.path.join(input_folder, f"*[0-9]{TXT_FILE_EXTENSION}"))
+        txt_ac_ids = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
+        txt_only_ac_ids = set(txt_ac_ids.keys()).difference(set(mcd.session.acquisition_indices))
+        for txt_ac_id in txt_only_ac_ids:
+            logger.warning('Using TXT file for acquisition: ' + txt_ac_id)
             try:
-                acquisition_data = TxtParser(txt_ac_ids[txt_ac]).get_acquisition_data()
+                acquisition_data = TxtParser(txt_ac_ids[txt_ac_id]).get_acquisition_data()
             except:
                 logger.error('TXT file is also corrupted.')
 
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcd_folder_2_imc_folder(
-        "/home/anton/Downloads/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035",
+        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
         "/home/anton/Downloads/imc_folder",
     )
 
