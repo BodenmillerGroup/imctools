@@ -1,54 +1,28 @@
-import os
-import uuid
-from datetime import datetime, timezone
-from pathlib import Path
 from typing import Optional
 import xml.etree.ElementTree as ET
 
 import tifffile
 
-from imctools import __version__
-from imctools.data import Acquisition, Session, Slide, Channel
+from imctools.data import Acquisition, Channel
 from imctools.data.acquisitiondata import AcquisitionData
-from imctools.io.utils import OME_TIFF_SUFFIX, SESSION_JSON_SUFFIX, SCHEMA_XML_SUFFIX
+from imctools.io.utils import OME_TIFF_SUFFIX
 
 
 class OmeTiffParser:
-    """MCD compatible OME-TIFF file parser.
+    """Parser of MCD compatible .OME-TIFF files.
 
      Allows to get a single IMC acquisition from a single OME-TIFF file.
      """
 
-    def __init__(self, filepath: str, parent_slide: Optional[Slide] = None):
+    def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
         self._filepath = filepath
-
-        if parent_slide is not None:
-            self._session = parent_slide.session
-        else:
-            split = Path(filepath).stem.split("_")
-            session_name = "_".join(split[:-1])
-            session_id = str(uuid.uuid4())
-            session = Session(session_id, session_name, __version__, self.origin, filepath, datetime.now(timezone.utc),)
-            slide = Slide(session.id, 0, description=filepath)
-            slide.session = session
-            session.slides[slide.id] = slide
-            self._session = session
-
-        self._channel_id_offset = len(self.session.channels)
+        self._slide_id = slide_id
+        self._channel_id_offset = channel_id_offset
         self._acquisition_data = self._parse_acquisition(filepath)
 
     @property
     def origin(self):
         return "ome.tiff"
-
-    @property
-    def session(self):
-        return self._session
-
-    @property
-    def acquisition(self):
-        """IMC acquisition"""
-        return self._acquisition_data.acquisition
 
     @property
     def filepath(self):
@@ -62,33 +36,21 @@ class OmeTiffParser:
         """Returns AcquisitionData object with binary image data"""
         return self._acquisition_data
 
-    def save_imc_folder(self, output_folder: str):
-        """Save IMC session data into folder with IMC-compatible structure.
+    @staticmethod
+    def extract_acquisition_id(filepath: str):
+        """Extract acquisition ID from source OME-TIFF filepath.
 
-        This method usually should be overwritten by parser implementation.
+        Filename should end with a numeric symbol!
 
         Parameters
         ----------
-        output_folder
-            Output directory where all files will be stored
+        filepath
+            Input OME-TIFF filepath
         """
-        if not os.path.exists(output_folder):
-            os.makedirs(output_folder)
+        return int(filepath.rstrip(OME_TIFF_SUFFIX).split("_")[-1].lstrip("a"))
 
-        self.session.save(os.path.join(output_folder, self.session.meta_name + SESSION_JSON_SUFFIX))
-
-        # Save XML metadata if available
-        mcd_xml = self.get_mcd_xml()
-        if mcd_xml is not None:
-            with open(os.path.join(output_folder, self.session.meta_name + SCHEMA_XML_SUFFIX), "wt") as f:
-                f.write(mcd_xml)
-
-        self.get_acquisition_data().save_ome_tiff(
-            os.path.join(output_folder, self.acquisition.meta_name + OME_TIFF_SUFFIX),
-        )
-
-    def _parse_acquisition(self, filename: str):
-        image_data, ome_xml = OmeTiffParser._read_file(filename)
+    def _parse_acquisition(self, filepath: str):
+        image_data, ome_xml = OmeTiffParser._read_file(filepath)
         image_name, channel_names, channel_labels, self._mcd_xml = OmeTiffParser._parse_ome_xml(ome_xml)
 
         max_x = image_data.shape[2]
@@ -97,23 +59,26 @@ class OmeTiffParser:
         # TODO: implement a proper signal type extraction
         signal_type = "Dual"
 
-        # Extract acquisition id from txt file name
-        acquisition_id = int(filename.rstrip(OME_TIFF_SUFFIX).split("_")[-1].lstrip("a"))
-
-        slide = self.session.slides.get(0)
+        # Extract acquisition id from OME-TIFF file name
+        acquisition_id = OmeTiffParser.extract_acquisition_id(filepath)
 
         # Offset should be 0 as we already got rid of 'X', 'Y', 'Z' channels!
-        acquisition = Acquisition(slide.id, acquisition_id, max_x, max_y, signal_type=signal_type, description=image_name)
-        acquisition.slide = slide
-        slide.acquisitions[acquisition.id] = acquisition
-        slide.session.acquisitions[acquisition.id] = acquisition
+        acquisition = Acquisition(
+            self._slide_id,
+            acquisition_id,
+            self.origin,
+            filepath,
+            max_x,
+            max_y,
+            signal_type=signal_type,
+            description=image_name,
+        )
 
         for i in range(len(channel_names)):
             channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
-            self._channel_id_offset = self._channel_id_offset + 1
+            self._channel_id_offset += 1
             channel.acquisition = acquisition
             acquisition.channels[channel.id] = channel
-            slide.session.channels[channel.id] = channel
 
         acquisition_data = AcquisitionData(acquisition, image_data)
         # Calculate channels intensity range
@@ -166,20 +131,15 @@ class OmeTiffParser:
         pass
 
 
-def convert_ometiff_to_imc_folder(input_filename: str, output_folder: str):
-    """High-level function for OME-TIFF-to-IMC conversion"""
-    with OmeTiffParser(input_filename) as parser:
-        parser.save_imc_folder(output_folder)
-
-
 if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
 
-    convert_ometiff_to_imc_folder(
-        "/home/anton/Downloads/imc_from_mcd/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_s0_a1_ac.ome.tiff",
-        "/home/anton/Downloads/imc_from_ometiff",
-    )
+    with OmeTiffParser(
+        "/home/anton/Downloads/imc_from_mcd/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_s0_a1_ac.ome.tiff"
+    ) as parser:
+        ac = parser.get_acquisition_data()
+        pass
 
     print(timeit.default_timer() - tic)

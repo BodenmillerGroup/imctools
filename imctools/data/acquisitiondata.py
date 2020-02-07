@@ -14,11 +14,7 @@ logger = logging.getLogger(__name__)
 class AcquisitionData:
     """Container for IMC acquisition binary image data."""
 
-    def __init__(
-        self,
-        acquisition: Acquisition,
-        image_data: np.ndarray
-    ):
+    def __init__(self, acquisition: Acquisition, image_data: np.ndarray):
         self._acquisition = acquisition
         self._image_data = image_data
 
@@ -30,6 +26,10 @@ class AcquisitionData:
     def image_data(self):
         """Binary image data as numpy array"""
         return self._image_data
+
+    @property
+    def is_valid(self):
+        return self._acquisition.is_valid
 
     @property
     def n_channels(self):
@@ -74,10 +74,7 @@ class AcquisitionData:
         return img
 
     def save_ome_tiff(
-        self,
-        filename: str,
-        names: Sequence[str] = None,
-        xml_metadata: Optional[str] = None,
+        self, filename: str, names: Sequence[str] = None, xml_metadata: Optional[str] = None,
     ):
         """Save OME TIFF file
 

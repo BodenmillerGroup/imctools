@@ -84,5 +84,11 @@ class Channel:
         del s["acquisition"]
         return s
 
+    def get_csv_dict(self):
+        """Returns dictionary for CSV tables"""
+        s = self.__getstate__()
+        del s["metadata"]
+        return s
+
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, name={self.name}, label={self.label})"

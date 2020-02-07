@@ -9,6 +9,7 @@ import xtiff
 SESSION_JSON_SUFFIX = "_session.json"
 SCHEMA_XML_SUFFIX = "_schema.xml"
 OME_TIFF_SUFFIX = "_ac.ome.tiff"
+META_CSV_SUFFIX = "_meta.csv"
 
 
 def reshape_long_2_cyx(

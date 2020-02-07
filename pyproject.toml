@@ -24,7 +24,7 @@ exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-pandas = ">=1.0.0"
+pandas = ">=1.0.1"
 xmltodict = ">=0.12.0"
 xtiff = ">=0.6.0"
 

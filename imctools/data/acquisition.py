@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class AblationImageType(Enum):
     """Before / after ablation types of images"""
+
     BEFORE = "before"
     AFTER = "after"
 
@@ -25,6 +26,8 @@ class Acquisition:
         self,
         slide_id: int,
         id: int,
+        origin: str,
+        source_path: str,
         max_x: int,
         max_y: int,
         signal_type: Optional[str] = None,
@@ -45,6 +48,7 @@ class Acquisition:
         before_ablation_image_exists: bool = False,
         after_ablation_image_exists: bool = False,
         metadata: Optional[Dict[str, str]] = None,
+        is_valid: bool = True
     ):
         """
         Parameters
@@ -53,6 +57,10 @@ class Acquisition:
             Parent slide ID
         id
             Original acquisition ID
+        origin
+            Origin of the data (mcd, txt, etc.)
+        source_path
+            Path to data source file
         max_x
             Acquisition width in pixels
         max_y
@@ -96,6 +104,8 @@ class Acquisition:
         """
         self.slide_id = slide_id
         self.id = id
+        self.origin = origin
+        self.source_path = source_path
         self.max_x = max_x
         self.max_y = max_y
         self.signal_type = signal_type
@@ -116,6 +126,7 @@ class Acquisition:
         self.before_ablation_image_exists = before_ablation_image_exists
         self.after_ablation_image_exists = after_ablation_image_exists
         self.metadata = metadata if metadata is not None else dict()
+        self.is_valid = is_valid
 
         self.slide: Optional[Slide] = None
         self.channels: Dict[int, Channel] = dict()
@@ -126,6 +137,8 @@ class Acquisition:
         result = Acquisition(
             int(d.get("slide_id")),
             int(d.get("id")),
+            d.get("origin"),
+            d.get("source_path"),
             int(d.get("max_x")),
             int(d.get("max_y")),
             signal_type=d.get("signal_type"),
@@ -146,6 +159,7 @@ class Acquisition:
             before_ablation_image_exists=bool(d.get("before_ablation_image_exists")),
             after_ablation_image_exists=bool(d.get("after_ablation_image_exists")),
             metadata=d.get("metadata"),
+            is_valid=bool(d.get("is_valid")),
         )
         return result
 
@@ -198,6 +212,12 @@ class Acquisition:
         s["end_timestamp"] = s["end_timestamp"].isoformat() if s["end_timestamp"] is not None else None
         del s["slide"]
         del s["channels"]
+        return s
+
+    def get_csv_dict(self):
+        """Returns dictionary for CSV tables"""
+        s = self.__getstate__()
+        del s["metadata"]
         return s
 
     def __repr__(self):

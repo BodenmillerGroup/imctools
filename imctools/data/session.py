@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import csv
+import os
 from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
@@ -11,20 +13,14 @@ from imctools.data.acquisition import Acquisition
 from imctools.data.channel import Channel
 from imctools.data.panorama import Panorama
 from imctools.data.slide import Slide
+from imctools.io.utils import META_CSV_SUFFIX
 
 
 class Session:
     """IMC session data. Container for all slides, acquisitions, panoramas, etc."""
 
     def __init__(
-        self,
-        id: str,
-        name: str,
-        imctools_version: str,
-        origin: str,
-        source_path: str,
-        created: datetime,
-        metadata: Optional[Dict[str, Any]] = None,
+        self, id: str, name: str, imctools_version: str, created: datetime, metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Parameters
@@ -35,10 +31,6 @@ class Session:
             Session name
         imctools_version
             Version of imctools library used for conversion
-        origin
-            Data origin (mcd, txt, ome-tiff, etc)
-        source_path
-            Path to the original data source
         created
             Datetime of session creation
         metadata
@@ -47,8 +39,6 @@ class Session:
         self.id = id
         self.name = name
         self.imctools_version = imctools_version
-        self.origin = origin
-        self.source_path = source_path
         self.created = created
         self.metadata = metadata
 
@@ -61,13 +51,7 @@ class Session:
     def from_dict(d: Dict[str, Any]):
         """Recreate an object from dictionary"""
         result = Session(
-            d.get("id"),
-            d.get("name"),
-            d.get("imctools_version"),
-            d.get("origin"),
-            d.get("source_path"),
-            parse(d.get("created")),
-            d.get("metadata"),
+            d.get("id"), d.get("name"), d.get("imctools_version"), parse(d.get("created")), d.get("metadata"),
         )
         return result
 
@@ -81,13 +65,24 @@ class Session:
         s["channels"] = list(s["channels"].values())
         return s
 
+    def get_csv_dict(self):
+        """Returns dictionary for CSV tables"""
+        s = self.__dict__.copy()
+        s["created"] = s["created"].isoformat()
+        del s["slides"]
+        del s["acquisitions"]
+        del s["panoramas"]
+        del s["channels"]
+        del s["metadata"]
+        return s
+
     def save(self, filepath: str):
-        """Save session data in YAML format
+        """Save session data in JSON format
 
         Parameters
         ----------
         filepath
-            Output YAML file path
+            Output JSON file path
         """
 
         def handle_default(obj):
@@ -95,17 +90,46 @@ class Session:
                 return obj.__getstate__()
             return None
 
-        with open(filepath, "w") as f:
+        with open(filepath, "wt") as f:
             json.dump(self, f, indent=2, default=handle_default)
+
+    def save_meta_csv(self, output_folder: str):
+        """Writes the metadata as CSV tables"""
+        if not (os.path.exists(output_folder)):
+            os.makedirs(output_folder)
+        Session._save_csv(
+            os.path.join(output_folder, "_".join([self.meta_name, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+        )
+        Session._save_csv(
+            os.path.join(output_folder, "_".join([self.meta_name, "slides"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.slides.values()]
+        )
+        Session._save_csv(
+            os.path.join(output_folder, "_".join([self.meta_name, "panoramas"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.panoramas.values()]
+        )
+        Session._save_csv(
+            os.path.join(output_folder, "_".join([self.meta_name, "acquisitions"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.acquisitions.values()]
+        )
+        Session._save_csv(
+            os.path.join(output_folder, "_".join([self.meta_name, "channels"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.channels.values()]
+        )
+
+    @staticmethod
+    def _save_csv(filepath: str, values: list):
+        with open(filepath, "wt") as f:
+            cols = values[0].keys()
+            writer = csv.DictWriter(f, sorted(cols))
+            writer.writeheader()
+            writer.writerows(values)
+
 
     @staticmethod
     def load(filepath: str):
-        """Load IMC session data from YAML file
+        """Load IMC session data from JSON file
 
         Parameters
         ----------
         filepath
-            Input YAML file path
+            Input JSON file path
         """
         with open(filepath, "r") as f:
             data = json.load(f)

@@ -13,14 +13,14 @@ from imctools.data import Acquisition, Channel, Panorama, Session, Slide
 class McdXmlParser:
     """Converts MCD XML structure into IMC session format."""
 
-    def __init__(self, mcd_xml: str, origin_path: str):
+    def __init__(self, mcd_xml: str, source_path: str):
         """
         Parameters
         ----------
         mcd_xml
             Metadata in MCD XML text format
-        origin_path
-            Path to original input .mcd file
+        source_path
+            Path to original source .mcd file
         """
         self._mcd_xml = mcd_xml
         self.metadata = xmltodict.parse(
@@ -41,15 +41,7 @@ class McdXmlParser:
         session_name = os.path.splitext(session_name)[0]
 
         session_id = str(uuid.uuid4())
-        session = Session(
-            session_id,
-            session_name,
-            __version__,
-            self.origin,
-            origin_path,
-            datetime.now(timezone.utc),
-            metadata=self.metadata,
-        )
+        session = Session(session_id, session_name, __version__, datetime.now(timezone.utc), metadata=self.metadata,)
         for s in self.metadata.get(const.SLIDE):
             slide = Slide(
                 session.id,
@@ -103,6 +95,8 @@ class McdXmlParser:
             acquisition = Acquisition(
                 slide_id,
                 int(a.get(const.ID)),
+                self.origin,
+                source_path,
                 int(a.get(const.MAX_X)),
                 int(a.get(const.MAX_Y)),
                 signal_type=a.get(const.SIGNAL_TYPE, "Dual"),
