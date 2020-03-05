@@ -101,16 +101,20 @@ class Session:
             os.path.join(output_folder, "_".join([self.meta_name, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "slides"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.slides.values()]
+            os.path.join(output_folder, "_".join([self.meta_name, "slides"]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.slides.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "panoramas"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.panoramas.values()]
+            os.path.join(output_folder, "_".join([self.meta_name, "panoramas"]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.panoramas.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "acquisitions"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.acquisitions.values()]
+            os.path.join(output_folder, "_".join([self.meta_name, "acquisitions"]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.acquisitions.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "channels"]) + META_CSV_SUFFIX), [v.get_csv_dict() for v in self.channels.values()]
+            os.path.join(output_folder, "_".join([self.meta_name, "channels"]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.channels.values()],
         )
 
     @staticmethod
@@ -120,7 +124,6 @@ class Session:
             writer = csv.DictWriter(f, sorted(cols))
             writer.writeheader()
             writer.writerows(values)
-
 
     @staticmethod
     def load(filepath: str):

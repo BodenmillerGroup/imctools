@@ -1,5 +1,5 @@
-from typing import Optional
 import xml.etree.ElementTree as ET
+from typing import Optional
 
 import tifffile
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     with OmeTiffParser(
-        "/home/anton/Downloads/imc_from_mcd/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2_s0_a1_ac.ome.tiff"
+        "/home/anton/Downloads/imc_folder/20190529_TH_Tonsil_CXCR_CCR_panel2/20190529_TH_Tonsil_CXCR_CCR_panel2_s0_a4_ac.ome.tiff"
     ) as parser:
         ac = parser.get_acquisition_data()
         pass

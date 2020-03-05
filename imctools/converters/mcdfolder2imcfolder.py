@@ -15,7 +15,7 @@ ZIP_FILENDING = ".zip"
 SCHEMA_FILENDING = ".schema"
 
 
-def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = False):
+def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = False, skip_csv: bool = False):
     """
     Converts folder containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
     """
@@ -34,7 +34,7 @@ def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = 
         schema_files = glob.glob(os.path.join(input_folder, f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
         try:
-            mcd_parser = McdParser(mcd_files[0], xml_metadata_filepath=schema_file) # McdParser(mcd_files[0])
+            mcd_parser = McdParser(mcd_files[0])  # McdParser(mcd_files[0])
         except:
             if schema_file is not None:
                 logging.error("MCD file is corrupted, trying to rescue with schema file")
@@ -44,16 +44,9 @@ def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = 
 
         txt_files = glob.glob(os.path.join(input_folder, f"*[0-9]{TXT_FILE_EXTENSION}"))
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
-        # txt_only_ac_ids = set(txt_ac_ids.keys()).difference(set(mcd_parser.session.acquisition_indices))
-        # for txt_ac_id in txt_only_ac_ids:
-        #     logger.warning("Using TXT file for acquisition: " + txt_ac_id)
-        #     try:
-        #         acquisition_data = TxtParser(txt_ac_ids[txt_ac_id]).get_acquisition_data()
-        #     except:
-        #         logger.error("TXT file is also corrupted.")
 
         imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
-        imc_writer.write_imc_folder(create_zip=create_zip)
+        imc_writer.write_imc_folder(create_zip=create_zip, skip_csv=skip_csv)
     finally:
         mcd_parser.close()
         if tmpdir is not None:
@@ -66,8 +59,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcd_folder_to_imc_folder(
-        "/home/anton/Data/20190529_TH_Tonsil_CXCR_CCR_panel2",
-        "/home/anton/Downloads/imc_folder",
+        "/home/anton/Data/20190529_TH_Tonsil_CXCR_CCR_panel2", "/home/anton/Downloads/imc_folder",
     )
 
     print(timeit.default_timer() - tic)

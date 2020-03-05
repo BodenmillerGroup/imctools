@@ -57,7 +57,7 @@ class ParseTestMCD:
 if __name__ == '__main__':
     import argparse
 
-    parser = argparse.ArgumentParser(description='Generates a test case from an imc file', prog='generate_testcase')
+    parser = argparse.ArgumentParser(description='Generates a test case from an IMC file', prog='generate_testcase')
     parser.add_argument('mcd_filename', type=str, help='Path to the MCD file to generate the test case from')
     parser.add_argument('out_folder', type=str, default=None)
     args = parser.parse_args()

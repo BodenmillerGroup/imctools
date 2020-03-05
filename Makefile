@@ -7,6 +7,7 @@ clean:
 	find . -name '*.egg-info' -exec rm -fr {} +
 	rm -fr build/
 	rm -fr dist/
+	rm -fr tests/testdata
 
 # Install all development dependencies
 install:

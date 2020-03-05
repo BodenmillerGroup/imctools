@@ -28,7 +28,7 @@ class ImcWriter:
     def folder_name(self):
         return self.mcd_parser.session.meta_name
 
-    def write_imc_folder(self, create_zip: bool = True, remove_folder: bool = None):
+    def write_imc_folder(self, create_zip: bool = True, remove_folder: bool = None, skip_csv: bool = False):
         if remove_folder is None:
             remove_folder = create_zip
 
@@ -59,18 +59,20 @@ class ImcWriter:
                     except:
                         logger.error(f"Acquisition TXT file is also corrupted")
 
-            # Calculate channels intensity range
-            for ch in acquisition.channels.values():
-                img = acquisition_data.get_image_by_name(ch.name)
-                if img is not None:
-                    ch.min_intensity = round(float(img.min()), 4)
-                    ch.max_intensity = round(float(img.max()), 4)
-            acquisition_data.save_ome_tiff(
-                os.path.join(output_folder, acquisition.meta_name + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
-            )
+            if acquisition_data.is_valid:
+                # Calculate channels intensity range
+                for ch in acquisition.channels.values():
+                    img = acquisition_data.get_image_by_name(ch.name)
+                    if img is not None:
+                        ch.min_intensity = round(float(img.min()), 4)
+                        ch.max_intensity = round(float(img.max()), 4)
+                acquisition_data.save_ome_tiff(
+                    os.path.join(output_folder, acquisition.meta_name + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
+                )
 
         session.save(os.path.join(output_folder, session.meta_name + SESSION_JSON_SUFFIX))
-        session.save_meta_csv(output_folder)
+        if not skip_csv:
+            session.save_meta_csv(output_folder)
 
         # Save MCD file-specific artifacts like ablation images, panoramas, slide images, etc.
         for key in session.slides.keys():

@@ -31,7 +31,8 @@ class McdParser:
         else:
             self._meta_fh = open(xml_metadata_filepath, mode="rb")
 
-        mcd_xml = self._get_mcd_xml()
+        encoding = "utf-8" if xml_metadata_filepath is not None else "utf-16-le"
+        mcd_xml = self._get_mcd_xml(encoding=encoding)
         self._xml_parser = McdXmlParser(mcd_xml, self._fh.name)
 
     @property
@@ -207,22 +208,21 @@ class McdParser:
         self.close()
         self._fh = open(filename, mode="rb")
 
-    def _get_mcd_xml(self, start_str: str = "<MCDSchema", stop_str: str = "</MCDSchema>", encoding: str = "utf-8"):
+    def _get_mcd_xml(self, start_str: str = "<MCDSchema", stop_str: str = "</MCDSchema>", encoding: str = "utf-16-le"):
         with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             # MCD format documentation recommends searching from end for "<MCDSchema"
             start_offset = mm.rfind(start_str.encode(encoding))
             if start_offset == -1:
-                raise ValueError(
-                    f"Invalid file {self.mcd_filename}: MCD XML start tag not found."
-                )
+                raise ValueError(f"Invalid file {self.mcd_filename}: MCD XML start tag not found.")
             mm.seek(start_offset)
             stop_offset = mm.rfind(stop_str.encode(encoding))
             if stop_offset == -1:
-                raise ValueError(
-                    f"Invalid file {self.mcd_filename}: MCD XML stop tag not found."
-                )
+                raise ValueError(f"Invalid file {self.mcd_filename}: MCD XML stop tag not found.")
             else:
-                stop_offset += len(stop_str)
+                end_tag_length = len(stop_str)
+                if encoding == "utf-16-le":
+                    end_tag_length = end_tag_length * 2  # Multiply by 2 due to utf-16 encoding
+                stop_offset += end_tag_length
             mcd_xml: str = mm.read(stop_offset - start_offset).decode(encoding)
             return mcd_xml
 
@@ -246,6 +246,6 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    parser = McdParser("/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd")
+    parser = McdParser("/home/anton/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd")
 
     print(timeit.default_timer() - tic)

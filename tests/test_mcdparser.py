@@ -39,6 +39,8 @@ class TestMcdParser:
 
     @staticmethod
     def _get_test_cases():
+        if not os._exists(TEST_DATA_FOLDER):
+            os.makedirs(TEST_DATA_FOLDER)
         zip_file = os.path.join(TEST_DATA_FOLDER, 'testdata_v2.zip')
         if not os.path.isfile(zip_file):
             urlretrieve(TEST_DATA_URL, zip_file)

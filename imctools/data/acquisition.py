@@ -48,7 +48,7 @@ class Acquisition:
         before_ablation_image_exists: bool = False,
         after_ablation_image_exists: bool = False,
         metadata: Optional[Dict[str, str]] = None,
-        is_valid: bool = True
+        is_valid: bool = True,
     ):
         """
         Parameters
