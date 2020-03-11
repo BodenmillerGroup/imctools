@@ -130,7 +130,7 @@ class McdXmlParser:
                 int(c.get(const.ACQUISITION_ID)),
                 int(c.get(const.ID)),
                 int(c.get(const.ORDER_NUMBER)),
-                c.get(const.CHANNEL_NAME),
+                c.get(const.CHANNEL_NAME).replace("(", "").replace(")", "").strip(),
                 label=c.get(const.CHANNEL_LABEL),
                 metadata=dict(c),
             )

@@ -2,6 +2,7 @@ import os
 import glob
 import zipfile
 import logging
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from imctools.io.imc.imcwriter import ImcWriter
@@ -17,7 +18,7 @@ SCHEMA_FILENDING = ".schema"
 
 def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = False, skip_csv: bool = False):
     """
-    Converts folder containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
+    Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
     """
     tmpdir = None
     if input.endswith(ZIP_FILENDING):
@@ -28,13 +29,14 @@ def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = 
     else:
         input_folder = input
 
+    mcd_parser = None
     try:
-        mcd_files = glob.glob(os.path.join(input_folder, f"*{MCD_FILENDING}"))
+        mcd_files = list(Path(input_folder).rglob(f"*{MCD_FILENDING}"))
         assert len(mcd_files) == 1
         schema_files = glob.glob(os.path.join(input_folder, f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
         try:
-            mcd_parser = McdParser(mcd_files[0])  # McdParser(mcd_files[0])
+            mcd_parser = McdParser(mcd_files[0])
         except:
             if schema_file is not None:
                 logging.error("MCD file is corrupted, trying to rescue with schema file")
@@ -48,7 +50,8 @@ def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = 
         imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
         imc_writer.write_imc_folder(create_zip=create_zip, skip_csv=skip_csv)
     finally:
-        mcd_parser.close()
+        if mcd_parser is not None:
+            mcd_parser.close()
         if tmpdir is not None:
             tmpdir.cleanup()
 
@@ -59,7 +62,11 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcd_folder_to_imc_folder(
-        "/home/anton/Data/20190529_TH_Tonsil_CXCR_CCR_panel2", "/home/anton/Downloads/imc_folder",
+        "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip", "/home/anton/Downloads/imc_folder",
     )
+
+    # mcd_folder_to_imc_folder(
+    #     "/home/anton/Downloads/20170906_FluidigmONfinal_SE/test.zip", "/home/anton/Downloads/imc_folder",
+    # )
 
     print(timeit.default_timer() - tic)

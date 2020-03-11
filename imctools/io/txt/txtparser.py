@@ -129,7 +129,11 @@ class TxtParser:
         r_number = re.compile("\d+")
         result = []
         for name in names:
-            n = r.sub("\g<1>", name.strip("\r").strip("\n").strip()).rstrip("di").rstrip("Di")
+            n = (
+                r.sub("\g<1>", name.strip("\r").strip("\n").replace("(", "").replace(")", "").strip())
+                .rstrip("di")
+                .rstrip("Di")
+            )
             metal_name = r_number.sub("", n)
             metal_mass = n.replace(metal_name, "")
             metal_mass = f"({metal_mass})" if metal_mass != "" else ""

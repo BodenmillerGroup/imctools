@@ -1,0 +1,139 @@
+import logging
+import os
+from typing import Tuple, Sequence, Type
+
+import pandas as pd
+import numpy as np
+
+from imctools.io.ometiff.ometiffparser import OmeTiffParser
+
+logger = logging.getLogger(__name__)
+
+
+def ome_2_analysis(
+    filename: str,
+    output_folder: str,
+    basename: str,
+    pannelcsv: str = None,
+    metalcolumn: str = "Metal Tag",
+    masscolumn: str = None,
+    usedcolumn: str = None,
+    add_sum=False,
+    bigtiff=False,
+    sort_channels=True,
+    dtype: Type = None,
+):
+    # read the pannelcsv to find out which channels should be loaded
+    metals = None
+    masses = None
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    outname = os.path.join(output_folder, basename)
+    if pannelcsv is not None:
+
+        pannel = pd.read_csv(pannelcsv)
+        if pannel.shape[1] > 1:
+            selected = pannel[usedcolumn]
+            if masscolumn is None:
+                metalcolumn = metalcolumn
+                metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
+            else:
+                masses = [str(n) for s, n in zip(selected, pannel[masscolumn]) if s]
+        else:
+            metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
+    ome = OmeTiffParser(filename)
+    acquisition_data = ome.get_acquisition_data()
+
+    if sort_channels:
+        if metals is not None:
+
+            def mass_from_met(x):
+                return "".join([m for m in x if m.isdigit()]), x
+
+            metals = sorted(metals, key=mass_from_met)
+        if masses is not None:
+            masses = sorted(masses)
+
+    acquisition_data.save_tiff(
+        outname + ".tiff", names=metals, masses=masses, add_sum=add_sum, imagej=True, bigtiff=bigtiff, dtype=dtype
+    )
+
+    if masses is not None:
+        savenames = masses
+    elif metals is not None:
+        savenames = metals
+    else:
+        savenames = [s for s in acquisition_data.channel_names]
+
+    if add_sum:
+        savenames = ["sum"] + savenames
+
+    with open(outname + ".csv", "w") as f:
+        for n in savenames:
+            f.write(n + "\n")
+
+
+def ome_folder_to_analysis(
+    input_folder: str,
+    output_folder: str,
+    panel_csv_file: str,
+    analysis_stacks: Sequence[Tuple[str, str, bool]],
+    metalcolumn: str = "Metal Tag",
+    masscolumn: str = None,
+    dtype=np.uint16,
+):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    for fol in os.listdir(input_folder):
+        sub_fol = os.path.join(input_folder, fol)
+        for img in os.listdir(sub_fol):
+            if not img.endswith(".ome.tiff"):
+                continue
+            basename = img.rstrip(".ome.tiff")
+            for (col, suffix, add_sum) in analysis_stacks:  # for (col, suffix, addsum) in list_analysis_stacks:
+                try:
+                    ome_2_analysis(
+                        os.path.join(sub_fol, img),
+                        output_folder,
+                        basename + suffix,
+                        pannelcsv=panel_csv_file,
+                        metalcolumn=metalcolumn,
+                        masscolumn=masscolumn,
+                        usedcolumn=col,
+                        add_sum=add_sum,
+                        bigtiff=False,
+                        dtype=dtype,
+                    )
+                except:
+                    logger.exception("Error in {}".format(img))
+
+
+if __name__ == "__main__":
+    import timeit
+
+    tic = timeit.default_timer()
+
+    ome_2_analysis(
+        "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff",
+        "/home/anton/Downloads/analysis_folder",
+        "test",
+        pannelcsv="/home/anton/Downloads/example_panel.csv",
+        metalcolumn="Metal Tag",
+        usedcolumn="ilastik",
+        add_sum=True,
+    )
+
+    # ome_folder_to_analysis(
+    #     "/home/anton/Downloads/imc_folder",
+    #     "/home/anton/Downloads/analysis_folder",
+    #     "/home/anton/Downloads/example_panel.csv",
+    #     [
+    #         ("ilastik", "_ilastik", True),
+    #         ("full", "_full", False)
+    #     ],
+    #     metalcolumn="Metal Tag",
+    # )
+
+    print(timeit.default_timer() - tic)

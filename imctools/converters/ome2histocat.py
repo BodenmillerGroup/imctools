@@ -66,7 +66,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     ome_folder_to_histocat(
-        "/home/anton/Downloads/imc_folder/20190529_TH_Tonsil_CXCR_CCR_panel2", "/home/anton/Downloads/tiff_folder",
+        "/home/anton/Downloads/imc_from_mcd", "/home/anton/Downloads/tiff_folder",
     )
 
     print(timeit.default_timer() - tic)
