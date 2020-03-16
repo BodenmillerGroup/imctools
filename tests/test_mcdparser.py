@@ -7,7 +7,7 @@ from tests.helpers import ParseTestMCD
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-TEST_DATA_URL = 'https://dl.dropboxusercontent.com/s/so1zgn9p9kdml4x/testdata_v2.zip'
+TEST_DATA_URL = 'https://dl.dropboxusercontent.com/s/g1zs5jy49804133/testdata_v2.zip'
 TEST_DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'testdata')
 TEST_ACQUISITIONS = os.path.join(TEST_DATA_FOLDER, 'acquisitions')
 TEST_RESULTS = os.path.join(TEST_DATA_FOLDER, 'test_results')
@@ -39,7 +39,7 @@ class TestMcdParser:
 
     @staticmethod
     def _get_test_cases():
-        if not os._exists(TEST_DATA_FOLDER):
+        if not os.path.exists(TEST_DATA_FOLDER):
             os.makedirs(TEST_DATA_FOLDER)
         zip_file = os.path.join(TEST_DATA_FOLDER, 'testdata_v2.zip')
         if not os.path.isfile(zip_file):

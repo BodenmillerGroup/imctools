@@ -8,17 +8,24 @@ from tempfile import TemporaryDirectory
 from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.mcd.mcdparser import McdParser
 from imctools.io.txt.txtparser import TxtParser, TXT_FILE_EXTENSION
+from imctools.io.utils import ZIP_FILENDING, MCD_FILENDING, SCHEMA_FILENDING
 
 logger = logging.getLogger(__name__)
 
-MCD_FILENDING = ".mcd"
-ZIP_FILENDING = ".zip"
-SCHEMA_FILENDING = ".schema"
 
+def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = False, skip_csv: bool = False):
+    """Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
-def mcd_folder_to_imc_folder(input: str, output_folder: str, create_zip: bool = False, skip_csv: bool = False):
-    """
-    Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
+    Parameters
+    ----------
+    input
+        Input folder / .zip file with  raw .mcd/.txt acquisition data files
+    output_folder
+        Output folder
+    create_zip
+        Whether to create an output as .zip file
+    skip_csv
+        Whether to skip creation of CSV metadata files
     """
     tmpdir = None
     if input.endswith(ZIP_FILENDING):
@@ -61,11 +68,11 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    mcd_folder_to_imc_folder(
+    mcdfolder_to_imcfolder(
         "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip", "/home/anton/Downloads/imc_folder",
     )
 
-    # mcd_folder_to_imc_folder(
+    # mcdfolder_to_imcfolder(
     #     "/home/anton/Downloads/20170906_FluidigmONfinal_SE/test.zip", "/home/anton/Downloads/imc_folder",
     # )
 

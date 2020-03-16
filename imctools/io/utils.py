@@ -11,6 +11,11 @@ SCHEMA_XML_SUFFIX = "_schema.xml"
 OME_TIFF_SUFFIX = "_ac.ome.tiff"
 META_CSV_SUFFIX = "_meta.csv"
 
+MCD_FILENDING = ".mcd"
+ZIP_FILENDING = ".zip"
+CSV_FILENDING = ".csv"
+SCHEMA_FILENDING = ".schema"
+
 
 def reshape_long_2_cyx(
     data: np.memmap,

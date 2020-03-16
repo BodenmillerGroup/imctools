@@ -2,12 +2,12 @@ import os
 import pandas as pd
 
 import imctools.io.mcd.constants as const
+from imctools.io.utils import META_CSV_SUFFIX, CSV_FILENDING
 
-SUFFIX_ACMETA = '_acquisitions' + const.META_CSV
+SUFFIX_ACMETA = '_acquisitions' + META_CSV_SUFFIX
 COL_MCD_ID = const.ID
-COL_ACID = const.ACQUISITION_ID
+COL_AC_ID = const.ACQUISITION_ID
 COL_AC_SESSION = 'AcSession'
-SUF_CSV = '.csv'
 AC_META = 'acquisition_metadata'
 
 """
@@ -25,7 +25,7 @@ def _read_and_concat(ome_folder: str, suffix: str, idname: str):
 
 
 def read_ac_meta(ome_folder: str):
-    ac_meta = _read_and_concat(ome_folder, SUFFIX_ACMETA, COL_ACID)
+    ac_meta = _read_and_concat(ome_folder, SUFFIX_ACMETA, COL_AC_ID)
     return ac_meta
 
 
@@ -33,7 +33,7 @@ def export_acquisition_csv(ome_folder: str, output_folder: str, outname=AC_META)
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     dat_meta = read_ac_meta(ome_folder)
-    dat_meta.to_csv(os.path.join(output_folder, outname + SUF_CSV), index=False)
+    dat_meta.to_csv(os.path.join(output_folder, outname + CSV_FILENDING), index=False)
 
 
 if __name__ == "__main__":

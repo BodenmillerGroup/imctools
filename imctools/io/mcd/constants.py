@@ -71,5 +71,3 @@ TYPE = "Type"
 UID = "UID"
 VALUE_BYTES = "ValueBytes"
 WIDTH_UM = "WidthUm"
-
-META_CSV = "_meta.csv"

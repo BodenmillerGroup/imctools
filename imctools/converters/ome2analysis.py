@@ -10,7 +10,7 @@ from imctools.io.ometiff.ometiffparser import OmeTiffParser
 logger = logging.getLogger(__name__)
 
 
-def ome_2_analysis(
+def omefile_2_analysisfolder(
     filename: str,
     output_folder: str,
     basename: str,
@@ -23,7 +23,33 @@ def ome_2_analysis(
     sort_channels=True,
     dtype: Type = None,
 ):
-    # read the pannelcsv to find out which channels should be loaded
+    """Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline
+
+    Parameters
+    ----------
+    filename
+        Path to input OME-TIFF file
+    output_folder
+        Output folder
+    basename
+        Basename of the acquisition
+    pannelcsv
+        Path to panel CSV file
+    metalcolumn
+        Metal column name
+    masscolumn
+        Mass column name
+    usedcolumn
+        Name of the used column, i.e. "ilastik"
+    add_sum
+        Whether to create a summary image
+    bigtiff
+        BigTIFF format
+    sort_channels
+        Whether to sort channel alphabetically
+    dtype
+        Output numpy dtype
+    """
     metals = None
     masses = None
 
@@ -75,7 +101,7 @@ def ome_2_analysis(
             f.write(n + "\n")
 
 
-def ome_folder_to_analysis(
+def omefolder_to_analysisfolder(
     input_folder: str,
     output_folder: str,
     panel_csv_file: str,
@@ -84,6 +110,25 @@ def ome_folder_to_analysis(
     masscolumn: str = None,
     dtype=np.uint16,
 ):
+    """Converts folder with multiple OME-TIFF files to folder compatible with IMC segmentation pipeline
+
+    Parameters
+    ----------
+    input_folder
+        Input folder
+    output_folder
+        Output folder
+    panel_csv_file
+        Path to panel CSV file to find out which channels should be loaded
+    analysis_stacks
+        Array of analysis stack definitions in a tuple format (column, suffix, add_sum)
+    metalcolumn
+        Metal column name
+    masscolumn
+        Mass column name
+    dtype
+        Output numpy dtype
+    """
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     for fol in os.listdir(input_folder):
@@ -92,9 +137,9 @@ def ome_folder_to_analysis(
             if not img.endswith(".ome.tiff"):
                 continue
             basename = img.rstrip(".ome.tiff")
-            for (col, suffix, add_sum) in analysis_stacks:  # for (col, suffix, addsum) in list_analysis_stacks:
+            for (col, suffix, add_sum) in analysis_stacks:
                 try:
-                    ome_2_analysis(
+                    omefile_2_analysisfolder(
                         os.path.join(sub_fol, img),
                         output_folder,
                         basename + suffix,
@@ -115,7 +160,7 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    ome_2_analysis(
+    omefile_2_analysisfolder(
         "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff",
         "/home/anton/Downloads/analysis_folder",
         "test",
@@ -125,7 +170,7 @@ if __name__ == "__main__":
         add_sum=True,
     )
 
-    # ome_folder_to_analysis(
+    # omefolder_to_analysisfolder(
     #     "/home/anton/Downloads/imc_folder",
     #     "/home/anton/Downloads/analysis_folder",
     #     "/home/anton/Downloads/example_panel.csv",

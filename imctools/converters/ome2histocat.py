@@ -8,7 +8,7 @@ from imctools.io.ometiff.ometiffparser import OmeTiffParser
 logger = logging.getLogger(__name__)
 
 
-def ome_to_tiff(filepath: str, output_folder: str, basename: str = None):
+def omefile_to_tifffolder(filepath: str, output_folder: str, basename: str = None):
     """
     Converts single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.
     """
@@ -20,20 +20,20 @@ def ome_to_tiff(filepath: str, output_folder: str, basename: str = None):
         acquisition_data.save_tiffs(output_folder, basename=basename)
 
 
-def ome_to_histocat(filepath: str, base_folder: str, path_mask: str = None):
+def omefile_to_histocatfolder(filepath: str, base_folder: str, path_mask: str = None):
     """
     Converts single OME-TIFF file to a folder compatible with HistoCAT software.
     """
     basename = os.path.split(filepath)[1].rstrip(".ome.tiff")
     output_folder = os.path.join(base_folder, basename)
-    ome_to_tiff(filepath, output_folder, basename="")
+    omefile_to_tifffolder(filepath, output_folder, basename="")
     if path_mask is not None:
         fn_mask_base = os.path.split(path_mask)[1]
         fn_mask_new = os.path.join(output_folder, fn_mask_base)
         shutil.copy2(path_mask, fn_mask_new)
 
 
-def ome_folder_to_histocat(input_folder: str, output_folder: str, mask_folder: str = None, mask_suffix=None):
+def omefolder_to_histocatfolder(input_folder: str, output_folder: str, mask_folder: str = None, mask_suffix=None):
     """
     Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.
     """
@@ -57,7 +57,7 @@ def ome_folder_to_histocat(input_folder: str, output_folder: str, mask_folder: s
         else:
             path_mask = None
         path_ome = os.path.join(input_folder, fn_ome)
-        ome_to_histocat(path_ome, output_folder, path_mask=path_mask)
+        omefile_to_histocatfolder(path_ome, output_folder, path_mask=path_mask)
 
 
 if __name__ == "__main__":
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    ome_folder_to_histocat(
+    omefolder_to_histocatfolder(
         "/home/anton/Downloads/imc_from_mcd", "/home/anton/Downloads/tiff_folder",
     )
 
