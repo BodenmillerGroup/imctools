@@ -1,7 +1,9 @@
 import logging
+from pathlib import Path
+
 import mmap
 import os
-from typing import BinaryIO, Optional
+from typing import BinaryIO, Optional, Union
 
 import numpy as np
 
@@ -20,7 +22,7 @@ class McdParser:
     The McdParser object should be closed using the close method
     """
 
-    def __init__(self, filepath: str, file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
+    def __init__(self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
         if file_handle is None:
             self._fh = open(filepath, mode="rb")
         else:

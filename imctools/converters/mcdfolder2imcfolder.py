@@ -19,13 +19,13 @@ def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = Fa
     Parameters
     ----------
     input
-        Input folder / .zip file with  raw .mcd/.txt acquisition data files
+        Input folder / .zip file with  raw .mcd/.txt acquisition data files.
     output_folder
-        Output folder
+        Path to the output folder.
     create_zip
-        Whether to create an output as .zip file
+        Whether to create an output as .zip file.
     skip_csv
-        Whether to skip creation of CSV metadata files
+        Whether to skip creation of CSV metadata files.
     """
     tmpdir = None
     if input.endswith(ZIP_FILENDING):
@@ -71,9 +71,5 @@ if __name__ == "__main__":
     mcdfolder_to_imcfolder(
         "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip", "/home/anton/Downloads/imc_folder",
     )
-
-    # mcdfolder_to_imcfolder(
-    #     "/home/anton/Downloads/20170906_FluidigmONfinal_SE/test.zip", "/home/anton/Downloads/imc_folder",
-    # )
 
     print(timeit.default_timer() - tic)

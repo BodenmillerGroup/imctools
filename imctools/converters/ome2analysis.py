@@ -14,7 +14,7 @@ def omefile_2_analysisfolder(
     filename: str,
     output_folder: str,
     basename: str,
-    pannelcsv: str = None,
+    panel_csv_file: str = None,
     metalcolumn: str = "Metal Tag",
     masscolumn: str = None,
     usedcolumn: str = None,
@@ -23,7 +23,7 @@ def omefile_2_analysisfolder(
     sort_channels=True,
     dtype: Type = None,
 ):
-    """Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline
+    """Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.
 
     Parameters
     ----------
@@ -33,22 +33,22 @@ def omefile_2_analysisfolder(
         Output folder
     basename
         Basename of the acquisition
-    pannelcsv
-        Path to panel CSV file
+    panel_csv_file
+        Name of the CSV file that contains the channels to be written out.
     metalcolumn
-        Metal column name
+        Column name of the metal names.
     masscolumn
-        Mass column name
+        Column name of the mass names. If provided the metal column will be ignored.
     usedcolumn
-        Name of the used column, i.e. "ilastik"
+        Column that should contain booleans (0, 1) if the channel should be used, i.e. "ilastik".
     add_sum
-        Whether to create a summary image
+        Add the sum of the data as the first layer.
     bigtiff
-        BigTIFF format
+        Whether to save TIFF files in BigTIFF format.
     sort_channels
-        Whether to sort channel alphabetically
+        Whether to sort channels by mass.
     dtype
-        Output numpy dtype
+        Output Numpy data type
     """
     metals = None
     masses = None
@@ -57,9 +57,9 @@ def omefile_2_analysisfolder(
         os.makedirs(output_folder)
 
     outname = os.path.join(output_folder, basename)
-    if pannelcsv is not None:
+    if panel_csv_file is not None:
 
-        pannel = pd.read_csv(pannelcsv)
+        pannel = pd.read_csv(panel_csv_file)
         if pannel.shape[1] > 1:
             selected = pannel[usedcolumn]
             if masscolumn is None:
@@ -110,7 +110,7 @@ def omefolder_to_analysisfolder(
     masscolumn: str = None,
     dtype=np.uint16,
 ):
-    """Converts folder with multiple OME-TIFF files to folder compatible with IMC segmentation pipeline
+    """Convert OME tiffs to analysis tiffs that are more compatible with tools. A CSV with a boolean column can be used to select subsets of channels or metals from the stack. The channels of the tiff will have the same order as in the csv.'
 
     Parameters
     ----------
@@ -119,13 +119,13 @@ def omefolder_to_analysisfolder(
     output_folder
         Output folder
     panel_csv_file
-        Path to panel CSV file to find out which channels should be loaded
+        Name of the CSV file that contains the channels to be written out.
     analysis_stacks
-        Array of analysis stack definitions in a tuple format (column, suffix, add_sum)
+        Array of analysis stack definitions in a tuple format (column, suffix, add_sum).
     metalcolumn
-        Metal column name
+        Column name of the metal names.
     masscolumn
-        Mass column name
+        Column name of the mass names. If provided the metal column will be ignored.
     dtype
         Output numpy dtype
     """
@@ -143,7 +143,7 @@ def omefolder_to_analysisfolder(
                         os.path.join(sub_fol, img),
                         output_folder,
                         basename + suffix,
-                        pannelcsv=panel_csv_file,
+                        panel_csv_file=panel_csv_file,
                         metalcolumn=metalcolumn,
                         masscolumn=masscolumn,
                         usedcolumn=col,
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff",
         "/home/anton/Downloads/analysis_folder",
         "test",
-        pannelcsv="/home/anton/Downloads/example_panel.csv",
+        panel_csv_file="/home/anton/Downloads/example_panel.csv",
         metalcolumn="Metal Tag",
         usedcolumn="ilastik",
         add_sum=True,

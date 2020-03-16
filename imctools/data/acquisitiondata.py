@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from typing import Optional, Sequence, Type
+from typing import Optional, Sequence
 
 import numpy as np
 import tifffile
@@ -9,7 +9,7 @@ from xtiff import to_tiff
 
 from imctools import __version__
 from imctools.data import Acquisition
-from imctools.io.utils import get_ome_xml, OME_TIFF_SUFFIX
+from imctools.io.utils import get_ome_xml
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,7 @@ class AcquisitionData:
         names: Sequence[str] = None,
         masses: Sequence[str] = None,
         xml_metadata: Optional[str] = None,
-        dtype: Type = None,
+        dtype: Optional[object] = None,
     ):
         """Save OME TIFF file
 
@@ -125,7 +125,7 @@ class AcquisitionData:
         add_sum=False,
         imagej=False,
         bigtiff=False,
-        dtype: Type = None,
+        dtype: Optional[object] = None,
         compression: int = 0,
     ):
         if names is not None:
@@ -154,7 +154,7 @@ class AcquisitionData:
         basename: str = None,
         imagej=True,
         bigtiff=False,
-        dtype: Type = None,
+        dtype: Optional[object] = None,
         compression: int = 0,
     ):
         """Save ImageJ TIFF files in a folder

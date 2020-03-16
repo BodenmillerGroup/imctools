@@ -3,17 +3,20 @@ import numpy as np
 from tifffile import TiffFile, TiffWriter
 
 
-def probability_to_uncertainty(filename: str, output_folder: str, basename: str = None, suffix: str = None):
-    """
-    Resizes an image
+def probability_to_uncertainty(filename: str, output_folder: str, basename: str = None, suffix: str = "_uncertainty"):
+    """Converts probability masks to uncertainties
 
-    :param fn_stack: The filename of the stack
-    :param outfolder: The output folder
-    :param basename: The basename to use for the output filename
-    :param scalefactor: Factor to scale by
-    :return:
+    Parameters
+    ----------
+    filename
+        The path to the probability TIFF file
+    output_folder
+        Folder to save the images in. By default a sub-folder with the basename image_filename in the image_filename folder.
+    basename
+        Basename for the output image. Default: image_filename
+    suffix
+        Filename suffix.
     """
-
     with TiffFile(filename) as tif:
         stack = tif.asarray()
 
@@ -22,9 +25,6 @@ def probability_to_uncertainty(filename: str, output_folder: str, basename: str 
 
     if basename is None:
         basename = os.path.splitext(os.path.basename(filename))[0]
-
-    if suffix is None:
-        suffix = "_uncertainty"
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
