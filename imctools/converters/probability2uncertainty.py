@@ -1,19 +1,23 @@
 import os
+from pathlib import Path
+
 import numpy as np
 from tifffile import TiffFile, TiffWriter
 
 
-def probability_to_uncertainty(filename: str, output_folder: str, basename: str = None, suffix: str = "_uncertainty"):
-    """Converts probability masks to uncertainties
+def probability_to_uncertainty(
+    filename: str, output_folder: str = None, basename: str = None, suffix: str = "_uncertainty"
+):
+    """Converts probability masks to uncertainties.
 
     Parameters
     ----------
     filename
-        The path to the probability TIFF file
+        The path to the probability TIFF file.
     output_folder
         Folder to save the images in. By default a sub-folder with the basename image_filename in the image_filename folder.
     basename
-        Basename for the output image. Default: image_filename
+        Basename for the output image. Default: image_filename.
     suffix
         Filename suffix.
     """
@@ -26,10 +30,13 @@ def probability_to_uncertainty(filename: str, output_folder: str, basename: str 
     if basename is None:
         basename = os.path.splitext(os.path.basename(filename))[0]
 
-    if not os.path.exists(output_folder):
+    if output_folder is not None and not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    fn = os.path.join(output_folder, basename + suffix + ".tiff")
+    if output_folder is not None:
+        fn = os.path.join(output_folder, basename + suffix + ".tiff")
+    else:
+        fn = os.path.join(Path(filename).parent, basename + suffix + ".tiff")
     timg = np.max(stack, axis=2)
     if stack.dtype == np.float:
         timg = 1 - timg
