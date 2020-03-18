@@ -1,8 +1,7 @@
 # imctools
 
+[![Build Status](https://github.com/BodenmillerGroup/imctools/workflows/CI/badge.svg)](https://github.com/BodenmillerGroup/imctools/workflows/CI/badge.svg)
 [![PyPI version](https://badge.fury.io/py/imctools.svg)](https://pypi.python.org/pypi/imctools)
-[![Build Status](https://travis-ci.org/BodenmillerGroup/imctools.svg?branch=master)](https://travis-ci.org/BodenmillerGroup/imctools)
-[![Documentation Status](https://readthedocs.org/projects/imctools/badge/?version=latest)](https://imctools.readthedocs.io/en/latest/?badge=latest)
 
 An IMC file conversion tool that aims to convert IMC rawfiles (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler tiff files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
 
