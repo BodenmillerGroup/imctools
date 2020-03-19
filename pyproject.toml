@@ -10,7 +10,7 @@ license = "MIT"
 authors = ["Anton Rau <anton.rau@uzh.ch>", "Vito Zanotelli <vito.zanotelli@uzh.ch>"]
 homepage = "https://github.com/BodenmillerGroup/imctools"
 repository = "https://github.com/BodenmillerGroup/imctools"
-documentation = "https://imctools.readthedocs.io"
+documentation = "https://bodenmillergroup.github.io/imctools"
 keywords = ["MCD", "OME-TIFF", "IMC", "CellProfiler"]
 readme = "README.md"
 classifiers = [
@@ -24,7 +24,7 @@ exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-pandas = ">=1.0.2"
+pandas = ">=1.0.3"
 xmltodict = ">=0.12.0"
 xtiff = ">=0.6.0"
 

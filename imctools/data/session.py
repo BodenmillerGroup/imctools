@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import csv
+import json
 import os
 from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
-
-import json
 
 from dateutil.parser import parse
 
@@ -26,15 +25,15 @@ class Session:
         Parameters
         ----------
         id
-            Unique ID of the session (UUID)
+            Unique ID of the session (UUID).
         name
-            Session name
+            Session name.
         imctools_version
-            Version of imctools library used for conversion
+            Version of imctools library used for conversion.
         created
-            Datetime of session creation
+            Datetime of session creation.
         metadata
-            Whole set of original (raw) metadata as a dictionary
+            Whole set of original (raw) metadata as a dictionary.
         """
         self.id = id
         self.name = name
@@ -132,7 +131,7 @@ class Session:
         Parameters
         ----------
         filepath
-            Input JSON file path
+            Input JSON file path.
         """
         with open(filepath, "r") as f:
             data = json.load(f)
@@ -178,7 +177,7 @@ class Session:
         return self.name
 
     @property
-    def acquisition_indices(self) -> Tuple[int, ...]:
+    def acquisition_ids(self) -> Tuple[int, ...]:
         return tuple(self.acquisitions.keys())
 
     def __repr__(self):

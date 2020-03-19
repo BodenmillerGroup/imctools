@@ -1,8 +1,9 @@
 import os
+
 import pandas as pd
 
 import imctools.io.mcd.constants as const
-from imctools.io.utils import META_CSV_SUFFIX, CSV_FILENDING
+from imctools.io.utils import CSV_FILENDING, META_CSV_SUFFIX
 
 SUFFIX_ACMETA = "_acquisitions" + META_CSV_SUFFIX
 COL_MCD_ID = const.ID

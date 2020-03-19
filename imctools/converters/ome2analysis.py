@@ -1,9 +1,9 @@
 import logging
 import os
-from typing import Tuple, Sequence, Type
+from typing import Sequence, Tuple, Type
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from imctools.io.ometiff.ometiffparser import OmeTiffParser
 
@@ -28,11 +28,11 @@ def omefile_2_analysisfolder(
     Parameters
     ----------
     filename
-        Path to input OME-TIFF file
+        Path to input OME-TIFF file.
     output_folder
-        Output folder
+        Output folder.
     basename
-        Basename of the acquisition
+        Basename of the acquisition.
     panel_csv_file
         Name of the CSV file that contains the channels to be written out.
     metalcolumn
@@ -48,7 +48,7 @@ def omefile_2_analysisfolder(
     sort_channels
         Whether to sort channels by mass.
     dtype
-        Output Numpy data type
+        Output Numpy data type.
     """
     metals = None
     masses = None

@@ -5,7 +5,7 @@ from typing import Dict
 
 from imctools.io.mcd.mcdparser import McdParser
 from imctools.io.txt.txtparser import TxtParser
-from imctools.io.utils import SCHEMA_XML_SUFFIX, OME_TIFF_SUFFIX, SESSION_JSON_SUFFIX
+from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX
 
 logger = logging.getLogger(__name__)
 

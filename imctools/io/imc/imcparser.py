@@ -4,7 +4,7 @@ from pathlib import Path
 import tifffile
 
 from imctools.data import Session
-from imctools.io.utils import SESSION_JSON_SUFFIX, SCHEMA_XML_SUFFIX, OME_TIFF_SUFFIX
+from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX
 
 
 class ImcParser:

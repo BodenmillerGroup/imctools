@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Any
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import imctools.io.mcd.constants as const
 
@@ -28,17 +28,17 @@ class Slide:
         Parameters
         ----------
         session_id
-            Parent session id (UUID)
+            Parent session id (UUID).
         id
-            Original slide ID
+            Original slide ID.
         description
-            Description
+            Description.
         width_um
-            Slide width (in μm)
+            Slide width (in μm).
         height_um
-            Slide height (in μm)
+            Slide height (in μm).
         metadata
-            Original (raw) metadata as a dictionary
+            Original (raw) metadata as a dictionary.
         """
         self.session_id = session_id
         self.id = id

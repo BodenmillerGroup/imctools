@@ -8,7 +8,6 @@ from imctools.data import Acquisition, Channel
 from imctools.data.acquisitiondata import AcquisitionData
 from imctools.io.utils import reshape_long_2_cyx
 
-
 TXT_FILE_EXTENSION = ".txt"
 
 
@@ -83,18 +82,18 @@ class TxtParser:
         Parameters
         ----------
         filepath
-            Input TXT filepath
+            Input TXT filepath.
         """
         return int(filepath.rstrip(TXT_FILE_EXTENSION).split("_")[-1])
 
     @staticmethod
     def _parse_csv(filepath: str):
-        """Parse CSV file
+        """Parse CSV file.
 
         Parameters
         ----------
         filepath
-            Input filepath
+            Input filepath.
         """
         header_cols = pd.read_csv(filepath, sep="\t", nrows=0).columns
         expected_cols = ("Start_push", "End_push", "Pushes_duration", "X", "Y", "Z")
@@ -118,12 +117,12 @@ class TxtParser:
     @staticmethod
     def _extract_channel_names(names: Sequence[str]):
         """
-        Returns channel names in Fluidigm compatible format, i.e. Y(89) or ArAr(80)
+        Returns channel names in Fluidigm compatible format, i.e. Y(89) or ArAr(80).
 
         Parameters
         ----------
         names
-            CSV file column names
+            CSV file column names.
         """
         r = re.compile("^.*\((.*?)\)[^(]*$")
         r_number = re.compile("\d+")
@@ -142,12 +141,12 @@ class TxtParser:
 
     @staticmethod
     def _extract_channel_labels(names: Sequence[str]):
-        """Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di)
+        """Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
 
         Parameters
         ----------
         names
-            CSV file column names
+            CSV file column names.
         """
         return [name.strip("\r").strip("\n").strip() for name in names]
 

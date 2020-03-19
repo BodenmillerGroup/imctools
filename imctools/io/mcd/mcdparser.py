@@ -1,14 +1,13 @@
 import logging
-from pathlib import Path
-
 import mmap
 import os
+from pathlib import Path
 from typing import BinaryIO, Optional, Union
 
 import numpy as np
 
 import imctools.io.mcd.constants as const
-from imctools.data import Acquisition, AblationImageType
+from imctools.data import AblationImageType, Acquisition
 from imctools.data.acquisitiondata import AcquisitionData
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.utils import reshape_long_2_cyx
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 class McdParser:
     """Raw MCD file parser.
 
-    The McdParser object should be closed using the close method
+    The McdParser object should be closed using the close method.
     """
 
     def __init__(self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
@@ -69,12 +68,12 @@ class McdParser:
         return AcquisitionData(acquisition, image_data)
 
     def _get_acquisition_raw_data(self, acquisition: Acquisition):
-        """Gets non-reshaped image data from the acquisition
+        """Gets non-reshaped image data from the acquisition.
 
         Parameters
         ----------
         acquisition
-            Acquisition
+            Acquisition.
         """
         start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
         end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
@@ -248,6 +247,8 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    parser = McdParser("/home/anton/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd")
+    parser = McdParser(
+        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd"
+    )
 
     print(timeit.default_timer() - tic)

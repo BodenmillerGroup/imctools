@@ -18,9 +18,9 @@ class McdXmlParser:
         Parameters
         ----------
         mcd_xml
-            Metadata in MCD XML text format
+            Metadata in MCD XML text format.
         source_path
-            Path to original source .mcd file
+            Path to original source .mcd file.
         """
         self._mcd_xml = mcd_xml
         self.metadata = xmltodict.parse(

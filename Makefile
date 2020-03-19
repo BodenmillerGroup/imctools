@@ -41,6 +41,8 @@ coverage:
 build-docs:
 	rm -fr docs/
 	pdoc --html --output-dir docs imctools
+	mv docs/imctools/* docs
+	rmdir docs/imctools
 
 mypy:
 	mypy imctools

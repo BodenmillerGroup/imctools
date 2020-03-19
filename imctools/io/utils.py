@@ -1,10 +1,8 @@
-from typing import Optional, Sequence
-
 import xml.etree.ElementTree as ET
+from typing import Optional, Sequence
 
 import numpy as np
 import xtiff
-
 
 SESSION_JSON_SUFFIX = "_session.json"
 SCHEMA_XML_SUFFIX = "_schema.xml"
@@ -23,19 +21,18 @@ def reshape_long_2_cyx(
     shape: Optional[np.ndarray] = None,
     channel_indices: Optional[Sequence[int]] = None,
 ):
-    """
-    Reshape data from long format into cyx format (channels, y, x)
+    """Reshape data from long format into cyx format (channels, y, x).
 
     Parameters
     ----------
     data
-        Input data
+        Input data.
     is_sorted
-        Whether data are sorted
+        Whether data are sorted.
     shape
-        Custom data shape
+        Custom data shape.
     channel_indices
-        Channel indices
+        Channel indices.
 
     """
     if shape is None:

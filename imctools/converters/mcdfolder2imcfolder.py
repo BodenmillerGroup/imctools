@@ -1,14 +1,14 @@
-import os
 import glob
-import zipfile
 import logging
+import os
+import zipfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.mcd.mcdparser import McdParser
-from imctools.io.txt.txtparser import TxtParser, TXT_FILE_EXTENSION
-from imctools.io.utils import ZIP_FILENDING, MCD_FILENDING, SCHEMA_FILENDING
+from imctools.io.txt.txtparser import TXT_FILE_EXTENSION, TxtParser
+from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 
 logger = logging.getLogger(__name__)
 

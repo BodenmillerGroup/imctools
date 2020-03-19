@@ -1,9 +1,10 @@
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, Sequence, Any
+from typing import Any, Dict, Optional, Sequence
 
 from dateutil.parser import parse
+
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
 
@@ -54,53 +55,53 @@ class Acquisition:
         Parameters
         ----------
         slide_id
-            Parent slide ID
+            Parent slide ID.
         id
-            Original acquisition ID
+            Original acquisition ID.
         origin
-            Origin of the data (mcd, txt, etc.)
+            Origin of the data (mcd, txt, etc).
         source_path
-            Path to data source file
+            Path to data source file.
         max_x
-            Acquisition width in pixels
+            Acquisition width in pixels.
         max_y
-            Acquisition height in pixels
+            Acquisition height in pixels.
         signal_type
-            Signal type (Dual, etc)
+            Signal type (Dual, etc).
         segment_data_format
-            Data format (Float, etc)
+            Data format (Float, etc).
         ablation_frequency
-            Ablation frequency
+            Ablation frequency.
         ablation_power
-            Ablation power
+            Ablation power.
         start_timestamp
-            Acquisition start timestamp
+            Acquisition start timestamp.
         end_timestamp
-            Acquisition end timestamp
+            Acquisition end timestamp.
         movement_type
-            Movement type (XRaster, YRaster, etc)
+            Movement type (XRaster, YRaster, etc).
         ablation_distance_between_shots_x
-            Horizontal ablation distance between shots (in μm)
+            Horizontal ablation distance between shots (in μm).
         ablation_distance_between_shots_y
-            Vertical ablation distance between shots (in μm)
+            Vertical ablation distance between shots (in μm).
         template
-            Template name
+            Template name.
         roi_start_x_pos_um
-            Start X position on the slide (in μm)
+            Start X position on the slide (in μm).
         roi_start_y_pos_um
-            Start Y position on the slide (in μm)
+            Start Y position on the slide (in μm).
         roi_end_x_pos_um
-            End X position on the slide (in μm)
+            End X position on the slide (in μm).
         roi_end_y_pos_um
-            End Y position on the slide (in μm)
+            End Y position on the slide (in μm).
         description
-            Acquisition description
+            Acquisition description.
         before_ablation_image_exists
-            Whether before ablation image exists
+            Whether before ablation image exists.
         after_ablation_image_exists
-            Whether after ablation image exists
+            Whether after ablation image exists.
         metadata
-            Original (raw) metadata as a dictionary
+            Original (raw) metadata as a dictionary.
         """
         self.slide_id = slide_id
         self.id = id

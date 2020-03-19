@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, Any
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
@@ -26,21 +26,21 @@ class Channel:
         Parameters
         ----------
         acquisition_id
-            Parent acquisition ID
+            Parent acquisition ID.
         id
-            Original channel ID
+            Original channel ID.
         order_number
-            Channel order number in acquisition
+            Channel order number in acquisition.
         name
-            Channel name (unique per acquisition)
+            Channel name (unique per acquisition).
         label
-            Channel label
+            Channel label.
         min_intensity
-            Minimal intensity value
+            Minimal intensity value.
         max_intensity
-            Maximum intensity value
+            Maximum intensity value.
         metadata
-            Original (raw) channel metadata
+            Original (raw) channel metadata.
         """
         self.acquisition_id = acquisition_id
         self.id = id

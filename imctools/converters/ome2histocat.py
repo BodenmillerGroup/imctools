@@ -20,6 +20,8 @@ def omefile_to_tifffolder(filepath: str, output_folder: str, basename: str = Non
         Output folder.
     basename
         Basename for generated output files.
+    dtype
+        Output numpy format.
     """
     if not (os.path.exists(output_folder)):
         os.makedirs(output_folder)
@@ -42,6 +44,8 @@ def omefile_to_histocatfolder(
         Base output folder.
     mask_file
         Path to mask file.
+    dtype
+        Output numpy format.
     """
     basename = os.path.split(filepath)[1].rstrip(".ome.tiff")
     output_folder = os.path.join(base_folder, basename)
@@ -71,6 +75,8 @@ def omefolder_to_histocatfolder(
         Folder containing the masks, or single mask file.
     mask_suffix
         Mask suffix.
+    dtype
+        Output numpy format.
     """
     ome_files = [os.path.basename(fn) for fn in glob.glob(os.path.join(input_folder, "*")) if fn.endswith(".ome.tiff")]
     if mask_folder is not None:

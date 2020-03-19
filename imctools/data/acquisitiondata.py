@@ -23,6 +23,7 @@ class AcquisitionData:
 
     @property
     def acquisition(self):
+        """Acquisition metadata"""
         return self._acquisition
 
     @property
@@ -84,16 +85,20 @@ class AcquisitionData:
         xml_metadata: Optional[str] = None,
         dtype: Optional[object] = None,
     ):
-        """Save OME TIFF file
+        """Save OME TIFF file.
 
         Parameters
         ----------
         filename
-            .ome.tiff file name
+            .ome.tiff file name.
         names
-            Channel names (metals / tags)
+            Channel names (metals / tags).
+        masses
+            Channel masses.
         xml_metadata
-            Original MCD-XML metadata
+            Original MCD-XML metadata.
+        dtype
+            Output numpy format.
         """
         if names is not None:
             order = self.acquisition.get_name_indices(names)
@@ -157,16 +162,26 @@ class AcquisitionData:
         dtype: Optional[object] = None,
         compression: int = 0,
     ):
-        """Save ImageJ TIFF files in a folder
+        """Save ImageJ TIFF files in a folder.
 
         Parameters
         ----------
         output_folder
-            Output folder
+            Output folder.
         names
-            Channel names (metals / tags)
+            Channel names (metals / tags).
+        masses
+            Channel masses.
         basename
-            Base file name
+            Base file name.
+        imagej
+            Save TIFF file compatible with ImageJ format.
+        bigtiff
+            BigTIFF format.
+        dtype
+            Output numpy format.
+        compression
+            Compression level.
         """
         creator = f"imctools {__version__}"
         if names is not None:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Any
+from typing import Any, Dict, Optional
 
 from imctools.data.slide import Slide
 
@@ -27,25 +27,25 @@ class Panorama:
         Parameters
         ----------
         slide_id
-            Parent slide ID
+            Parent slide ID.
         id
-            Original panorama ID
+            Original panorama ID.
         image_type
-            Image type (Imported, Instrument, Default)
+            Image type (Imported, Instrument, Default).
         description
-            Panorama description
+            Panorama description.
         start_position_x
-            X coordinate of start panorama position on the slide (in μm)
+            X coordinate of start panorama position on the slide (in μm).
         start_position_y
-            Y coordinate of start panorama position on the slide (in μm)
+            Y coordinate of start panorama position on the slide (in μm).
         width
-            Panorama physical width (in μm)
+            Panorama physical width (in μm).
         height
-            Panorama physical height (in μm)
+            Panorama physical height (in μm).
         rotation_angle
-            Panorama rotation angle (degrees)
+            Panorama rotation angle (degrees).
         metadata
-            Original (raw) metadata as a dictionary
+            Original (raw) metadata as a dictionary.
         """
         self.slide_id = slide_id
         self.id = id
