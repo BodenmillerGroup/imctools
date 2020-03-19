@@ -3,6 +3,7 @@ Creates the basic parser interface
 """
 from __future__ import with_statement, division
 import array
+import warnings
 
 try:
     xrange
@@ -13,18 +14,25 @@ except NameError:
 class AcquisitionError(Exception):
     """An error with the acquisition"""
 
+
 class AbstractParserBase(object):
     """
 
     """
+
     def __init__(self):
+        warnings.warn(
+            "imctools 1.x is deprecated, please migrate to version 2.x", DeprecationWarning
+        )
         pass
 
     def get_imc_acquisition(self):
         pass
 
     @classmethod
-    def _reshape_long_2_cyx(self, longdat, is_sorted=True, shape=None, channel_idxs=None):
+    def _reshape_long_2_cyx(
+        self, longdat, is_sorted=True, shape=None, channel_idxs=None
+    ):
         """
         Helper method to convert to cxy from the long format.
         Mainly used by during import step
@@ -44,7 +52,7 @@ class AbstractParserBase(object):
                     shape[1] = int(row[1])
             shape[0] += 1
             shape[1] += 1
-            if shape[0]*shape[1] > len(longdat):
+            if shape[0] * shape[1] > len(longdat):
                 shape[1] -= 1
 
         if channel_idxs is None:
@@ -54,21 +62,29 @@ class AbstractParserBase(object):
             nchans = len(channel_idxs)
             npixels = shape[0] * shape[1]
             tot_len = npixels * nchans
-            imar = array.array('f')
+            imar = array.array("f")
 
             for i in xrange(tot_len):
                 row = i % npixels
                 col = channel_idxs[int(i / npixels)]
                 imar.append(longdat[row][col])
 
-            img = [[imar[(k * shape[0] * shape[1] + j * shape[0]):(k * shape[0] * shape[1] + j * shape[0] + shape[0])]
-                    for j in range(shape[1])]
-                   for k in range(nchans)]
+            img = [
+                [
+                    imar[
+                        (k * shape[0] * shape[1] + j * shape[0]) : (
+                            k * shape[0] * shape[1] + j * shape[0] + shape[0]
+                        )
+                    ]
+                    for j in range(shape[1])
+                ]
+                for k in range(nchans)
+            ]
 
         else:
-            img = self._initialize_empty_listarray([shape[1],
-                                                    shape[0],
-                                                    len(channel_idxs)])
+            img = self._initialize_empty_listarray(
+                [shape[1], shape[0], len(channel_idxs)]
+            )
             # will be c, y, x
             for row in longdat:
                 x = int(row[0])
@@ -80,11 +96,20 @@ class AbstractParserBase(object):
 
     @staticmethod
     def _initialize_empty_listarray(shape):
-        imar = array.array('f')
-        for i in xrange(shape[0] * shape[1] * shape[2]): imar.append(-1.)
+        imar = array.array("f")
+        for i in xrange(shape[0] * shape[1] * shape[2]):
+            imar.append(-1.0)
 
-        img = [[imar[(k * shape[0] * shape[1] + j * shape[0]):(k * shape[0] * shape[1] + j * shape[0] + shape[0])]
-                for j in range(shape[1])]
-               for k in range(shape[2])]
+        img = [
+            [
+                imar[
+                    (k * shape[0] * shape[1] + j * shape[0]) : (
+                        k * shape[0] * shape[1] + j * shape[0] + shape[0]
+                    )
+                ]
+                for j in range(shape[1])
+            ]
+            for k in range(shape[2])
+        ]
 
         return img

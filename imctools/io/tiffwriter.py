@@ -11,36 +11,52 @@ from imctools.io import change_dtype, CHANGE_DTYPE_LB_WARNING, CHANGE_DTYPE_UB_W
 
 if sys.version_info.major == 3:
     from io import StringIO
-    uenc = 'unicode'
+
+    uenc = "unicode"
 else:
     from cStringIO import StringIO
-    uenc = 'utf-8'
+
+    uenc = "utf-8"
 
 
 class TiffWriter(object):
     """
 
     """
-    pixeltype_dict = ({np.int64().dtype: ome.PT_FLOAT,
-                       np.int32().dtype: ome.PT_INT32,
-                       np.int16().dtype: ome.PT_INT16,
-                       np.uint16().dtype: ome.PT_UINT16,
-                       np.uint32().dtype: ome.PT_UINT32,
-                       np.uint8().dtype: ome.PT_UINT8,
-                       np.float32().dtype: ome.PT_FLOAT,
-                       np.float64().dtype: ome.PT_DOUBLE
-                       })
+
+    pixeltype_dict = {
+        np.int64().dtype: ome.PT_FLOAT,
+        np.int32().dtype: ome.PT_INT32,
+        np.int16().dtype: ome.PT_INT16,
+        np.uint16().dtype: ome.PT_UINT16,
+        np.uint32().dtype: ome.PT_UINT32,
+        np.uint8().dtype: ome.PT_UINT8,
+        np.float32().dtype: ome.PT_FLOAT,
+        np.float64().dtype: ome.PT_DOUBLE,
+    }
     pixeltype_np = {
-            ome.PT_FLOAT: np.dtype('float32'),
-            ome.PT_DOUBLE: np.dtype('float64'),
-            ome.PT_UINT8: np.dtype('uint8'),
-            ome.PT_UINT16: np.dtype('uint16'),
-            ome.PT_UINT32: np.dtype('uint32'),
-            ome.PT_INT8: np.dtype('int8'),
-            ome.PT_INT16: np.dtype('int16'),
-            ome.PT_INT32: np.dtype('int32')
-        }
-    def __init__(self, file_name, img_stack, pixeltype =None, channel_name=None, original_description=None, fluor=None):
+        ome.PT_FLOAT: np.dtype("float32"),
+        ome.PT_DOUBLE: np.dtype("float64"),
+        ome.PT_UINT8: np.dtype("uint8"),
+        ome.PT_UINT16: np.dtype("uint16"),
+        ome.PT_UINT32: np.dtype("uint32"),
+        ome.PT_INT8: np.dtype("int8"),
+        ome.PT_INT16: np.dtype("int16"),
+        ome.PT_INT32: np.dtype("int32"),
+    }
+
+    def __init__(
+        self,
+        file_name,
+        img_stack,
+        pixeltype=None,
+        channel_name=None,
+        original_description=None,
+        fluor=None,
+    ):
+        warnings.warn(
+            "imctools 1.x is deprecated, please migrate to version 2.x", DeprecationWarning
+        )
         self.file_name = file_name
         self.img_stack = img_stack
         self.channel_name = channel_name
@@ -54,11 +70,11 @@ class TiffWriter(object):
         self.pixeltype = pixeltype
 
         if original_description is None:
-            original_description = ''
+            original_description = ""
 
         self.original_description = original_description
 
-    def save_image(self, mode='imagej', compression=0, dtype=None, bigtiff=None):
+    def save_image(self, mode="imagej", compression=0, dtype=None, bigtiff=None):
         """
         Saves the image as a tiff
         :param mode: Specifies the tiff writing mode. Either 'imagej' or 'ome'
@@ -75,7 +91,7 @@ class TiffWriter(object):
                         Default: for 'imagej' mode: False
                                  for 'ome' mode: True
         """
-        #TODO: add original metadata somehow
+        # TODO: add original metadata somehow
         fn_out = self.file_name
         img = self.img_stack.swapaxes(2, 0)
         if dtype is not None:
@@ -84,17 +100,24 @@ class TiffWriter(object):
             dt = self.pixeltype_np[self.pixeltype]
         img = change_dtype(img, dt)
         # img = img.reshape([1,1]+list(img.shape)).swapaxes(2, 0)
-        if mode == 'imagej':
+        if mode == "imagej":
             if bigtiff is None:
-                bigtiff=False
-            tifffile.imsave(fn_out, img, compress=compression, imagej=True,
-                            bigtiff=bigtiff)
-        elif mode == 'ome':
+                bigtiff = False
+            tifffile.imsave(
+                fn_out, img, compress=compression, imagej=True, bigtiff=bigtiff
+            )
+        elif mode == "ome":
             if bigtiff is None:
-                bigtiff=True
+                bigtiff = True
             xml = self.get_xml(dtype=dtype)
-            tifffile.imsave(fn_out, img, compress=compression, imagej=False,
-                            description=xml, bigtiff=bigtiff)
+            tifffile.imsave(
+                fn_out,
+                img,
+                compress=compression,
+                imagej=False,
+                description=xml,
+                bigtiff=bigtiff,
+            )
 
     # def save_xml(self):
     #     xml = self.get_xml()
@@ -135,22 +158,20 @@ class TiffWriter(object):
             channel_info = self.channel_name[i]
             p.Channel(i).set_SamplesPerPixel(1)
             p.Channel(i).set_Name(channel_info)
-            p.Channel(i).set_ID('Channel:0:' + str(i))
-            p.Channel(i).node.set('Fluor', self.fluor[i])
+            p.Channel(i).set_ID("Channel:0:" + str(i))
+            p.Channel(i).node.set("Fluor", self.fluor[i])
         # adds original metadata as annotation
         if self.original_description is not None:
-            if isinstance(self.original_description,
-                          type(ElementTree.Element(1))):
+            if isinstance(self.original_description, type(ElementTree.Element(1))):
                 result = StringIO()
-                ElementTree.ElementTree(self.original_description).write(result,
-                                                          encoding=uenc, method="xml")
+                ElementTree.ElementTree(self.original_description).write(
+                    result, encoding=uenc, method="xml"
+                )
                 desc = result.getvalue()
             else:
                 desc = str(self.original_description)
 
-            omexml.structured_annotations.add_original_metadata(
-                'MCD-XML',
-                desc)
+            omexml.structured_annotations.add_original_metadata("MCD-XML", desc)
 
         xml = omexml.to_xml()
         return xml

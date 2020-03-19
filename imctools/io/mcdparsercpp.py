@@ -8,6 +8,7 @@ from imctools.io.mcdparser import McdParser
 from imctools.io.imcacquisition import ImcAcquisition
 from imctools.io.abstractparser import AbstractParser
 
+
 class McdParserCpp(McdParser):
     """
     An mcdparser that uses the bindings to the 
@@ -30,17 +31,19 @@ class McdParserCpp(McdParser):
         meta = self._cppmcd.readMetadata()
         self._cppmeta = meta
         self._xml = et.fromstring(meta.schemaXML)
-        self._ns = '{'+self._xml.tag.split('}')[0].strip('{')+'}'
+        self._ns = "{" + self._xml.tag.split("}")[0].strip("{") + "}"
 
     @property
     def filename(self):
         return self._filename
 
     def get_acquisition_buffer(self):
-        raise NotImplementedError('Returning buffer not implemented for this parser')
+        raise NotImplementedError("Returning buffer not implemented for this parser")
 
     def get_acquisition_rawdata(self, ac_id):
-        ac = [ac for ac in self._cppmeta.acquisitions if ac.properties['ID'] == ac_id][0]
+        ac = [ac for ac in self._cppmeta.acquisitions if ac.properties["ID"] == ac_id][
+            0
+        ]
         acdat = self._cppmcd.readAcquisitionData(ac)
         dat = np.vstack([c.data for c in acdat.channelData]).T
         return dat

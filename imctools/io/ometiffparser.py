@@ -5,6 +5,7 @@ import numpy as np
 import xml.etree.ElementTree as et
 from imctools.io.abstractparser import AbstractParser
 
+
 class OmetiffParser(AbstractParser, OmeParserBase):
     """
     Parses an ome tiff
@@ -16,13 +17,13 @@ class OmetiffParser(AbstractParser, OmeParserBase):
 
         :param filename:
         """
-        #self._data = None
-        #self._ome = None
+        # self._data = None
+        # self._ome = None
         AbstractParser.__init__(self)
         self.read_image(original_file)
         self.filename = original_file
         self.n_acquisitions = 1
-        OmeParserBase.__init__(self, self.data, self.ome, origin='ome.tiff')
+        OmeParserBase.__init__(self, self.data, self.ome, origin="ome.tiff")
 
     def get_imc_acquisition(self):
         """
@@ -31,28 +32,29 @@ class OmetiffParser(AbstractParser, OmeParserBase):
         :return:
         """
         meta = self.meta_dict
-        return ImcAcquisition(meta['image_ID'],    self.original_file,
-                              self.data,
-                              meta['channel_metals'],
-                              meta['channel_labels'],
-                              original_metadata=self.ome ,
-                              image_description=None,
-                              origin=self.origin,
-                              offset=0)
+        return ImcAcquisition(
+            meta["image_ID"],
+            self.original_file,
+            self.data,
+            meta["channel_metals"],
+            meta["channel_labels"],
+            original_metadata=self.ome,
+            image_description=None,
+            origin=self.origin,
+            offset=0,
+        )
 
     def read_image(self, filename):
         with tifffile.TiffFile(filename) as tif:
             try:
-                self.data = tif.asarray(out='memmap')
+                self.data = tif.asarray(out="memmap")
             except:
                 # this is in an older tifffile version is used
                 self.data = tif.asarray()
             try:
-                self.ome = tif.pages[0].tags['ImageDescription'].value
+                self.ome = tif.pages[0].tags["ImageDescription"].value
             except:
-                self.ome = tif.pages[0].tags['image_description'].value
-
-
+                self.ome = tif.pages[0].tags["image_description"].value
 
     # @staticmethod
     # def reshape_flat(data):
@@ -71,11 +73,13 @@ class OmetiffParser(AbstractParser, OmeParserBase):
     #                       data))
     #     return data
 
-if __name__ == '__main__':
-    fn = '/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff'
+
+if __name__ == "__main__":
+    fn = "/home/vitoz/temp/HIER_healthy_4_3_HIER5_4.ome.tiff"
     parser = OmetiffParser(fn)
     imc_ac = parser.get_imc_acquisition()
     import matplotlib.pyplot as plt
+
     plt.figure()
     dat = np.array(imc_ac.get_img_stack_cyx([0])).squeeze()
     plt.imshow(np.array(imc_ac.get_img_stack_cyx([0])).squeeze())

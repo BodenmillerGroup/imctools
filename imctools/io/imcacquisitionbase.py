@@ -1,4 +1,5 @@
 from __future__ import with_statement, division
+
 try:
     xrange
 except NameError:
@@ -13,13 +14,25 @@ import os
 import array
 import string
 
+
 class ImcAcquisitionBase(object):
     """
      An Image Acquisition Object representing a single acquisition
 
     """
-    def __init__(self, image_ID, original_file, data, channel_metal, channel_labels,
-                 original_metadata=None, image_description=None, origin=None, offset=0):
+
+    def __init__(
+        self,
+        image_ID,
+        original_file,
+        data,
+        channel_metal,
+        channel_labels,
+        original_metadata=None,
+        image_description=None,
+        origin=None,
+        offset=0,
+    ):
         """
 
         :param image_ID: The acquisition ID
@@ -50,14 +63,13 @@ class ImcAcquisitionBase(object):
         self.image_description = image_description
         self.origin = origin
 
-
     @property
     def original_filename(self):
         return os.path.split(self.original_file)[1]
 
     @property
     def n_channels(self):
-        return len(self._data)-self._offset
+        return len(self._data) - self._offset
 
     @property
     def shape(self):
@@ -65,16 +77,19 @@ class ImcAcquisitionBase(object):
 
     @property
     def channel_metals(self):
-        return self._channel_metals[self._offset:]
+        return self._channel_metals[self._offset :]
 
     @property
     def channel_mass(self):
-        return [''.join([m for m in metal if m.isdigit()]) for metal in self._channel_metals[self._offset:]]
+        return [
+            "".join([m for m in metal if m.isdigit()])
+            for metal in self._channel_metals[self._offset :]
+        ]
 
     @property
     def channel_labels(self):
         if self._channel_labels is not None:
-            return self._channel_labels[self._offset:]
+            return self._channel_labels[self._offset :]
         else:
             return None
 
@@ -120,10 +135,9 @@ class ImcAcquisitionBase(object):
 
         data = self._data
 
-        img = [data[i+offset] for i in channel_idxs]
+        img = [data[i + offset] for i in channel_idxs]
 
         return img
-
 
     def get_img_by_channel_nr(self, chan):
         """
@@ -155,41 +169,45 @@ class ImcAcquisitionBase(object):
 
             for i in range(self._offset):
                 if i < 3:
-                    channel = ['X', 'Y', 'Z'][i] + channel
+                    channel = ["X", "Y", "Z"][i] + channel
                 else:
                     channel = [str(i)] + channel
 
         elif len(channel) == self.n_channels + self._offset:
             pass
         else:
-            raise ValueError('Incompatible channel names/labels!')
+            raise ValueError("Incompatible channel names/labels!")
 
         # remove special characters
-        channel = [c.replace('(','').replace(')','').strip() if c is not None else '' for c in channel]
+        channel = [
+            c.replace("(", "").replace(")", "").strip() if c is not None else ""
+            for c in channel
+        ]
         return channel
-
 
     @staticmethod
     def _get_position(name, namelist):
-        pos = [i for i, chan in enumerate(namelist) if chan ==name]
+        pos = [i for i, chan in enumerate(namelist) if chan == name]
         return pos[0]
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from mcdparserbase import McdParserBase
     import time
-    fn = '/mnt/imls-bod/data_vito/grade1.mcd'
+
+    fn = "/mnt/imls-bod/data_vito/grade1.mcd"
     with McdParserBase(fn) as testmcd:
         print(testmcd.filename)
         print(testmcd.n_acquisitions)
         # print(testmcd.get_acquisition_xml('0'))
-        print(testmcd.get_acquisition_channels_xml('0'))
-        print(testmcd.get_acquisition_channels('0'))
-        print(len(testmcd.get_acquisition_rawdata('0')))
+        print(testmcd.get_acquisition_channels_xml("0"))
+        print(testmcd.get_acquisition_channels("0"))
+        print(len(testmcd.get_acquisition_rawdata("0")))
 
         start = time.time()
-        imc_ac = testmcd.get_imc_acquisition('0')
+        imc_ac = testmcd.get_imc_acquisition("0")
         end = time.time()
         print(end - start)
         print(imc_ac.shape)
-        #imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
+        # imc_img.save_image('/mnt/imls-bod/data_vito/test1.tiff')
         # acquisition_dict = get_mcd_data(fn, xml_public)

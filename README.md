@@ -3,6 +3,9 @@
 [![Build Status](https://travis-ci.org/BodenmillerGroup/imctools.svg?branch=master)](https://travis-ci.org/BodenmillerGroup/imctools)
 [![Documentation Status](https://readthedocs.org/projects/imctools/badge/?version=latest)](https://imctools.readthedocs.io/en/latest/?badge=latest)
 
+> `imctools` v1.x is now deprecated. We strongly encourage you to migrate to `imctools` v2.x as all further efforts will be focused on a development of this version.
+> Please modify your processing pipeline source code accordingly, due to many changes in data output format, CLI changes, dropped Python 2 and Fiji plugins support, etc.
+
 An IMC file conversion tool that aims to convert IMC rawfiles (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler tiff files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
 
 Further imctools can directly work as a FIJI plugin, exploiting the Jython language. That allows that IMC data can be directly visualized in FIJI.
@@ -27,13 +30,9 @@ Documentation: https://imctools.readthedocs.io
 
 ## Installation
 
-Preferable way to install `imctools` is via official PyPI registry:
+Preferable way to install `imctools` is via official PyPI registry. Please define package version explicitly in order to avoid incompatibilities between v1.x and v2.x versions:
 ```
-pip install imctools
-```
-To directly install the package from Github (**NOT RECOMMENDED**):
-```
-pip install git+https://github.com/BodenmillerGroup/imctools.git
+pip install imctools==1.0.7
 ```
 
 ## Usage

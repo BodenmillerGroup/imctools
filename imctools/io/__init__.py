@@ -1,7 +1,7 @@
 import warnings
 
-CHANGE_DTYPE_LB_WARNING = 'Data minimum trunkated as outside dtype range'
-CHANGE_DTYPE_UB_WARNING = 'Data max trunkated as outside dtype range'
+CHANGE_DTYPE_LB_WARNING = "Data minimum trunkated as outside dtype range"
+CHANGE_DTYPE_UB_WARNING = "Data max trunkated as outside dtype range"
 
 # Checks if numpy is available in the
 # Python implementation
@@ -13,6 +13,7 @@ except ImportError:
     _is_base = True
 
 if _is_base == False:
+
     def change_dtype(array, dtype):
         """
         Changes the dtype of an array
@@ -24,7 +25,7 @@ if _is_base == False:
         :param dtypw: a numpy dtype
         :returns: a copy of the array with the correct dtype.
         """
-        if dtype.kind in ['i', 'u']:
+        if dtype.kind in ["i", "u"]:
             dinf = np.iinfo(dtype)
             array = np.around(array)
             mina = array.min()

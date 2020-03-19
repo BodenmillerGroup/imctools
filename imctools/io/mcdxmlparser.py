@@ -9,76 +9,76 @@ This module should help parsing the MCD xml metadata
 """
 
 # Definition of all the vocabulary used
-ABLATIONDISTANCEBETWEENSHOTSX = 'AblationDistanceBetweenShotsX'
-ABLATIONDISTANCEBETWEENSHOTSY = 'AblationDistanceBetweenShotsY'
-ABLATIONFREQUENCY = 'AblationFrequency'
-ABLATIONPOWER = 'AblationPower'
-ACQUISITION = 'Acquisition'
-ACQUISITIONCHANNEL = 'AcquisitionChannel'
-ACQUISITIONID = 'AcquisitionID'
-ACQUISITIONROI = 'AcquisitionROI'
-ACQUISITIONROIID = 'AcquisitionROIID'
-AFTERABLATIONIMAGEENDOFFSET = 'AfterAblationImageEndOffset'
-AFTERABLATIONIMAGESTARTOFFSET = 'AfterAblationImageStartOffset'
-BEFOREABLATIONIMAGEENDOFFSET = 'BeforeAblationImageEndOffset'
-BEFOREABLATIONIMAGESTARTOFFSET = 'BeforeAblationImageStartOffset'
-CHANNELLABEL = 'ChannelLabel'
-CHANNELNAME = 'ChannelName'
-DATAENDOFFSET = 'DataEndOffset'
-DATASTARTOFFSET = 'DataStartOffset'
-DESCRIPTION = 'Description'
-DUALCOUNTSTART = 'DualCountStart'
-ENDTIMESTAMP = 'EndTimeStamp'
-FILENAME = 'Filename'
-HEIGHTUM = 'HeightUm'
-ID = 'ID'
-IMAGEENDOFFSET = 'ImageEndOffset'
-IMAGEFILE = 'ImageFile'
-IMAGEFORMAT = 'ImageFormat'
-IMAGESTARTOFFSET = 'ImageStartOffset'
-MCDSCHEMA = 'MCDSchema'
-MAXX = 'MaxX'
-MAXY = 'MaxY'
-MOVEMENTTYPE = 'MovementType'
-ORDERNUMBER = 'OrderNumber'
-PANORAMA = 'Panorama'
-PANORAMAID = 'PanoramaID'
-PANORAMAPIXELXPOS = 'PanoramaPixelXPos'
-PANORAMAPIXELYPOS = 'PanoramaPixelYPos'
-PIXELHEIGHT = 'PixelHeight'
-PIXELSCALECOEF = 'PixelScaleCoef'
-PIXELWIDTH = 'PixelWidth'
-PLUMEEND = 'PlumeEnd'
-PLUMESTART = 'PlumeStart'
-ROIENDXPOSUM = 'ROIEndXPosUm'
-ROIENDYPOSUM = 'ROIEndYPosUm'
-ROIPOINT = 'ROIPoint'
-ROISTARTXPOSUM = 'ROIStartXPosUm'
-ROISTARTYPOSUM = 'ROIStartYPosUm'
-ROITYPE = 'ROIType'
-SEGMENTDATAFORMAT = 'SegmentDataFormat'
-SIGNALTYPE = 'SignalType'
-SLIDE = 'Slide'
-SLIDEID = 'SlideID'
-SLIDETYPE = 'SlideType'
-SLIDEX1POSUM = 'SlideX1PosUm'
-SLIDEX2POSUM = 'SlideX2PosUm'
-SLIDEX3POSUM = 'SlideX3PosUm'
-SLIDEX4POSUM = 'SlideX4PosUm'
-SLIDEXPOSUM = 'SlideXPosUm'
-SLIDEY1POSUM = 'SlideY1PosUm'
-SLIDEY2POSUM = 'SlideY2PosUm'
-SLIDEY3POSUM = 'SlideY3PosUm'
-SLIDEY4POSUM = 'SlideY4PosUm'
-SLIDEYPOSUM = 'SlideYPosUm'
-STARTTIMESTAMP = 'StartTimeStamp'
-TEMPLATE = 'Template'
-UID = 'UID'
-VALUEBYTES = 'ValueBytes'
-WIDTHUM = 'WidthUm'
+ABLATIONDISTANCEBETWEENSHOTSX = "AblationDistanceBetweenShotsX"
+ABLATIONDISTANCEBETWEENSHOTSY = "AblationDistanceBetweenShotsY"
+ABLATIONFREQUENCY = "AblationFrequency"
+ABLATIONPOWER = "AblationPower"
+ACQUISITION = "Acquisition"
+ACQUISITIONCHANNEL = "AcquisitionChannel"
+ACQUISITIONID = "AcquisitionID"
+ACQUISITIONROI = "AcquisitionROI"
+ACQUISITIONROIID = "AcquisitionROIID"
+AFTERABLATIONIMAGEENDOFFSET = "AfterAblationImageEndOffset"
+AFTERABLATIONIMAGESTARTOFFSET = "AfterAblationImageStartOffset"
+BEFOREABLATIONIMAGEENDOFFSET = "BeforeAblationImageEndOffset"
+BEFOREABLATIONIMAGESTARTOFFSET = "BeforeAblationImageStartOffset"
+CHANNELLABEL = "ChannelLabel"
+CHANNELNAME = "ChannelName"
+DATAENDOFFSET = "DataEndOffset"
+DATASTARTOFFSET = "DataStartOffset"
+DESCRIPTION = "Description"
+DUALCOUNTSTART = "DualCountStart"
+ENDTIMESTAMP = "EndTimeStamp"
+FILENAME = "Filename"
+HEIGHTUM = "HeightUm"
+ID = "ID"
+IMAGEENDOFFSET = "ImageEndOffset"
+IMAGEFILE = "ImageFile"
+IMAGEFORMAT = "ImageFormat"
+IMAGESTARTOFFSET = "ImageStartOffset"
+MCDSCHEMA = "MCDSchema"
+MAXX = "MaxX"
+MAXY = "MaxY"
+MOVEMENTTYPE = "MovementType"
+ORDERNUMBER = "OrderNumber"
+PANORAMA = "Panorama"
+PANORAMAID = "PanoramaID"
+PANORAMAPIXELXPOS = "PanoramaPixelXPos"
+PANORAMAPIXELYPOS = "PanoramaPixelYPos"
+PIXELHEIGHT = "PixelHeight"
+PIXELSCALECOEF = "PixelScaleCoef"
+PIXELWIDTH = "PixelWidth"
+PLUMEEND = "PlumeEnd"
+PLUMESTART = "PlumeStart"
+ROIENDXPOSUM = "ROIEndXPosUm"
+ROIENDYPOSUM = "ROIEndYPosUm"
+ROIPOINT = "ROIPoint"
+ROISTARTXPOSUM = "ROIStartXPosUm"
+ROISTARTYPOSUM = "ROIStartYPosUm"
+ROITYPE = "ROIType"
+SEGMENTDATAFORMAT = "SegmentDataFormat"
+SIGNALTYPE = "SignalType"
+SLIDE = "Slide"
+SLIDEID = "SlideID"
+SLIDETYPE = "SlideType"
+SLIDEX1POSUM = "SlideX1PosUm"
+SLIDEX2POSUM = "SlideX2PosUm"
+SLIDEX3POSUM = "SlideX3PosUm"
+SLIDEX4POSUM = "SlideX4PosUm"
+SLIDEXPOSUM = "SlideXPosUm"
+SLIDEY1POSUM = "SlideY1PosUm"
+SLIDEY2POSUM = "SlideY2PosUm"
+SLIDEY3POSUM = "SlideY3PosUm"
+SLIDEY4POSUM = "SlideY4PosUm"
+SLIDEYPOSUM = "SlideYPosUm"
+STARTTIMESTAMP = "StartTimeStamp"
+TEMPLATE = "Template"
+UID = "UID"
+VALUEBYTES = "ValueBytes"
+WIDTHUM = "WidthUm"
 
-PARSER = 'parser'
-META_CSV = '_meta.csv'
+PARSER = "parser"
+META_CSV = "_meta.csv"
 """
 Definition of all the meta objects
 Each entity will have a class corresponding to it, with helpermethods
@@ -89,10 +89,13 @@ and a nested dictionary of children of the form (child_type: childID: childobjec
 
 Further each object is registered in the global root node, making them easy accessible.
 """
+
+
 class Meta(object):
     """
     Represents an abstract metadata object.
     """
+
     def __init__(self, mtype, meta, parents, symbol=None):
         """
         Initializes the metadata object, generates the
@@ -124,7 +127,7 @@ class Meta(object):
 
     @property
     def is_root(self):
-       return len(self.parents) == 0
+        return len(self.parents) == 0
 
     def _update_parents(self, p):
         self._update_dict(p.childs)
@@ -150,24 +153,28 @@ class Meta(object):
     @property
     def metaname(self):
         pname = self.parents[0].metaname
-        return '_'.join([pname, self.symbol+self.id])
+        return "_".join([pname, self.symbol + self.id])
+
 
 # Definition of the subclasses
 class Slide(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, SLIDE, meta, parents, 's')
+        Meta.__init__(self, SLIDE, meta, parents, "s")
+
 
 class Panorama(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, PANORAMA, meta, parents, 'p')
+        Meta.__init__(self, PANORAMA, meta, parents, "p")
+
 
 class AcquisitionRoi(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITIONROI, meta, parents, 'r')
+        Meta.__init__(self, ACQUISITIONROI, meta, parents, "r")
+
 
 class Acquisition(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITION, meta, parents, 'a')
+        Meta.__init__(self, ACQUISITION, meta, parents, "a")
 
     def get_channels(self):
         return self.childs[ACQUISITIONCHANNEL]
@@ -192,11 +199,13 @@ class Acquisition(Meta):
 
     @property
     def data_size(self):
-        return self.data_offset_end - self.data_offset_start +1
+        return self.data_offset_end - self.data_offset_start + 1
 
     @property
     def data_nrows(self):
-        nrow = int(self.data_size/(self.n_channels * int(self.properties[VALUEBYTES])))
+        nrow = int(
+            self.data_size / (self.n_channels * int(self.properties[VALUEBYTES]))
+        )
         return nrow
 
     @property
@@ -206,24 +215,27 @@ class Acquisition(Meta):
 
 class RoiPoint(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ROIPOINT, meta, parents, 'rp')
+        Meta.__init__(self, ROIPOINT, meta, parents, "rp")
+
 
 class Channel(Meta):
     def __init__(self, meta, parents):
-        Meta.__init__(self, ACQUISITIONCHANNEL, meta, parents, 'c')
+        Meta.__init__(self, ACQUISITIONCHANNEL, meta, parents, "c")
 
 
 # A dictionary to map metadata keys to metadata types
 # The order reflects the dependency structure of them and the
 # order these objects should be initialized
-OBJ_DICT = OrderedDict([
-    (SLIDE, Slide),
-    (PANORAMA, Panorama),
-    (ACQUISITIONROI, AcquisitionRoi),
-    (ACQUISITION, Acquisition),
-    (ROIPOINT, RoiPoint),
-    (ACQUISITIONCHANNEL, Channel)
-])
+OBJ_DICT = OrderedDict(
+    [
+        (SLIDE, Slide),
+        (PANORAMA, Panorama),
+        (ACQUISITIONROI, AcquisitionRoi),
+        (ACQUISITION, Acquisition),
+        (ROIPOINT, RoiPoint),
+        (ACQUISITIONCHANNEL, Channel),
+    ]
+)
 
 # A dictionary to map id keys to metadata keys
 # Used for initializaiton of the objects
@@ -231,13 +243,15 @@ ID_DICT = {
     SLIDEID: SLIDE,
     PANORAMAID: PANORAMA,
     ACQUISITIONROIID: ACQUISITIONROI,
-    ACQUISITIONID: ACQUISITION
+    ACQUISITIONID: ACQUISITION,
 }
+
 
 class McdXmlParser(Meta):
     """
     Represents the full mcd xml
     """
+
     def __init__(self, xml, filename=None):
         self._rawxml = xml
         meta = libb.etree_to_dict(xml)
@@ -252,11 +266,10 @@ class McdXmlParser(Meta):
     @property
     def metaname(self):
         mcd_fn = self.filename
-        mcd_fn = mcd_fn.replace('\\', '/')
-        mcd_fn = os.path.split(mcd_fn)[1].rstrip('_schema.xml')
+        mcd_fn = mcd_fn.replace("\\", "/")
+        mcd_fn = os.path.split(mcd_fn)[1].rstrip("_schema.xml")
         mcd_fn = os.path.splitext(mcd_fn)[0]
         return mcd_fn
-
 
     def _init_objects(self):
         obj_keys = [k for k in OBJ_DICT.keys() if k in self.properties.keys()]
@@ -269,7 +282,6 @@ class McdXmlParser(Meta):
                 if len(parents) == 0:
                     parents = [self]
                 ObjClass(o, parents)
-
 
     def get_objects_by_id(self, idname, objid):
         """
@@ -304,9 +316,10 @@ class McdXmlParser(Meta):
 
     def save_meta_xml(self, out_folder):
         xml = self._rawxml
-        fn = self.metaname + '_schema.xml'
+        fn = self.metaname + "_schema.xml"
         et.ElementTree.ElementTree(xml).write(
-            os.path.join(out_folder,fn), encoding='utf-8')
+            os.path.join(out_folder, fn), encoding="utf-8"
+        )
 
     def save_meta_csv(self, out_folder):
         """
@@ -315,8 +328,8 @@ class McdXmlParser(Meta):
         """
         for n, o in self.objects.items():
             odict = [i.properties for k, i in o.items()]
-            fn = '_'.join([self.metaname, n]) + META_CSV
-            with open(os.path.join(out_folder, fn), 'w') as csvfile:
+            fn = "_".join([self.metaname, n]) + META_CSV
+            with open(os.path.join(out_folder, fn), "w") as csvfile:
                 cols = odict[0].keys()
                 writer = csv.DictWriter(csvfile, sorted(cols))
                 writer.writeheader()
@@ -341,7 +354,6 @@ class McdXmlParser(Meta):
         """
         return self.get_object(ACQUISITION, acid).properties
 
-
     def get_acquisition_rois(self):
         """
         gets a list of all acuisitionROIs
@@ -359,4 +371,3 @@ class McdXmlParser(Meta):
         get a list of all roipoints
         """
         raise NotImplementedError
-
