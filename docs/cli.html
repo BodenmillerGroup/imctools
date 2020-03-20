@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>imctools.cli API documentation</title>
+<meta name="description" content="CLI interface for imctools library" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imctools.cli</code></h1>
+</header>
+<section id="section-intro">
+<p>CLI interface for imctools library</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;CLI interface for imctools library&#34;&#34;&#34;
+
+import argparse
+
+from imctools.converters import (
+    export_acquisition_csv,
+    mcdfolder_to_imcfolder,
+    omefile_2_analysisfolder,
+    omefile_to_histocatfolder,
+    omefile_to_tifffolder,
+    omefolder_to_histocatfolder,
+    probability_to_uncertainty,
+)
+from imctools.converters.exportacquisitioncsv import AC_META
+
+
+def main():
+    &#34;&#34;&#34;Main CLI entry point.&#34;&#34;&#34;
+
+    parser = argparse.ArgumentParser(prog=&#34;imctools&#34;, description=&#34;Tools to handle Fluidigm IMC data.&#34;)
+    subparsers = parser.add_subparsers(help=&#34;Sub-command help.&#34;)
+
+    _add_mcdfolder2imcfolder_parser(subparsers)
+    _add_omefolder2histocatfolder_parser(subparsers)
+    _add_omefile2histocatfolder_parser(subparsers)
+    _add_omefile2tifffolder_parser(subparsers)
+    _add_omefile2analysisfolder_parser(subparsers)
+    _add_exportacquisitioncsv_parser(subparsers)
+
+    # main entry point
+    args = parser.parse_args()
+    if hasattr(args, &#34;func&#34;):
+        args.func(args)
+    else:
+        parser.print_help()
+
+
+def _add_mcdfolder2imcfolder_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        mcdfolder_to_imcfolder(args.input, args.output_folder, args.zip, args.skip_csv)
+
+    parser = subparsers.add_parser(
+        &#34;mcdfolder2imcfolder&#34;,
+        description=&#34;Converts a folder or zip file of raw data (.mcd and .txt) to IMC folder.&#34;,
+        help=&#34;Converts a folder or zip file of raw data (.mcd and .txt) to IMC folder.&#34;,
+    )
+    parser.add_argument(&#34;input&#34;, help=&#34;Path to the folder/zip archive containing the IMC raw data.&#34;)
+    parser.add_argument(&#34;output_folder&#34;, help=&#34;Path to the output folder.&#34;)
+    parser.add_argument(&#34;--zip&#34;, action=&#34;store_true&#34;, help=&#34;Whether to create an output as .zip file.&#34;)
+    parser.add_argument(&#34;--skip-csv&#34;, action=&#34;store_true&#34;, help=&#34;Whether to skip creation of CSV metadata files.&#34;)
+    parser.set_defaults(func=func)
+
+
+def _add_omefolder2histocatfolder_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        omefolder_to_histocatfolder(
+            args.input_folder, args.output_folder, args.mask_folder, args.mask_suffix, args.imagetype
+        )
+
+    parser = subparsers.add_parser(
+        &#34;omefolder2histocatfolder&#34;,
+        description=&#34;Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.&#34;,
+        help=&#34;Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.&#34;,
+    )
+    parser.add_argument(&#34;input_folder&#34;, help=&#34;Input folder with OME-TIFF files.&#34;)
+    parser.add_argument(&#34;output_folder&#34;, help=&#34;Output folder.&#34;)
+    parser.add_argument(&#34;--mask_folder&#34;, help=&#34;Folder containing the masks, or single mask file.&#34;, default=None)
+    parser.add_argument(&#34;--mask_suffix&#34;, help=&#34;Suffix of the mask TIFFs.&#34;, default=&#34;_mask.tiff&#34;)
+    parser.add_argument(
+        &#34;--imagetype&#34;, help=&#34;The output image type.&#34;, default=None, choices=[None, &#34;uint16&#34;, &#34;int16&#34;, &#34;float&#34;]
+    )
+    parser.set_defaults(func=func)
+
+
+def _add_omefile2histocatfolder_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        omefile_to_histocatfolder(args.filename, args.base_folder, args.mask_file, args.imagetype)
+
+    parser = subparsers.add_parser(
+        &#34;omefile2histocatfolder&#34;,
+        description=&#34;Converts single OME-TIFF file to a folder compatible with HistoCAT software.&#34;,
+        help=&#34;Converts single OME-TIFF file to a folder compatible with HistoCAT software.&#34;,
+    )
+    parser.add_argument(&#34;filename&#34;, help=&#34;Path to OME-TIFF input file.&#34;)
+    parser.add_argument(&#34;base_folder&#34;, help=&#34;Base output folder.&#34;)
+    parser.add_argument(&#34;--mask_file&#34;, help=&#34;Path to mask file.&#34;, default=None)
+    parser.add_argument(
+        &#34;--imagetype&#34;, help=&#34;The output image type.&#34;, default=None, choices=[None, &#34;uint16&#34;, &#34;int16&#34;, &#34;float&#34;]
+    )
+    parser.set_defaults(func=func)
+
+
+def _add_omefile2tifffolder_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        omefile_to_tifffolder(args.filename, args.output_folder, args.basename, args.imagetype)
+
+    parser = subparsers.add_parser(
+        &#34;omefile2tifffolder&#34;,
+        description=&#34;Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.&#34;,
+        help=&#34;Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.&#34;,
+    )
+    parser.add_argument(&#34;filename&#34;, help=&#34;Path to OME-TIFF input file.&#34;)
+    parser.add_argument(&#34;output_folder&#34;, help=&#34;Output folder.&#34;)
+    parser.add_argument(&#34;--basename&#34;, help=&#34;Basename for generated output files.&#34;, default=None)
+    parser.add_argument(
+        &#34;--imagetype&#34;, help=&#34;The output image type.&#34;, default=None, choices=[None, &#34;uint16&#34;, &#34;int16&#34;, &#34;float&#34;]
+    )
+    parser.set_defaults(func=func)
+
+
+def _add_omefile2analysisfolder_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        omefile_2_analysisfolder(
+            args.filename,
+            args.output_folder,
+            args.basename,
+            args.pannelcsv,
+            args.metalcolumn,
+            args.masscolumn,
+            args.usedcolumn,
+            args.addsum,
+            args.bigtiff,
+            not args.nosort,  # Invert argument value!
+            args.imagetype,
+        )
+
+    parser = subparsers.add_parser(
+        &#34;omefile2analysisfolder&#34;,
+        description=&#34;Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.&#34;,
+        help=&#34;Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.&#34;,
+    )
+    parser.add_argument(&#34;filename&#34;, help=&#34;Path to OME-TIFF input file.&#34;)
+    parser.add_argument(&#34;output_folder&#34;, help=&#34;Output folder.&#34;)
+    parser.add_argument(&#34;--basename&#34;, help=&#34;Basename for generated output files.&#34;, default=None)
+    parser.add_argument(
+        &#34;--pannelcsv&#34;, help=&#34;Name of the CSV file that contains the channels to be written out.&#34;, default=None
+    )
+    parser.add_argument(&#34;--metalcolumn&#34;, help=&#34;Column name of the metal names.&#34;, default=&#34;Metal Tag&#34;)
+    parser.add_argument(
+        &#34;--masscolumn&#34;,
+        help=&#34;Column name of the mass names. If provided the metal column will be ignored.&#34;,
+        default=None,
+    )
+    parser.add_argument(
+        &#34;--usedcolumn&#34;,
+        help=&#34;Column that should contain booleans (0, 1) if the channel should be used.&#34;,
+        default=&#34;ilastik&#34;,
+    )
+    parser.add_argument(&#34;--addsum&#34;, action=&#34;store_true&#34;, help=&#34;Add the sum of the data as the first layer.&#34;)
+    parser.add_argument(&#34;--bigtiff&#34;, action=&#34;store_true&#34;, help=&#34;Whether to save TIFF files in BigTIFF format.&#34;)
+    parser.add_argument(&#34;--nosort&#34;, action=&#34;store_true&#34;, help=&#34;Whether to skip sorting channels by mass.&#34;)
+    parser.add_argument(
+        &#34;--imagetype&#34;, help=&#34;The output image type.&#34;, default=None, choices=[None, &#34;uint16&#34;, &#34;int16&#34;, &#34;float&#34;]
+    )
+    parser.set_defaults(func=func)
+
+
+def _add_exportacquisitioncsv_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        export_acquisition_csv(args.ome_folder, args.output_folder, args.output_name)
+
+    parser = subparsers.add_parser(
+        &#34;exportacquisitioncsv&#34;,
+        description=&#34;Reads all the acquisition metadata from the ome folders and concatenates them to a csv that contains all the metadata.&#34;,
+        help=&#34;Reads all the acquisition metadata from the ome folders and concatenates them to a csv that contains all the metadata.&#34;,
+    )
+    parser.add_argument(&#34;ome_folder&#34;, help=&#34;The path to the folders containing the OME-TIFFs.&#34;)
+    parser.add_argument(&#34;output_folder&#34;, help=&#34;Folder where the metadata CSV file should be stored in.&#34;)
+    parser.add_argument(&#34;--output_name&#34;, help=&#34;Filename of the acquisition metadata CSV file.&#34;, default=AC_META)
+    parser.set_defaults(func=func)
+
+
+def _add_probability2uncertainty_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        probability_to_uncertainty(args.ome_folder, args.output_folder, args.output_name)
+
+    parser = subparsers.add_parser(
+        &#34;probability2uncertainty&#34;,
+        description=&#34;Converts probability masks to uncertainties.&#34;,
+        help=&#34;Converts probability masks to uncertainties.&#34;,
+    )
+    parser.add_argument(&#34;filename&#34;, help=&#34;The path to the probability TIFF file.&#34;)
+    parser.add_argument(
+        &#34;--output_folder&#34;,
+        help=&#34;Folder to save the images in. By default a sub-folder with the basename image_filename in the image_filename folder.&#34;,
+        default=None,
+    )
+    parser.add_argument(&#34;--basename&#34;, help=&#34;Basename for the output image. Default: image_filename&#34;, default=None)
+    parser.set_defaults(func=func)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="imctools.cli.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Main CLI entry point.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    &#34;&#34;&#34;Main CLI entry point.&#34;&#34;&#34;
+
+    parser = argparse.ArgumentParser(prog=&#34;imctools&#34;, description=&#34;Tools to handle Fluidigm IMC data.&#34;)
+    subparsers = parser.add_subparsers(help=&#34;Sub-command help.&#34;)
+
+    _add_mcdfolder2imcfolder_parser(subparsers)
+    _add_omefolder2histocatfolder_parser(subparsers)
+    _add_omefile2histocatfolder_parser(subparsers)
+    _add_omefile2tifffolder_parser(subparsers)
+    _add_omefile2analysisfolder_parser(subparsers)
+    _add_exportacquisitioncsv_parser(subparsers)
+
+    # main entry point
+    args = parser.parse_args()
+    if hasattr(args, &#34;func&#34;):
+        args.func(args)
+    else:
+        parser.print_help()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imctools" href="index.html">imctools</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="imctools.cli.main" href="#imctools.cli.main">main</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

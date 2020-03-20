@@ -4,6 +4,7 @@ from pathlib import Path
 import tifffile
 
 from imctools.data import Session
+from imctools.data.acquisitiondata import AcquisitionData
 from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX
 
 
@@ -30,12 +31,15 @@ class ImcParser:
         with open(os.path.join(self.input_dir, xml_metadata_filename), "rt") as f:
             return f.read()
 
-    def get_acquisition_image_data(self, acquisition_id: int):
-        """Returns an Acquisition object with relevant image data"""
-        ac = self.session.acquisitions.get(acquisition_id)
-        filename = ac.meta_name + OME_TIFF_SUFFIX
-        ac.image_data = ImcParser._read_file(os.path.join(self.input_dir, filename))
-        return ac
+    def get_acquisition_data(self, acquisition_id: int):
+        """Returns AcquisitionData object with binary image data"""
+        acquisition = self.session.acquisitions.get(acquisition_id)
+        if acquisition is None:
+            return None
+        filename = acquisition.meta_name + OME_TIFF_SUFFIX
+        image_data = ImcParser._read_file(os.path.join(self.input_dir, filename))
+        acquisition_data = AcquisitionData(acquisition, image_data)
+        return acquisition_data
 
     @staticmethod
     def _read_file(filepath: str):
@@ -57,7 +61,7 @@ if __name__ == "__main__":
     with ImcParser("/home/anton/Downloads/imc_from_mcd") as parser:
         session = parser.session
         xml = parser.get_mcd_xml()
-        ac = parser.get_acquisition_image_data(1)
+        ac = parser.get_acquisition_data(1)
         img = ac.get_image_by_index(1)
 
     print(timeit.default_timer() - tic)

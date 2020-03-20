@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Optional, Sequence
+from typing import Dict, Optional, Sequence, TypedDict
 
 from dateutil.parser import parse
 
@@ -16,6 +16,34 @@ class AblationImageType(Enum):
 
     BEFORE = "before"
     AFTER = "after"
+
+
+class AcquisitionDict(TypedDict):
+    slide_id: int
+    id: int
+    origin: str
+    source_path: str
+    max_x: int
+    max_y: int
+    signal_type: Optional[str]
+    segment_data_format: Optional[str]
+    ablation_frequency: Optional[float]
+    ablation_power: Optional[float]
+    start_timestamp: Optional[str]
+    end_timestamp: Optional[str]
+    movement_type: Optional[str]
+    ablation_distance_between_shots_x: Optional[float]
+    ablation_distance_between_shots_y: Optional[float]
+    template: Optional[str]
+    roi_start_x_pos_um: Optional[float]
+    roi_start_y_pos_um: Optional[float]
+    roi_end_x_pos_um: Optional[float]
+    roi_end_y_pos_um: Optional[float]
+    description: Optional[str]
+    before_ablation_image_exists: bool
+    after_ablation_image_exists: bool
+    metadata: Optional[Dict[str, str]]
+    is_valid: bool
 
 
 class Acquisition:
@@ -133,34 +161,34 @@ class Acquisition:
         self.channels: Dict[int, Channel] = dict()
 
     @staticmethod
-    def from_dict(d: Dict[str, Any]):
+    def from_dict(d: AcquisitionDict):
         """Recreate an object from dictionary"""
         result = Acquisition(
-            int(d.get("slide_id")),
-            int(d.get("id")),
+            d.get("slide_id"),
+            d.get("id"),
             d.get("origin"),
             d.get("source_path"),
-            int(d.get("max_x")),
-            int(d.get("max_y")),
+            d.get("max_x"),
+            d.get("max_y"),
             signal_type=d.get("signal_type"),
             segment_data_format=d.get("segment_data_format"),
-            ablation_frequency=float(d.get("ablation_frequency")),
-            ablation_power=float(d.get("ablation_power")),
+            ablation_frequency=d.get("ablation_frequency"),
+            ablation_power=d.get("ablation_power"),
             start_timestamp=parse(d.get("start_timestamp")),
             end_timestamp=parse(d.get("end_timestamp")),
             movement_type=d.get("movement_type"),
-            ablation_distance_between_shots_x=float(d.get("ablation_distance_between_shots_x")),
-            ablation_distance_between_shots_y=float(d.get("ablation_distance_between_shots_y")),
+            ablation_distance_between_shots_x=d.get("ablation_distance_between_shots_x"),
+            ablation_distance_between_shots_y=d.get("ablation_distance_between_shots_y"),
             template=d.get("template"),
-            roi_start_x_pos_um=float(d.get("roi_start_x_pos_um")),
-            roi_start_y_pos_um=float(d.get("roi_start_y_pos_um")),
-            roi_end_x_pos_um=float(d.get("roi_end_x_pos_um")),
-            roi_end_y_pos_um=float(d.get("roi_end_y_pos_um")),
+            roi_start_x_pos_um=d.get("roi_start_x_pos_um"),
+            roi_start_y_pos_um=d.get("roi_start_y_pos_um"),
+            roi_end_x_pos_um=d.get("roi_end_x_pos_um"),
+            roi_end_y_pos_um=d.get("roi_end_y_pos_um"),
             description=d.get("description"),
-            before_ablation_image_exists=bool(d.get("before_ablation_image_exists")),
-            after_ablation_image_exists=bool(d.get("after_ablation_image_exists")),
+            before_ablation_image_exists=d.get("before_ablation_image_exists"),
+            after_ablation_image_exists=d.get("after_ablation_image_exists"),
             metadata=d.get("metadata"),
-            is_valid=bool(d.get("is_valid")),
+            is_valid=d.get("is_valid"),
         )
         return result
 

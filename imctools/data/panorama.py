@@ -1,8 +1,21 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Dict, Optional, TypedDict
 
 from imctools.data.slide import Slide
+
+
+class PanoramaDict(TypedDict):
+    slide_id: int
+    id: int
+    image_type: str
+    description: str
+    start_position_x: float
+    start_position_y: float
+    width: float
+    height: float
+    rotation_angle: float
+    metadata: Optional[Dict[str, str]]
 
 
 class Panorama:
@@ -61,18 +74,18 @@ class Panorama:
         self.slide: Optional[Slide] = None
 
     @staticmethod
-    def from_dict(d: Dict[str, Any]):
+    def from_dict(d: PanoramaDict):
         """Recreate an object from dictionary"""
         result = Panorama(
-            int(d.get("slide_id")),
-            int(d.get("id")),
+            d.get("slide_id"),
+            d.get("id"),
             d.get("image_type"),
             d.get("description"),
-            float(d.get("start_position_x")),
-            float(d.get("start_position_y")),
-            float(d.get("width")),
-            float(d.get("height")),
-            float(d.get("rotation_angle")),
+            d.get("start_position_x"),
+            d.get("start_position_y"),
+            d.get("width"),
+            d.get("height"),
+            d.get("rotation_angle"),
             metadata=d.get("metadata"),
         )
         return result

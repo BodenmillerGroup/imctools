@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for imctools."""
+"""
+.. include:: ../README.md
+"""
 
 __author__ = """Anton Rau, Vito Zanotelli"""
 __email__ = "anton.rau@uzh.ch, vito.zanotelli@uzh.ch"

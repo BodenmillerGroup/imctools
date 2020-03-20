@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>imctools.io.mcd.mcdparser API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imctools.io.mcd.mcdparser</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import logging
+import mmap
+import os
+from pathlib import Path
+from typing import BinaryIO, Optional, Union
+
+import numpy as np
+
+import imctools.io.mcd.constants as const
+from imctools.data import AblationImageType, Acquisition
+from imctools.data.acquisitiondata import AcquisitionData
+from imctools.io.mcd.mcdxmlparser import McdXmlParser
+from imctools.io.utils import reshape_long_2_cyx
+
+logger = logging.getLogger(__name__)
+
+
+class McdParser:
+    &#34;&#34;&#34;Raw MCD file parser.
+
+    The McdParser object should be closed using the close method.
+    &#34;&#34;&#34;
+
+    def __init__(self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
+        if file_handle is None:
+            self._fh = open(filepath, mode=&#34;rb&#34;)
+        else:
+            self._fh = file_handle
+
+        if xml_metadata_filepath is None:
+            self._meta_fh = self._fh
+        else:
+            self._meta_fh = open(xml_metadata_filepath, mode=&#34;rb&#34;)
+
+        encoding = &#34;utf-8&#34; if xml_metadata_filepath is not None else &#34;utf-16-le&#34;
+        mcd_xml = self._get_mcd_xml(encoding=encoding)
+        self._xml_parser = McdXmlParser(mcd_xml, self._fh.name)
+
+    @property
+    def origin(self):
+        return self._xml_parser.origin
+
+    @property
+    def session(self):
+        return self._xml_parser.session
+
+    def get_mcd_xml(self):
+        &#34;&#34;&#34;Original (raw) metadata from MCD file in XML format.&#34;&#34;&#34;
+        return self._xml_parser.get_mcd_xml()
+
+    @property
+    def mcd_filename(self):
+        &#34;&#34;&#34;Name of the open MCD file&#34;&#34;&#34;
+        return self._fh.name
+
+    def get_acquisition_data(self, acquisition_id: int):
+        &#34;&#34;&#34;Returns AcquisitionData object with binary image data for given acquisition ID&#34;&#34;&#34;
+        acquisition = self.session.acquisitions.get(acquisition_id)
+        if acquisition is None:
+            return None
+        data = self._get_acquisition_raw_data(acquisition)
+        if data is not None:
+            image_data = reshape_long_2_cyx(data, is_sorted=True)
+            # Drop first three channels X, Y, Z
+            image_data = image_data[3:]
+        else:
+            image_data = None
+            acquisition.is_valid = False
+            logger.warning(f&#34;Error reading MCD acquisition: {acquisition_id}&#34;)
+        return AcquisitionData(acquisition, image_data)
+
+    def _get_acquisition_raw_data(self, acquisition: Acquisition):
+        &#34;&#34;&#34;Gets non-reshaped image data from the acquisition.
+
+        Parameters
+        ----------
+        acquisition
+            Acquisition.
+        &#34;&#34;&#34;
+        start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
+        end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
+        # Taking into account 3 dropped channels X, Y, Z!
+        total_n_channels = acquisition.n_channels + 3
+        data_size = end_offset - start_offset + 1
+        data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
+        if data_nrows &lt;= 0:
+            logger.error(f&#34;Acquisition {acquisition.meta_name} is emtpy&#34;)
+            return None
+            # raise AcquisitionError(f&#34;Acquisition {acquisition.id} is emtpy!&#34;)
+
+        data = np.memmap(
+            self._fh, dtype=np.float32, mode=&#34;r&#34;, offset=start_offset, shape=(data_nrows, total_n_channels)
+        )
+        return data
+
+    def save_panorama_image(self, panorama_id: int, output_folder: str, output_filename: Optional[str] = None):
+        &#34;&#34;&#34;Save panorama image of the acquisition&#34;&#34;&#34;
+        panorama_postfix = &#34;pano&#34;
+        image_offset_fix = 161
+        p = self.session.panoramas.get(panorama_id)
+        img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+
+        if img_start - img_end == 0:
+            return 0
+
+        file_end = p.metadata.get(const.IMAGE_FORMAT, &#34;.png&#34;).lower()
+
+        if output_filename is None:
+            output_filename = p.meta_name
+
+        if not (output_filename.endswith(file_end)):
+            output_filename += &#34;_&#34; + panorama_postfix + &#34;.&#34; + file_end
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+
+    def save_slide_image(self, slide_id: int, output_folder: str, output_filename: Optional[str] = None):
+        image_offset_fix = 161
+        slide_postfix = &#34;slide&#34;
+        default_format = &#34;.png&#34;
+
+        s = self.session.slides.get(slide_id)
+        img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
+        if slide_format in [None, &#34;&#34;, &#39;&#34;&#34;&#39;, &#34;&#39;&#39;&#34;]:
+            slide_format = default_format
+
+        slide_format = os.path.splitext(slide_format.lower())
+        if slide_format[1] == &#34;&#34;:
+            slide_format = slide_format[0]
+        else:
+            slide_format = slide_format[1]
+
+        if img_start - img_end == 0:
+            return 0
+
+        if output_filename is None:
+            output_filename = s.meta_name
+        if not (output_filename.endswith(slide_format)):
+            output_filename += &#34;_&#34; + slide_postfix + slide_format
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+
+    def save_before_ablation_image(
+        self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None
+    ):
+        return self._save_ablation_image(
+            acquisition_id,
+            output_folder,
+            AblationImageType.BEFORE,
+            const.BEFORE_ABLATION_IMAGE_START_OFFSET,
+            const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+            output_filename,
+        )
+
+    def save_after_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
+        return self._save_ablation_image(
+            acquisition_id,
+            output_folder,
+            AblationImageType.AFTER,
+            const.AFTER_ABLATION_IMAGE_START_OFFSET,
+            const.AFTER_ABLATION_IMAGE_END_OFFSET,
+            output_filename,
+        )
+
+    def _save_ablation_image(
+        self,
+        acquisition_id: int,
+        output_folder: str,
+        ac_postfix: AblationImageType,
+        start_offset: str,
+        end_offset: str,
+        output_filename: Optional[str] = None,
+    ):
+        image_offset_fix = 161
+        image_format = &#34;.png&#34;
+        a = self.session.acquisitions.get(acquisition_id)
+        img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
+        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
+        if img_end - img_start == 0:
+            return False
+
+        if output_filename is None:
+            output_filename = a.meta_name
+        buf = self._get_buffer(img_start, img_end)
+        if not (output_filename.endswith(image_format)):
+            output_filename += &#34;_&#34; + ac_postfix.value + image_format
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+        return True
+
+    def _get_buffer(self, start: int, stop: int):
+        &#34;&#34;&#34;Read binary data block from memory-mapped file&#34;&#34;&#34;
+        self._fh.seek(start)
+        buf = self._fh.read(stop - start)
+        return buf
+
+    def _inject_imc_datafile(self, filename: str):
+        &#34;&#34;&#34;
+        This function is used in cases where the MCD file is corrupted (missing MCD schema)
+        but there is a MCD schema file available. In this case the .schema file can
+        be loaded with the mcdparser and then the corrupted mcd-data file loaded
+        using this function. This will replace the mcd file data in the backend (containing only
+        the schema data) with the real mcd file (not containing the mcd xml).
+        &#34;&#34;&#34;
+        self.close()
+        self._fh = open(filename, mode=&#34;rb&#34;)
+
+    def _get_mcd_xml(self, start_str: str = &#34;&lt;MCDSchema&#34;, stop_str: str = &#34;&lt;/MCDSchema&gt;&#34;, encoding: str = &#34;utf-16-le&#34;):
+        with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+            # MCD format documentation recommends searching from end for &#34;&lt;MCDSchema&#34;
+            start_offset = mm.rfind(start_str.encode(encoding))
+            if start_offset == -1:
+                raise ValueError(f&#34;Invalid file {self.mcd_filename}: MCD XML start tag not found.&#34;)
+            mm.seek(start_offset)
+            stop_offset = mm.rfind(stop_str.encode(encoding))
+            if stop_offset == -1:
+                raise ValueError(f&#34;Invalid file {self.mcd_filename}: MCD XML stop tag not found.&#34;)
+            else:
+                end_tag_length = len(stop_str)
+                if encoding == &#34;utf-16-le&#34;:
+                    end_tag_length = end_tag_length * 2  # Multiply by 2 due to utf-16 encoding
+                stop_offset += end_tag_length
+            mcd_xml: str = mm.read(stop_offset - start_offset).decode(encoding)
+            return mcd_xml
+
+    def close(self):
+        &#34;&#34;&#34;Close file handlers.&#34;&#34;&#34;
+        self._fh.close()
+        try:
+            self._meta_fh.close()
+        except:
+            pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()
+
+
+if __name__ == &#34;__main__&#34;:
+    import timeit
+
+    tic = timeit.default_timer()
+
+    parser = McdParser(
+        &#34;/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd&#34;
+    )
+
+    print(timeit.default_timer() - tic)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imctools.io.mcd.mcdparser.McdParser"><code class="flex name class">
+<span>class <span class="ident">McdParser</span></span>
+<span>(</span><span>filepath, file_handle=None, xml_metadata_filepath=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Raw MCD file parser.</p>
+<p>The McdParser object should be closed using the close method.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class McdParser:
+    &#34;&#34;&#34;Raw MCD file parser.
+
+    The McdParser object should be closed using the close method.
+    &#34;&#34;&#34;
+
+    def __init__(self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
+        if file_handle is None:
+            self._fh = open(filepath, mode=&#34;rb&#34;)
+        else:
+            self._fh = file_handle
+
+        if xml_metadata_filepath is None:
+            self._meta_fh = self._fh
+        else:
+            self._meta_fh = open(xml_metadata_filepath, mode=&#34;rb&#34;)
+
+        encoding = &#34;utf-8&#34; if xml_metadata_filepath is not None else &#34;utf-16-le&#34;
+        mcd_xml = self._get_mcd_xml(encoding=encoding)
+        self._xml_parser = McdXmlParser(mcd_xml, self._fh.name)
+
+    @property
+    def origin(self):
+        return self._xml_parser.origin
+
+    @property
+    def session(self):
+        return self._xml_parser.session
+
+    def get_mcd_xml(self):
+        &#34;&#34;&#34;Original (raw) metadata from MCD file in XML format.&#34;&#34;&#34;
+        return self._xml_parser.get_mcd_xml()
+
+    @property
+    def mcd_filename(self):
+        &#34;&#34;&#34;Name of the open MCD file&#34;&#34;&#34;
+        return self._fh.name
+
+    def get_acquisition_data(self, acquisition_id: int):
+        &#34;&#34;&#34;Returns AcquisitionData object with binary image data for given acquisition ID&#34;&#34;&#34;
+        acquisition = self.session.acquisitions.get(acquisition_id)
+        if acquisition is None:
+            return None
+        data = self._get_acquisition_raw_data(acquisition)
+        if data is not None:
+            image_data = reshape_long_2_cyx(data, is_sorted=True)
+            # Drop first three channels X, Y, Z
+            image_data = image_data[3:]
+        else:
+            image_data = None
+            acquisition.is_valid = False
+            logger.warning(f&#34;Error reading MCD acquisition: {acquisition_id}&#34;)
+        return AcquisitionData(acquisition, image_data)
+
+    def _get_acquisition_raw_data(self, acquisition: Acquisition):
+        &#34;&#34;&#34;Gets non-reshaped image data from the acquisition.
+
+        Parameters
+        ----------
+        acquisition
+            Acquisition.
+        &#34;&#34;&#34;
+        start_offset = int(acquisition.metadata.get(const.DATA_START_OFFSET))
+        end_offset = int(acquisition.metadata.get(const.DATA_END_OFFSET))
+        # Taking into account 3 dropped channels X, Y, Z!
+        total_n_channels = acquisition.n_channels + 3
+        data_size = end_offset - start_offset + 1
+        data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
+        if data_nrows &lt;= 0:
+            logger.error(f&#34;Acquisition {acquisition.meta_name} is emtpy&#34;)
+            return None
+            # raise AcquisitionError(f&#34;Acquisition {acquisition.id} is emtpy!&#34;)
+
+        data = np.memmap(
+            self._fh, dtype=np.float32, mode=&#34;r&#34;, offset=start_offset, shape=(data_nrows, total_n_channels)
+        )
+        return data
+
+    def save_panorama_image(self, panorama_id: int, output_folder: str, output_filename: Optional[str] = None):
+        &#34;&#34;&#34;Save panorama image of the acquisition&#34;&#34;&#34;
+        panorama_postfix = &#34;pano&#34;
+        image_offset_fix = 161
+        p = self.session.panoramas.get(panorama_id)
+        img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+
+        if img_start - img_end == 0:
+            return 0
+
+        file_end = p.metadata.get(const.IMAGE_FORMAT, &#34;.png&#34;).lower()
+
+        if output_filename is None:
+            output_filename = p.meta_name
+
+        if not (output_filename.endswith(file_end)):
+            output_filename += &#34;_&#34; + panorama_postfix + &#34;.&#34; + file_end
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+
+    def save_slide_image(self, slide_id: int, output_folder: str, output_filename: Optional[str] = None):
+        image_offset_fix = 161
+        slide_postfix = &#34;slide&#34;
+        default_format = &#34;.png&#34;
+
+        s = self.session.slides.get(slide_id)
+        img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+        slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
+        if slide_format in [None, &#34;&#34;, &#39;&#34;&#34;&#39;, &#34;&#39;&#39;&#34;]:
+            slide_format = default_format
+
+        slide_format = os.path.splitext(slide_format.lower())
+        if slide_format[1] == &#34;&#34;:
+            slide_format = slide_format[0]
+        else:
+            slide_format = slide_format[1]
+
+        if img_start - img_end == 0:
+            return 0
+
+        if output_filename is None:
+            output_filename = s.meta_name
+        if not (output_filename.endswith(slide_format)):
+            output_filename += &#34;_&#34; + slide_postfix + slide_format
+
+        buf = self._get_buffer(img_start, img_end)
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+
+    def save_before_ablation_image(
+        self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None
+    ):
+        return self._save_ablation_image(
+            acquisition_id,
+            output_folder,
+            AblationImageType.BEFORE,
+            const.BEFORE_ABLATION_IMAGE_START_OFFSET,
+            const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+            output_filename,
+        )
+
+    def save_after_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
+        return self._save_ablation_image(
+            acquisition_id,
+            output_folder,
+            AblationImageType.AFTER,
+            const.AFTER_ABLATION_IMAGE_START_OFFSET,
+            const.AFTER_ABLATION_IMAGE_END_OFFSET,
+            output_filename,
+        )
+
+    def _save_ablation_image(
+        self,
+        acquisition_id: int,
+        output_folder: str,
+        ac_postfix: AblationImageType,
+        start_offset: str,
+        end_offset: str,
+        output_filename: Optional[str] = None,
+    ):
+        image_offset_fix = 161
+        image_format = &#34;.png&#34;
+        a = self.session.acquisitions.get(acquisition_id)
+        img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
+        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
+        if img_end - img_start == 0:
+            return False
+
+        if output_filename is None:
+            output_filename = a.meta_name
+        buf = self._get_buffer(img_start, img_end)
+        if not (output_filename.endswith(image_format)):
+            output_filename += &#34;_&#34; + ac_postfix.value + image_format
+        with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+            f.write(buf)
+        return True
+
+    def _get_buffer(self, start: int, stop: int):
+        &#34;&#34;&#34;Read binary data block from memory-mapped file&#34;&#34;&#34;
+        self._fh.seek(start)
+        buf = self._fh.read(stop - start)
+        return buf
+
+    def _inject_imc_datafile(self, filename: str):
+        &#34;&#34;&#34;
+        This function is used in cases where the MCD file is corrupted (missing MCD schema)
+        but there is a MCD schema file available. In this case the .schema file can
+        be loaded with the mcdparser and then the corrupted mcd-data file loaded
+        using this function. This will replace the mcd file data in the backend (containing only
+        the schema data) with the real mcd file (not containing the mcd xml).
+        &#34;&#34;&#34;
+        self.close()
+        self._fh = open(filename, mode=&#34;rb&#34;)
+
+    def _get_mcd_xml(self, start_str: str = &#34;&lt;MCDSchema&#34;, stop_str: str = &#34;&lt;/MCDSchema&gt;&#34;, encoding: str = &#34;utf-16-le&#34;):
+        with mmap.mmap(self._meta_fh.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+            # MCD format documentation recommends searching from end for &#34;&lt;MCDSchema&#34;
+            start_offset = mm.rfind(start_str.encode(encoding))
+            if start_offset == -1:
+                raise ValueError(f&#34;Invalid file {self.mcd_filename}: MCD XML start tag not found.&#34;)
+            mm.seek(start_offset)
+            stop_offset = mm.rfind(stop_str.encode(encoding))
+            if stop_offset == -1:
+                raise ValueError(f&#34;Invalid file {self.mcd_filename}: MCD XML stop tag not found.&#34;)
+            else:
+                end_tag_length = len(stop_str)
+                if encoding == &#34;utf-16-le&#34;:
+                    end_tag_length = end_tag_length * 2  # Multiply by 2 due to utf-16 encoding
+                stop_offset += end_tag_length
+            mcd_xml: str = mm.read(stop_offset - start_offset).decode(encoding)
+            return mcd_xml
+
+    def close(self):
+        &#34;&#34;&#34;Close file handlers.&#34;&#34;&#34;
+        self._fh.close()
+        try:
+            self._meta_fh.close()
+        except:
+            pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.close()</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imctools.io.mcd.mcdparser.McdParser.mcd_filename"><code class="name">var <span class="ident">mcd_filename</span></code></dt>
+<dd>
+<section class="desc"><p>Name of the open MCD file</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def mcd_filename(self):
+    &#34;&#34;&#34;Name of the open MCD file&#34;&#34;&#34;
+    return self._fh.name</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.origin"><code class="name">var <span class="ident">origin</span></code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def origin(self):
+    return self._xml_parser.origin</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.session"><code class="name">var <span class="ident">session</span></code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def session(self):
+    return self._xml_parser.session</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imctools.io.mcd.mcdparser.McdParser.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Close file handlers.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Close file handlers.&#34;&#34;&#34;
+    self._fh.close()
+    try:
+        self._meta_fh.close()
+    except:
+        pass</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_acquisition_data"><code class="name flex">
+<span>def <span class="ident">get_acquisition_data</span></span>(<span>self, acquisition_id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns AcquisitionData object with binary image data for given acquisition ID</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_acquisition_data(self, acquisition_id: int):
+    &#34;&#34;&#34;Returns AcquisitionData object with binary image data for given acquisition ID&#34;&#34;&#34;
+    acquisition = self.session.acquisitions.get(acquisition_id)
+    if acquisition is None:
+        return None
+    data = self._get_acquisition_raw_data(acquisition)
+    if data is not None:
+        image_data = reshape_long_2_cyx(data, is_sorted=True)
+        # Drop first three channels X, Y, Z
+        image_data = image_data[3:]
+    else:
+        image_data = None
+        acquisition.is_valid = False
+        logger.warning(f&#34;Error reading MCD acquisition: {acquisition_id}&#34;)
+    return AcquisitionData(acquisition, image_data)</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_mcd_xml"><code class="name flex">
+<span>def <span class="ident">get_mcd_xml</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Original (raw) metadata from MCD file in XML format.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mcd_xml(self):
+    &#34;&#34;&#34;Original (raw) metadata from MCD file in XML format.&#34;&#34;&#34;
+    return self._xml_parser.get_mcd_xml()</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_after_ablation_image"><code class="name flex">
+<span>def <span class="ident">save_after_ablation_image</span></span>(<span>self, acquisition_id, output_folder, output_filename=None)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_after_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
+    return self._save_ablation_image(
+        acquisition_id,
+        output_folder,
+        AblationImageType.AFTER,
+        const.AFTER_ABLATION_IMAGE_START_OFFSET,
+        const.AFTER_ABLATION_IMAGE_END_OFFSET,
+        output_filename,
+    )</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_before_ablation_image"><code class="name flex">
+<span>def <span class="ident">save_before_ablation_image</span></span>(<span>self, acquisition_id, output_folder, output_filename=None)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_before_ablation_image(
+    self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None
+):
+    return self._save_ablation_image(
+        acquisition_id,
+        output_folder,
+        AblationImageType.BEFORE,
+        const.BEFORE_ABLATION_IMAGE_START_OFFSET,
+        const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+        output_filename,
+    )</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_panorama_image"><code class="name flex">
+<span>def <span class="ident">save_panorama_image</span></span>(<span>self, panorama_id, output_folder, output_filename=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save panorama image of the acquisition</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_panorama_image(self, panorama_id: int, output_folder: str, output_filename: Optional[str] = None):
+    &#34;&#34;&#34;Save panorama image of the acquisition&#34;&#34;&#34;
+    panorama_postfix = &#34;pano&#34;
+    image_offset_fix = 161
+    p = self.session.panoramas.get(panorama_id)
+    img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+    img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+
+    if img_start - img_end == 0:
+        return 0
+
+    file_end = p.metadata.get(const.IMAGE_FORMAT, &#34;.png&#34;).lower()
+
+    if output_filename is None:
+        output_filename = p.meta_name
+
+    if not (output_filename.endswith(file_end)):
+        output_filename += &#34;_&#34; + panorama_postfix + &#34;.&#34; + file_end
+
+    buf = self._get_buffer(img_start, img_end)
+    with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+        f.write(buf)</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_slide_image"><code class="name flex">
+<span>def <span class="ident">save_slide_image</span></span>(<span>self, slide_id, output_folder, output_filename=None)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_slide_image(self, slide_id: int, output_folder: str, output_filename: Optional[str] = None):
+    image_offset_fix = 161
+    slide_postfix = &#34;slide&#34;
+    default_format = &#34;.png&#34;
+
+    s = self.session.slides.get(slide_id)
+    img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+    img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+    slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
+    if slide_format in [None, &#34;&#34;, &#39;&#34;&#34;&#39;, &#34;&#39;&#39;&#34;]:
+        slide_format = default_format
+
+    slide_format = os.path.splitext(slide_format.lower())
+    if slide_format[1] == &#34;&#34;:
+        slide_format = slide_format[0]
+    else:
+        slide_format = slide_format[1]
+
+    if img_start - img_end == 0:
+        return 0
+
+    if output_filename is None:
+        output_filename = s.meta_name
+    if not (output_filename.endswith(slide_format)):
+        output_filename += &#34;_&#34; + slide_postfix + slide_format
+
+    buf = self._get_buffer(img_start, img_end)
+    with open(os.path.join(output_folder, output_filename), &#34;wb&#34;) as f:
+        f.write(buf)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imctools.io.mcd" href="index.html">imctools.io.mcd</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imctools.io.mcd.mcdparser.McdParser" href="#imctools.io.mcd.mcdparser.McdParser">McdParser</a></code></h4>
+<ul class="">
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.close" href="#imctools.io.mcd.mcdparser.McdParser.close">close</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.get_acquisition_data" href="#imctools.io.mcd.mcdparser.McdParser.get_acquisition_data">get_acquisition_data</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.get_mcd_xml" href="#imctools.io.mcd.mcdparser.McdParser.get_mcd_xml">get_mcd_xml</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.mcd_filename" href="#imctools.io.mcd.mcdparser.McdParser.mcd_filename">mcd_filename</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.origin" href="#imctools.io.mcd.mcdparser.McdParser.origin">origin</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.save_after_ablation_image" href="#imctools.io.mcd.mcdparser.McdParser.save_after_ablation_image">save_after_ablation_image</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.save_before_ablation_image" href="#imctools.io.mcd.mcdparser.McdParser.save_before_ablation_image">save_before_ablation_image</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.save_panorama_image" href="#imctools.io.mcd.mcdparser.McdParser.save_panorama_image">save_panorama_image</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.save_slide_image" href="#imctools.io.mcd.mcdparser.McdParser.save_slide_image">save_slide_image</a></code></li>
+<li><code><a title="imctools.io.mcd.mcdparser.McdParser.session" href="#imctools.io.mcd.mcdparser.McdParser.session">session</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

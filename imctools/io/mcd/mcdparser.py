@@ -56,6 +56,8 @@ class McdParser:
     def get_acquisition_data(self, acquisition_id: int):
         """Returns AcquisitionData object with binary image data for given acquisition ID"""
         acquisition = self.session.acquisitions.get(acquisition_id)
+        if acquisition is None:
+            return None
         data = self._get_acquisition_raw_data(acquisition)
         if data is not None:
             image_data = reshape_long_2_cyx(data, is_sorted=True)

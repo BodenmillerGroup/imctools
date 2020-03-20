@@ -91,12 +91,14 @@ class OmeTiffParser:
 
     @staticmethod
     def _parse_ome_xml(xml: str):
-        ome = ET.fromstring(xml)
+        ome: ET.Element = ET.fromstring(xml)
         ns = "{" + ome.tag.split("}")[0].strip("{") + "}"
 
         img = ome.find(ns + "Image")
-        pixels = img.find(ns + "Pixels")
-        channels = pixels.findall(ns + "Channel")
+        if img is None:
+            raise ValueError("OME-TIFF XML is corrupted")
+
+        channels = img.findall(f"{ns}Pixels/{ns}Channel")
         chan_dict = {
             int(chan.attrib["ID"].split(":")[2]): (chan.attrib["Name"], chan.attrib["Fluor"]) for chan in channels
         }
@@ -105,12 +107,8 @@ class OmeTiffParser:
         channel_names = [chan_dict[i][1] for i in range(len(channels))]
         channel_labels = [chan_dict[i][0] for i in range(len(channels))]
 
-        structured_annotations = ome.find(ns + "StructuredAnnotations")
-        xml_annotation = structured_annotations.find(ns + "XMLAnnotation")
-        xml_annotation_value = xml_annotation.find(ns + "Value")
-        original_metadata = xml_annotation_value.find(ns + "OriginalMetadata")
-        original_metadata_value = original_metadata.find(ns + "Value")
-        mcd_xml = original_metadata_value.text
+        original_metadata_value = ome.find(f"{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value")
+        mcd_xml = original_metadata_value.text if original_metadata_value else None
 
         return image_name, channel_names, channel_labels, mcd_xml
 

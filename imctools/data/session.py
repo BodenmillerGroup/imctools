@@ -4,15 +4,27 @@ import csv
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, TypedDict, List
 
 from dateutil.parser import parse
 
-from imctools.data.acquisition import Acquisition
-from imctools.data.channel import Channel
-from imctools.data.panorama import Panorama
-from imctools.data.slide import Slide
+from imctools.data.acquisition import Acquisition, AcquisitionDict
+from imctools.data.channel import Channel, ChannelDict
+from imctools.data.panorama import Panorama, PanoramaDict
+from imctools.data.slide import Slide, SlideDict
 from imctools.io.utils import META_CSV_SUFFIX
+
+
+class SessionDict(TypedDict):
+    id: str
+    name: str
+    imctools_version: str
+    created: str
+    metadata: Optional[Dict[str, Any]]
+    slides: List[SlideDict]
+    acquisitions: List[AcquisitionDict]
+    panoramas: List[PanoramaDict]
+    channels: List[ChannelDict]
 
 
 class Session:
@@ -47,7 +59,7 @@ class Session:
         self.channels: Dict[int, Channel] = dict()
 
     @staticmethod
-    def from_dict(d: Dict[str, Any]):
+    def from_dict(d: SessionDict):
         """Recreate an object from dictionary"""
         result = Session(
             d.get("id"), d.get("name"), d.get("imctools_version"), parse(d.get("created")), d.get("metadata"),
@@ -138,7 +150,7 @@ class Session:
             return Session._rebuild_object_tree(data)
 
     @staticmethod
-    def _rebuild_object_tree(data: Dict[str, Any]):
+    def _rebuild_object_tree(data: SessionDict):
         """Helper function that re-creates parents/children relations between entities"""
 
         session = Session.from_dict(data)
@@ -189,6 +201,6 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
     session = Session.load(
-        "/home/anton/Downloads/imc_from_mcd/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.json"
+        "/home/anton/Downloads/imc_folder/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_session.json"
     )
     print(timeit.default_timer() - tic)

@@ -16,7 +16,6 @@ class TxtParser:
 
     Allows to get a single IMC acquisition from a single TXT file.
     """
-
     def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
         self._filepath = filepath
         self._slide_id = slide_id

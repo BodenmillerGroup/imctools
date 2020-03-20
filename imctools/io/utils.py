@@ -33,7 +33,6 @@ def reshape_long_2_cyx(
         Custom data shape.
     channel_indices
         Channel indices.
-
     """
     if shape is None:
         shape = data[:, :2].max(axis=0) + 1

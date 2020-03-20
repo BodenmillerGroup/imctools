@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>imctools.io.txt.txtparser API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imctools.io.txt.txtparser</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import re
+from typing import Sequence
+
+import numpy as np
+import pandas as pd
+
+from imctools.data import Acquisition, Channel
+from imctools.data.acquisitiondata import AcquisitionData
+from imctools.io.utils import reshape_long_2_cyx
+
+TXT_FILE_EXTENSION = &#34;.txt&#34;
+
+
+class TxtParser:
+    &#34;&#34;&#34;Parser of MCD compatible .txt files.
+
+    Allows to get a single IMC acquisition from a single TXT file.
+    &#34;&#34;&#34;
+    def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
+        self._filepath = filepath
+        self._slide_id = slide_id
+        self._channel_id_offset = channel_id_offset
+        self._acquisition_data = self._parse_acquisition(filepath)
+
+    @property
+    def origin(self):
+        return &#34;txt&#34;
+
+    @property
+    def filepath(self):
+        return self._filepath
+
+    def get_acquisition_data(self):
+        &#34;&#34;&#34;Returns AcquisitionData object with binary image data&#34;&#34;&#34;
+        return self._acquisition_data
+
+    def _parse_acquisition(self, filepath: str):
+        long_data, channel_names, channel_labels = TxtParser._parse_csv(filepath)
+        image_data = reshape_long_2_cyx(long_data, is_sorted=True)
+
+        # Delete &#39;X&#39;, &#39;Y&#39;, &#39;Z&#39; channels data
+        image_data = np.delete(image_data, [0, 1, 2], axis=0)
+        channel_names = channel_names[3:]
+        channel_labels = channel_labels[3:]
+
+        max_x = image_data.shape[2]
+        max_y = image_data.shape[1]
+
+        # Extract signal type from CSV header
+        signal_type = &#34;Dual&#34; if channel_labels[0][-3:-1] == &#34;Di&#34; else &#34;&#34;
+
+        # Extract acquisition id from txt file name
+        acquisition_id = TxtParser.extract_acquisition_id(filepath)
+
+        # Don&#39;t forget to change slide ID if needed!
+        acquisition = Acquisition(
+            self._slide_id, acquisition_id, self.origin, filepath, max_x, max_y, signal_type=signal_type
+        )
+
+        for i in range(len(channel_names)):
+            channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
+            self._channel_id_offset += 1
+            channel.acquisition = acquisition
+            acquisition.channels[channel.id] = channel
+
+        acquisition_data = AcquisitionData(acquisition, image_data)
+        # Calculate channels intensity range
+        for ch in acquisition.channels.values():
+            img = acquisition_data.get_image_by_name(ch.name)
+            ch.min_intensity = round(float(img.min()), 4)
+            ch.max_intensity = round(float(img.max()), 4)
+
+        return acquisition_data
+
+    @staticmethod
+    def extract_acquisition_id(filepath: str):
+        &#34;&#34;&#34;Extract acquisition ID from source TXT filepath.
+
+        Filename should end with a numeric symbol!
+
+        Parameters
+        ----------
+        filepath
+            Input TXT filepath.
+        &#34;&#34;&#34;
+        return int(filepath.rstrip(TXT_FILE_EXTENSION).split(&#34;_&#34;)[-1])
+
+    @staticmethod
+    def _parse_csv(filepath: str):
+        &#34;&#34;&#34;Parse CSV file.
+
+        Parameters
+        ----------
+        filepath
+            Input filepath.
+        &#34;&#34;&#34;
+        header_cols = pd.read_csv(filepath, sep=&#34;\t&#34;, nrows=0).columns
+        expected_cols = (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;)
+        if tuple(header_cols[:6]) != expected_cols or len(header_cols) &lt;= 6:
+            raise ValueError(
+                f&#34;&#39;{str(filepath)}&#39; is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data).&#34;
+            )
+        # Actual read, dropping irrelevant columns and casting image data to float32
+        df = pd.read_csv(
+            filepath,
+            sep=&#34;\t&#34;,
+            usecols=lambda c: c not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;),
+            dtype={c: np.float32 for c in header_cols[3:]},
+        )
+        data = df.values
+        names = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
+        channel_names = TxtParser._extract_channel_names(names)
+        channel_labels = TxtParser._extract_channel_labels(names)
+        return data, channel_names, channel_labels
+
+    @staticmethod
+    def _extract_channel_names(names: Sequence[str]):
+        &#34;&#34;&#34;
+        Returns channel names in Fluidigm compatible format, i.e. Y(89) or ArAr(80).
+
+        Parameters
+        ----------
+        names
+            CSV file column names.
+        &#34;&#34;&#34;
+        r = re.compile(&#34;^.*\((.*?)\)[^(]*$&#34;)
+        r_number = re.compile(&#34;\d+&#34;)
+        result = []
+        for name in names:
+            n = (
+                r.sub(&#34;\g&lt;1&gt;&#34;, name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).replace(&#34;(&#34;, &#34;&#34;).replace(&#34;)&#34;, &#34;&#34;).strip())
+                .rstrip(&#34;di&#34;)
+                .rstrip(&#34;Di&#34;)
+            )
+            metal_name = r_number.sub(&#34;&#34;, n)
+            metal_mass = n.replace(metal_name, &#34;&#34;)
+            metal_mass = f&#34;({metal_mass})&#34; if metal_mass != &#34;&#34; else &#34;&#34;
+            result.append(f&#34;{metal_name}{metal_mass}&#34;)
+        return result
+
+    @staticmethod
+    def _extract_channel_labels(names: Sequence[str]):
+        &#34;&#34;&#34;Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
+
+        Parameters
+        ----------
+        names
+            CSV file column names.
+        &#34;&#34;&#34;
+        return [name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).strip() for name in names]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
+
+
+if __name__ == &#34;__main__&#34;:
+    import timeit
+
+    tic = timeit.default_timer()
+
+    with TxtParser(&#34;/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt&#34;) as parser:
+        ac = parser.get_acquisition_data()
+        pass
+
+    print(timeit.default_timer() - tic)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imctools.io.txt.txtparser.TxtParser"><code class="flex name class">
+<span>class <span class="ident">TxtParser</span></span>
+<span>(</span><span>filepath, slide_id=0, channel_id_offset=0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Parser of MCD compatible .txt files.</p>
+<p>Allows to get a single IMC acquisition from a single TXT file.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TxtParser:
+    &#34;&#34;&#34;Parser of MCD compatible .txt files.
+
+    Allows to get a single IMC acquisition from a single TXT file.
+    &#34;&#34;&#34;
+    def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
+        self._filepath = filepath
+        self._slide_id = slide_id
+        self._channel_id_offset = channel_id_offset
+        self._acquisition_data = self._parse_acquisition(filepath)
+
+    @property
+    def origin(self):
+        return &#34;txt&#34;
+
+    @property
+    def filepath(self):
+        return self._filepath
+
+    def get_acquisition_data(self):
+        &#34;&#34;&#34;Returns AcquisitionData object with binary image data&#34;&#34;&#34;
+        return self._acquisition_data
+
+    def _parse_acquisition(self, filepath: str):
+        long_data, channel_names, channel_labels = TxtParser._parse_csv(filepath)
+        image_data = reshape_long_2_cyx(long_data, is_sorted=True)
+
+        # Delete &#39;X&#39;, &#39;Y&#39;, &#39;Z&#39; channels data
+        image_data = np.delete(image_data, [0, 1, 2], axis=0)
+        channel_names = channel_names[3:]
+        channel_labels = channel_labels[3:]
+
+        max_x = image_data.shape[2]
+        max_y = image_data.shape[1]
+
+        # Extract signal type from CSV header
+        signal_type = &#34;Dual&#34; if channel_labels[0][-3:-1] == &#34;Di&#34; else &#34;&#34;
+
+        # Extract acquisition id from txt file name
+        acquisition_id = TxtParser.extract_acquisition_id(filepath)
+
+        # Don&#39;t forget to change slide ID if needed!
+        acquisition = Acquisition(
+            self._slide_id, acquisition_id, self.origin, filepath, max_x, max_y, signal_type=signal_type
+        )
+
+        for i in range(len(channel_names)):
+            channel = Channel(acquisition.id, self._channel_id_offset, i, channel_names[i], channel_labels[i])
+            self._channel_id_offset += 1
+            channel.acquisition = acquisition
+            acquisition.channels[channel.id] = channel
+
+        acquisition_data = AcquisitionData(acquisition, image_data)
+        # Calculate channels intensity range
+        for ch in acquisition.channels.values():
+            img = acquisition_data.get_image_by_name(ch.name)
+            ch.min_intensity = round(float(img.min()), 4)
+            ch.max_intensity = round(float(img.max()), 4)
+
+        return acquisition_data
+
+    @staticmethod
+    def extract_acquisition_id(filepath: str):
+        &#34;&#34;&#34;Extract acquisition ID from source TXT filepath.
+
+        Filename should end with a numeric symbol!
+
+        Parameters
+        ----------
+        filepath
+            Input TXT filepath.
+        &#34;&#34;&#34;
+        return int(filepath.rstrip(TXT_FILE_EXTENSION).split(&#34;_&#34;)[-1])
+
+    @staticmethod
+    def _parse_csv(filepath: str):
+        &#34;&#34;&#34;Parse CSV file.
+
+        Parameters
+        ----------
+        filepath
+            Input filepath.
+        &#34;&#34;&#34;
+        header_cols = pd.read_csv(filepath, sep=&#34;\t&#34;, nrows=0).columns
+        expected_cols = (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;)
+        if tuple(header_cols[:6]) != expected_cols or len(header_cols) &lt;= 6:
+            raise ValueError(
+                f&#34;&#39;{str(filepath)}&#39; is not valid IMC text data (expected first 6 columns: {expected_cols}, plus intensity data).&#34;
+            )
+        # Actual read, dropping irrelevant columns and casting image data to float32
+        df = pd.read_csv(
+            filepath,
+            sep=&#34;\t&#34;,
+            usecols=lambda c: c not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;),
+            dtype={c: np.float32 for c in header_cols[3:]},
+        )
+        data = df.values
+        names = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
+        channel_names = TxtParser._extract_channel_names(names)
+        channel_labels = TxtParser._extract_channel_labels(names)
+        return data, channel_names, channel_labels
+
+    @staticmethod
+    def _extract_channel_names(names: Sequence[str]):
+        &#34;&#34;&#34;
+        Returns channel names in Fluidigm compatible format, i.e. Y(89) or ArAr(80).
+
+        Parameters
+        ----------
+        names
+            CSV file column names.
+        &#34;&#34;&#34;
+        r = re.compile(&#34;^.*\((.*?)\)[^(]*$&#34;)
+        r_number = re.compile(&#34;\d+&#34;)
+        result = []
+        for name in names:
+            n = (
+                r.sub(&#34;\g&lt;1&gt;&#34;, name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).replace(&#34;(&#34;, &#34;&#34;).replace(&#34;)&#34;, &#34;&#34;).strip())
+                .rstrip(&#34;di&#34;)
+                .rstrip(&#34;Di&#34;)
+            )
+            metal_name = r_number.sub(&#34;&#34;, n)
+            metal_mass = n.replace(metal_name, &#34;&#34;)
+            metal_mass = f&#34;({metal_mass})&#34; if metal_mass != &#34;&#34; else &#34;&#34;
+            result.append(f&#34;{metal_name}{metal_mass}&#34;)
+        return result
+
+    @staticmethod
+    def _extract_channel_labels(names: Sequence[str]):
+        &#34;&#34;&#34;Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
+
+        Parameters
+        ----------
+        names
+            CSV file column names.
+        &#34;&#34;&#34;
+        return [name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).strip() for name in names]
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="imctools.io.txt.txtparser.TxtParser.extract_acquisition_id"><code class="name flex">
+<span>def <span class="ident">extract_acquisition_id</span></span>(<span>filepath)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Extract acquisition ID from source TXT filepath.</p>
+<p>Filename should end with a numeric symbol!</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filepath</code></strong></dt>
+<dd>Input TXT filepath.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def extract_acquisition_id(filepath: str):
+    &#34;&#34;&#34;Extract acquisition ID from source TXT filepath.
+
+    Filename should end with a numeric symbol!
+
+    Parameters
+    ----------
+    filepath
+        Input TXT filepath.
+    &#34;&#34;&#34;
+    return int(filepath.rstrip(TXT_FILE_EXTENSION).split(&#34;_&#34;)[-1])</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imctools.io.txt.txtparser.TxtParser.filepath"><code class="name">var <span class="ident">filepath</span></code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def filepath(self):
+    return self._filepath</code></pre>
+</details>
+</dd>
+<dt id="imctools.io.txt.txtparser.TxtParser.origin"><code class="name">var <span class="ident">origin</span></code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def origin(self):
+    return &#34;txt&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imctools.io.txt.txtparser.TxtParser.get_acquisition_data"><code class="name flex">
+<span>def <span class="ident">get_acquisition_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns AcquisitionData object with binary image data</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_acquisition_data(self):
+    &#34;&#34;&#34;Returns AcquisitionData object with binary image data&#34;&#34;&#34;
+    return self._acquisition_data</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imctools.io.txt" href="index.html">imctools.io.txt</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imctools.io.txt.txtparser.TxtParser" href="#imctools.io.txt.txtparser.TxtParser">TxtParser</a></code></h4>
+<ul class="">
+<li><code><a title="imctools.io.txt.txtparser.TxtParser.extract_acquisition_id" href="#imctools.io.txt.txtparser.TxtParser.extract_acquisition_id">extract_acquisition_id</a></code></li>
+<li><code><a title="imctools.io.txt.txtparser.TxtParser.filepath" href="#imctools.io.txt.txtparser.TxtParser.filepath">filepath</a></code></li>
+<li><code><a title="imctools.io.txt.txtparser.TxtParser.get_acquisition_data" href="#imctools.io.txt.txtparser.TxtParser.get_acquisition_data">get_acquisition_data</a></code></li>
+<li><code><a title="imctools.io.txt.txtparser.TxtParser.origin" href="#imctools.io.txt.txtparser.TxtParser.origin">origin</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

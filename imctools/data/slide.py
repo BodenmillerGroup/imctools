@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional, TypedDict
 
 import imctools.io.mcd.constants as const
 
@@ -8,6 +8,15 @@ if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition
     from imctools.data.panorama import Panorama
     from imctools.data.session import Session
+
+
+class SlideDict(TypedDict):
+    session_id: str
+    id: int
+    description: Optional[str]
+    width_um: Optional[int]
+    height_um: Optional[int]
+    metadata: Optional[Dict[str, str]]
 
 
 class Slide:
@@ -52,14 +61,14 @@ class Slide:
         self.panoramas: Dict[int, Panorama] = dict()  # Children panoramas
 
     @staticmethod
-    def from_dict(d: Dict[str, Any]):
+    def from_dict(d: SlideDict):
         """Recreate an object from dictionary"""
         result = Slide(
             d.get("session_id"),
-            int(d.get("id")),
+            d.get("id"),
             description=d.get("description"),
-            width_um=int(d.get("width_um")),
-            height_um=int(d.get("height_um")),
+            width_um=d.get("width_um"),
+            height_um=d.get("height_um"),
             metadata=d.get("metadata"),
         )
         return result
