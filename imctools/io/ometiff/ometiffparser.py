@@ -107,7 +107,9 @@ class OmeTiffParser:
         channel_names = [chan_dict[i][1] for i in range(len(channels))]
         channel_labels = [chan_dict[i][0] for i in range(len(channels))]
 
-        original_metadata_value = ome.find(f"{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value")
+        original_metadata_value = ome.find(
+            f"{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value"
+        )
         mcd_xml = original_metadata_value.text if original_metadata_value else None
 
         return image_name, channel_names, channel_labels, mcd_xml

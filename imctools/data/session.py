@@ -4,7 +4,7 @@ import csv
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple, TypedDict, List
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
 from dateutil.parser import parse
 
