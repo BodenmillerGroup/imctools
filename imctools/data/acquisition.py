@@ -1,12 +1,19 @@
 import logging
+import sys
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, Sequence, TypedDict
+from typing import Dict, Optional, Sequence
 
 from dateutil.parser import parse
 
 from imctools.data.channel import Channel
 from imctools.data.slide import Slide
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
+
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, TypedDict
+import sys
+from typing import TYPE_CHECKING, Dict, Optional
 
 import imctools.io.mcd.constants as const
+
+if sys.version_info >= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
+
 
 if TYPE_CHECKING:
     from imctools.data.acquisition import Acquisition

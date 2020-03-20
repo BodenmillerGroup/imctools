@@ -133,7 +133,9 @@ class OmeTiffParser:
         channel_names = [chan_dict[i][1] for i in range(len(channels))]
         channel_labels = [chan_dict[i][0] for i in range(len(channels))]
 
-        original_metadata_value = ome.find(f&#34;{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value&#34;)
+        original_metadata_value = ome.find(
+            f&#34;{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value&#34;
+        )
         mcd_xml = original_metadata_value.text if original_metadata_value else None
 
         return image_name, channel_names, channel_labels, mcd_xml
@@ -288,7 +290,9 @@ if __name__ == &#34;__main__&#34;:
         channel_names = [chan_dict[i][1] for i in range(len(channels))]
         channel_labels = [chan_dict[i][0] for i in range(len(channels))]
 
-        original_metadata_value = ome.find(f&#34;{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value&#34;)
+        original_metadata_value = ome.find(
+            f&#34;{ns}StructuredAnnotations/{ns}XMLAnnotation/{ns}Value/{ns}OriginalMetadata/{ns}Value&#34;
+        )
         mcd_xml = original_metadata_value.text if original_metadata_value else None
 
         return image_name, channel_names, channel_labels, mcd_xml
