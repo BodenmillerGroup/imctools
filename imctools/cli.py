@@ -10,6 +10,7 @@ from imctools.converters import (
     omefile_to_tifffolder,
     omefolder_to_histocatfolder,
     probability_to_uncertainty,
+    v1_to_v2,
 )
 from imctools.converters.exportacquisitioncsv import AC_META
 
@@ -26,6 +27,7 @@ def main():
     _add_omefile2tifffolder_parser(subparsers)
     _add_omefile2analysisfolder_parser(subparsers)
     _add_exportacquisitioncsv_parser(subparsers)
+    _add_v1_to_v2_parser(subparsers)
 
     # main entry point
     args = parser.parse_args()
@@ -40,7 +42,7 @@ def _add_mcdfolder2imcfolder_parser(subparsers: argparse._SubParsersAction):
         mcdfolder_to_imcfolder(args.input, args.output_folder, args.zip, args.skip_csv)
 
     parser = subparsers.add_parser(
-        "mcdfolder2imcfolder",
+        "mcdfolder-to-imcfolder",
         description="Converts a folder or zip file of raw data (.mcd and .txt) to IMC folder.",
         help="Converts a folder or zip file of raw data (.mcd and .txt) to IMC folder.",
     )
@@ -58,14 +60,14 @@ def _add_omefolder2histocatfolder_parser(subparsers: argparse._SubParsersAction)
         )
 
     parser = subparsers.add_parser(
-        "omefolder2histocatfolder",
+        "omefolder-to-histocatfolder",
         description="Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.",
         help="Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.",
     )
     parser.add_argument("input_folder", help="Input folder with OME-TIFF files.")
     parser.add_argument("output_folder", help="Output folder.")
-    parser.add_argument("--mask_folder", help="Folder containing the masks, or single mask file.", default=None)
-    parser.add_argument("--mask_suffix", help="Suffix of the mask TIFFs.", default="_mask.tiff")
+    parser.add_argument("--mask-folder", help="Folder containing the masks, or single mask file.", default=None)
+    parser.add_argument("--mask-suffix", help="Suffix of the mask TIFFs.", default="_mask.tiff")
     parser.add_argument(
         "--imagetype", help="The output image type.", default=None, choices=[None, "uint16", "int16", "float"]
     )
@@ -77,13 +79,13 @@ def _add_omefile2histocatfolder_parser(subparsers: argparse._SubParsersAction):
         omefile_to_histocatfolder(args.filename, args.base_folder, args.mask_file, args.imagetype)
 
     parser = subparsers.add_parser(
-        "omefile2histocatfolder",
+        "omefile-to-histocatfolder",
         description="Converts single OME-TIFF file to a folder compatible with HistoCAT software.",
         help="Converts single OME-TIFF file to a folder compatible with HistoCAT software.",
     )
     parser.add_argument("filename", help="Path to OME-TIFF input file.")
     parser.add_argument("base_folder", help="Base output folder.")
-    parser.add_argument("--mask_file", help="Path to mask file.", default=None)
+    parser.add_argument("--mask-file", help="Path to mask file.", default=None)
     parser.add_argument(
         "--imagetype", help="The output image type.", default=None, choices=[None, "uint16", "int16", "float"]
     )
@@ -95,7 +97,7 @@ def _add_omefile2tifffolder_parser(subparsers: argparse._SubParsersAction):
         omefile_to_tifffolder(args.filename, args.output_folder, args.basename, args.imagetype)
 
     parser = subparsers.add_parser(
-        "omefile2tifffolder",
+        "omefile-to-tifffolder",
         description="Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.",
         help="Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.",
     )
@@ -125,7 +127,7 @@ def _add_omefile2analysisfolder_parser(subparsers: argparse._SubParsersAction):
         )
 
     parser = subparsers.add_parser(
-        "omefile2analysisfolder",
+        "omefile-to-analysisfolder",
         description="Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.",
         help="Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.",
     )
@@ -160,7 +162,7 @@ def _add_exportacquisitioncsv_parser(subparsers: argparse._SubParsersAction):
         export_acquisition_csv(args.ome_folder, args.output_folder, args.output_name)
 
     parser = subparsers.add_parser(
-        "exportacquisitioncsv",
+        "export-acquisition-csv",
         description="Reads all the acquisition metadata from the ome folders and concatenates them to a csv that contains all the metadata.",
         help="Reads all the acquisition metadata from the ome folders and concatenates them to a csv that contains all the metadata.",
     )
@@ -175,7 +177,7 @@ def _add_probability2uncertainty_parser(subparsers: argparse._SubParsersAction):
         probability_to_uncertainty(args.ome_folder, args.output_folder, args.output_name)
 
     parser = subparsers.add_parser(
-        "probability2uncertainty",
+        "probability-to-uncertainty",
         description="Converts probability masks to uncertainties.",
         help="Converts probability masks to uncertainties.",
     )
@@ -186,4 +188,19 @@ def _add_probability2uncertainty_parser(subparsers: argparse._SubParsersAction):
         default=None,
     )
     parser.add_argument("--basename", help="Basename for the output image. Default: image_filename", default=None)
+    parser.set_defaults(func=func)
+
+
+def _add_v1_to_v2_parser(subparsers: argparse._SubParsersAction):
+    def func(args):
+        v1_to_v2(args.input_folder, args.output_folder, args.skip_csv)
+
+    parser = subparsers.add_parser(
+        "v1-to-v2",
+        description="Converts IMC folder from v1 to v2 format.",
+        help="Converts IMC folder from v1 to v2 format.",
+    )
+    parser.add_argument("input_folder", help="Input folder (with IMC v1 data).")
+    parser.add_argument("output_folder", help="Output folder.")
+    parser.add_argument("--skip-csv", action="store_true", help="Whether to skip creation of CSV metadata files.")
     parser.set_defaults(func=func)

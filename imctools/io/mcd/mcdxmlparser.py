@@ -13,7 +13,7 @@ from imctools.data import Acquisition, Channel, Panorama, Session, Slide
 class McdXmlParser:
     """Converts MCD XML structure into IMC session format."""
 
-    def __init__(self, mcd_xml: str, source_path: str):
+    def __init__(self, mcd_xml: str, source_path: str, process_namespaces=False):
         """
         Parameters
         ----------
@@ -21,10 +21,20 @@ class McdXmlParser:
             Metadata in MCD XML text format.
         source_path
             Path to original source .mcd file.
+        process_namespaces
+            Whether to process XML namespaces
         """
         self._mcd_xml = mcd_xml
+
+        namespaces = {
+            "http://www.fluidigm.com/IMC/MCDSchema.xsd": None,  # skip this namespace
+            "http://www.fluidigm.com/IMC/MCDSchema_V2_0.xsd": None,
+        }
+
         self.metadata = xmltodict.parse(
             mcd_xml,
+            process_namespaces=process_namespaces,
+            namespaces=namespaces,
             xml_attribs=False,
             force_list=(
                 const.SLIDE,
