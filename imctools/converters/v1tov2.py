@@ -38,7 +38,7 @@ def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
 
     xml_parser = McdXmlParser(xml, schema_file, process_namespaces=True)
     session = xml_parser.session
-    session.save(os.path.join(output_folder, session.meta_name + SESSION_JSON_SUFFIX))
+    session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
 
     # Copy schema file
     _copy_files([schema_file], output_folder)
@@ -73,7 +73,7 @@ def _copy_files(filenames: Sequence[str], output_folder: str, fix_names=False):
             dst = output_folder
             if fix_names:
                 name = Path(fn).name
-                new_name = re.sub(r'_p\d+_r\d+', "", name)
+                new_name = re.sub(r"_p\d+_r\d+", "", name)
                 dst = os.path.join(output_folder, new_name)
             shutil.copy2(fn, dst)
 

@@ -47,8 +47,8 @@ class AcquisitionDict(TypedDict):
     roi_end_x_pos_um: Optional[float]
     roi_end_y_pos_um: Optional[float]
     description: Optional[str]
-    before_ablation_image_exists: bool
-    after_ablation_image_exists: bool
+    has_before_ablation_image: bool
+    has_after_ablation_image: bool
     metadata: Optional[Dict[str, str]]
     is_valid: bool
 
@@ -81,8 +81,8 @@ class Acquisition:
         roi_end_x_pos_um: Optional[float] = None,
         roi_end_y_pos_um: Optional[float] = None,
         description: Optional[str] = None,
-        before_ablation_image_exists: bool = False,
-        after_ablation_image_exists: bool = False,
+        has_before_ablation_image: bool = False,
+        has_after_ablation_image: bool = False,
         metadata: Optional[Dict[str, str]] = None,
         is_valid: bool = True,
     ):
@@ -131,9 +131,9 @@ class Acquisition:
             End Y position on the slide (in μm).
         description
             Acquisition description.
-        before_ablation_image_exists
+        has_before_ablation_image
             Whether before ablation image exists.
-        after_ablation_image_exists
+        has_after_ablation_image
             Whether after ablation image exists.
         metadata
             Original (raw) metadata as a dictionary.
@@ -159,8 +159,8 @@ class Acquisition:
         self.roi_end_x_pos_um = roi_end_x_pos_um
         self.roi_end_y_pos_um = roi_end_y_pos_um
         self.description = description
-        self.before_ablation_image_exists = before_ablation_image_exists
-        self.after_ablation_image_exists = after_ablation_image_exists
+        self.has_before_ablation_image = has_before_ablation_image
+        self.has_after_ablation_image = has_after_ablation_image
         self.metadata = metadata if metadata is not None else dict()
         self.is_valid = is_valid
 
@@ -192,17 +192,17 @@ class Acquisition:
             roi_end_x_pos_um=d.get("roi_end_x_pos_um"),
             roi_end_y_pos_um=d.get("roi_end_y_pos_um"),
             description=d.get("description"),
-            before_ablation_image_exists=d.get("before_ablation_image_exists"),
-            after_ablation_image_exists=d.get("after_ablation_image_exists"),
+            has_before_ablation_image=d.get("has_before_ablation_image"),
+            has_after_ablation_image=d.get("has_after_ablation_image"),
             metadata=d.get("metadata"),
             is_valid=d.get("is_valid"),
         )
         return result
 
     @property
-    def meta_name(self):
+    def metaname(self):
         """Meta name fully describing the entity"""
-        parent_name = self.slide.meta_name
+        parent_name = self.slide.metaname
         return f"{parent_name}_{self.symbol}{self.id}"
 
     @property

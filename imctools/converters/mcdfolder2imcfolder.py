@@ -69,7 +69,11 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcdfolder_to_imcfolder(
-        "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip", "/home/anton/Downloads/imc_folder",
+        # "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip",
+        # "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
+        # "/home/anton/Downloads/test",
+        "/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip",
+        "/home/anton/Downloads/imc_folder",
     )
 
     print(timeit.default_timer() - tic)

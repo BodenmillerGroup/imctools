@@ -86,9 +86,9 @@ class Channel:
         return result
 
     @property
-    def meta_name(self):
+    def metaname(self):
         """Meta name fully describing the entity"""
-        parent_name = self.acquisition.meta_name
+        parent_name = self.acquisition.metaname
         return f"{parent_name}_{self.symbol}{self.id}"
 
     def __getstate__(self):

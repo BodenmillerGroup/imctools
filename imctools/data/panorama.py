@@ -97,9 +97,9 @@ class Panorama:
         return result
 
     @property
-    def meta_name(self):
+    def metaname(self):
         """Meta name fully describing the entity"""
-        parent_name = self.slide.meta_name
+        parent_name = self.slide.metaname
         return f"{parent_name}_{self.symbol}{self.id}"
 
     def __getstate__(self):

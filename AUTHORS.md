@@ -7,4 +7,6 @@
 
 ## Contributors
 
+  - Jonas Windhager <jonas.windhager@uzh.ch>
+
 None yet. Why not be the first?

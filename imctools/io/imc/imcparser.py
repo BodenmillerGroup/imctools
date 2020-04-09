@@ -27,7 +27,7 @@ class ImcParser:
 
     def get_mcd_xml(self):
         """Original (raw) metadata from MCD file in XML format."""
-        xml_metadata_filename = self.session.meta_name + SCHEMA_XML_SUFFIX
+        xml_metadata_filename = self.session.metaname + SCHEMA_XML_SUFFIX
         with open(os.path.join(self.input_dir, xml_metadata_filename), "rt") as f:
             return f.read()
 
@@ -36,7 +36,7 @@ class ImcParser:
         acquisition = self.session.acquisitions.get(acquisition_id)
         if acquisition is None:
             return None
-        filename = acquisition.meta_name + OME_TIFF_SUFFIX
+        filename = acquisition.metaname + OME_TIFF_SUFFIX
         image_data = ImcParser._read_file(os.path.join(self.input_dir, filename))
         acquisition_data = AcquisitionData(acquisition, image_data)
         return acquisition_data

@@ -23,6 +23,7 @@ class SlideDict(TypedDict):
     description: Optional[str]
     width_um: Optional[int]
     height_um: Optional[int]
+    has_slide_image: Optional[bool]
     metadata: Optional[Dict[str, str]]
 
 
@@ -38,6 +39,7 @@ class Slide:
         description: Optional[str] = None,
         width_um: Optional[int] = None,
         height_um: Optional[int] = None,
+        has_slide_image: Optional[bool] = None,
         metadata: Optional[Dict[str, str]] = None,
     ):
         """
@@ -53,6 +55,8 @@ class Slide:
             Slide width (in μm).
         height_um
             Slide height (in μm).
+        has_slide_image
+            Whether a slide image exists.
         metadata
             Original (raw) metadata as a dictionary.
         """
@@ -61,6 +65,7 @@ class Slide:
         self.description = description
         self.width_um = width_um
         self.height_um = height_um
+        self.has_slide_image = has_slide_image
         self.metadata = metadata if metadata is not None else dict()
 
         self.session: Optional[Session] = None  # Parent session object
@@ -76,14 +81,15 @@ class Slide:
             description=d.get("description"),
             width_um=d.get("width_um"),
             height_um=d.get("height_um"),
+            has_slide_image=d.get("has_slide_image"),
             metadata=d.get("metadata"),
         )
         return result
 
     @property
-    def meta_name(self):
+    def metaname(self):
         """Meta name fully describing the entity"""
-        parent_name = self.session.meta_name
+        parent_name = self.session.metaname
         return f"{parent_name}_{self.symbol}{self.id}"
 
     @property

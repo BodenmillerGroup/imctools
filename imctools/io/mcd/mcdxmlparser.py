@@ -28,7 +28,7 @@ class McdXmlParser:
 
         namespaces = {
             "http://www.fluidigm.com/IMC/MCDSchema.xsd": None,  # skip this namespace
-            "http://www.fluidigm.com/IMC/MCDSchema_V2_0.xsd": None,
+            "http://www.fluidigm.com/IMC/MCDSchema_V2_0.xsd": None,  # skip this namespace
         }
 
         self.metadata = xmltodict.parse(
@@ -53,12 +53,17 @@ class McdXmlParser:
         session_id = str(uuid.uuid4())
         session = Session(session_id, session_name, __version__, datetime.now(timezone.utc), metadata=self.metadata,)
         for s in self.metadata.get(const.SLIDE):
+            has_slide_image = (
+                int(s.get(const.IMAGE_END_OFFSET, 0))
+                - int(s.get(const.IMAGE_START_OFFSET, 0))
+            ) > 0
             slide = Slide(
                 session.id,
                 int(s.get(const.ID)),
                 description=s.get(const.DESCRIPTION),
                 width_um=int(s.get(const.WIDTH_UM)),
                 height_um=int(s.get(const.HEIGHT_UM)),
+                has_slide_image=has_slide_image,
                 metadata=dict(s),
             )
             slide.session = session
@@ -93,14 +98,14 @@ class McdXmlParser:
             panorama = session.panoramas.get(int(roi.get(const.PANORAMA_ID)))
             slide_id = panorama.slide_id
 
-            before_ablation_image_exists = (
+            has_before_ablation_image = (
                 int(a.get(const.BEFORE_ABLATION_IMAGE_END_OFFSET, 0))
                 - int(a.get(const.BEFORE_ABLATION_IMAGE_START_OFFSET, 0))
-            ) != 0
-            after_ablation_image_exists = (
+            ) > 0
+            has_after_ablation_image = (
                 int(a.get(const.AFTER_ABLATION_IMAGE_END_OFFSET, 0))
                 - int(a.get(const.AFTER_ABLATION_IMAGE_START_OFFSET, 0))
-            ) != 0
+            ) > 0
 
             acquisition = Acquisition(
                 slide_id,
@@ -125,8 +130,8 @@ class McdXmlParser:
                 roi_end_y_pos_um=float(a.get(const.ROI_END_Y_POS_UM, 0)),
                 description=a.get(const.DESCRIPTION, "ROI"),
                 metadata=dict(a),
-                before_ablation_image_exists=before_ablation_image_exists,
-                after_ablation_image_exists=after_ablation_image_exists,
+                has_before_ablation_image=has_before_ablation_image,
+                has_after_ablation_image=has_after_ablation_image,
             )
             slide = session.slides.get(acquisition.slide_id)
             acquisition.slide = slide

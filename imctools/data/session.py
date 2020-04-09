@@ -115,22 +115,22 @@ class Session:
         if not (os.path.exists(output_folder)):
             os.makedirs(output_folder)
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+            os.path.join(output_folder, "_".join([self.metaname, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "slides"]) + META_CSV_SUFFIX),
+            os.path.join(output_folder, "_".join([self.metaname, "slides"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.slides.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "panoramas"]) + META_CSV_SUFFIX),
+            os.path.join(output_folder, "_".join([self.metaname, "panoramas"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.panoramas.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "acquisitions"]) + META_CSV_SUFFIX),
+            os.path.join(output_folder, "_".join([self.metaname, "acquisitions"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.acquisitions.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.meta_name, "channels"]) + META_CSV_SUFFIX),
+            os.path.join(output_folder, "_".join([self.metaname, "channels"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.channels.values()],
         )
 
@@ -190,7 +190,7 @@ class Session:
         return session
 
     @property
-    def meta_name(self):
+    def metaname(self):
         """Meta name fully describing the entity"""
         return self.name
 

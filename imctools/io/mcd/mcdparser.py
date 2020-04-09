@@ -84,7 +84,7 @@ class McdParser:
         data_size = end_offset - start_offset + 1
         data_nrows = int(data_size / (total_n_channels * int(acquisition.metadata.get(const.VALUE_BYTES))))
         if data_nrows <= 0:
-            logger.error(f"Acquisition {acquisition.meta_name} is emtpy")
+            logger.error(f"Acquisition {acquisition.metaname} is emtpy")
             return None
             # raise AcquisitionError(f"Acquisition {acquisition.id} is emtpy!")
 
@@ -107,7 +107,7 @@ class McdParser:
         file_end = p.metadata.get(const.IMAGE_FORMAT, ".png").lower()
 
         if output_filename is None:
-            output_filename = p.meta_name
+            output_filename = p.metaname
 
         if not (output_filename.endswith(file_end)):
             output_filename += "_" + panorama_postfix + "." + file_end
@@ -138,7 +138,7 @@ class McdParser:
             return 0
 
         if output_filename is None:
-            output_filename = s.meta_name
+            output_filename = s.metaname
         if not (output_filename.endswith(slide_format)):
             output_filename += "_" + slide_postfix + slide_format
 
@@ -186,7 +186,7 @@ class McdParser:
             return False
 
         if output_filename is None:
-            output_filename = a.meta_name
+            output_filename = a.metaname
         buf = self._get_buffer(img_start, img_end)
         if not (output_filename.endswith(image_format)):
             output_filename += "_" + ac_postfix.value + image_format

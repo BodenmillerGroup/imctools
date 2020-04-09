@@ -26,7 +26,7 @@ class ImcWriter:
 
     @property
     def folder_name(self):
-        return self.mcd_parser.session.meta_name
+        return self.mcd_parser.session.metaname
 
     def write_imc_folder(self, create_zip: bool = True, remove_folder: bool = None, skip_csv: bool = False):
         if remove_folder is None:
@@ -42,7 +42,7 @@ class ImcWriter:
         # Save XML metadata if available
         mcd_xml = self.mcd_parser.get_mcd_xml()
         if mcd_xml is not None:
-            with open(os.path.join(output_folder, session.meta_name + SCHEMA_XML_SUFFIX), "wt") as f:
+            with open(os.path.join(output_folder, session.metaname + SCHEMA_XML_SUFFIX), "wt") as f:
                 f.write(mcd_xml)
 
         # Save acquisition images in OME-TIFF format
@@ -67,10 +67,10 @@ class ImcWriter:
                         ch.min_intensity = round(float(img.min()), 4)
                         ch.max_intensity = round(float(img.max()), 4)
                 acquisition_data.save_ome_tiff(
-                    os.path.join(output_folder, acquisition.meta_name + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
+                    os.path.join(output_folder, acquisition.metaname + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
                 )
 
-        session.save(os.path.join(output_folder, session.meta_name + SESSION_JSON_SUFFIX))
+        session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
         if not skip_csv:
             session.save_meta_csv(output_folder)
 
