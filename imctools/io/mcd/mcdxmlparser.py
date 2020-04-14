@@ -141,12 +141,15 @@ class McdXmlParser:
         for c in self.metadata.get(const.ACQUISITION_CHANNEL):
             if c.get(const.CHANNEL_NAME) in ("X", "Y", "Z"):
                 continue
+            name = c.get(const.CHANNEL_NAME).replace("(", "").replace(")", "").strip()
+            mass = "".join([m for m in name if m.isdigit()])
             channel = Channel(
                 int(c.get(const.ACQUISITION_ID)),
                 int(c.get(const.ID)),
                 int(c.get(const.ORDER_NUMBER)),
-                c.get(const.CHANNEL_NAME).replace("(", "").replace(")", "").strip(),
+                name,
                 label=c.get(const.CHANNEL_LABEL),
+                mass=int(mass) if mass != "" else None,
                 metadata=dict(c),
             )
             session.channels[channel.id] = channel

@@ -18,6 +18,7 @@ class ChannelDict(TypedDict):
     order_number: int
     name: str
     label: Optional[str]
+    mass: Optional[int]
     min_intensity: Optional[float]
     max_intensity: Optional[float]
     metadata: Optional[Dict[str, str]]
@@ -35,6 +36,7 @@ class Channel:
         order_number: int,
         name: str,
         label: Optional[str] = None,
+        mass: Optional[int] = None,
         min_intensity: Optional[float] = None,
         max_intensity: Optional[float] = None,
         metadata: Optional[Dict[str, str]] = None,
@@ -52,6 +54,8 @@ class Channel:
             Channel name (unique per acquisition).
         label
             Channel label.
+        mass
+            Channel atomic mass.
         min_intensity
             Minimal intensity value.
         max_intensity
@@ -64,6 +68,7 @@ class Channel:
         self.order_number = order_number
         self.name = name
         self.label = label
+        self.mass = mass
         self.min_intensity = min_intensity
         self.max_intensity = max_intensity
         self.metadata = metadata
@@ -79,6 +84,7 @@ class Channel:
             d.get("order_number"),
             d.get("name"),
             label=d.get("label"),
+            mass=d.get("mass"),
             min_intensity=d.get("min_intensity") if d.get("min_intensity") is not None else None,
             max_intensity=d.get("max_intensity") if d.get("max_intensity") is not None else None,
             metadata=d.get("metadata"),
