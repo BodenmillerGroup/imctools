@@ -55,15 +55,30 @@ class AcquisitionData:
         """Channel masses"""
         return self._acquisition.channel_masses
 
+    def get_image_stack_by_indices(self, indices: Sequence[int]):
+        """Get image stack by channel indices"""
+        stack = self._get_image_stack_cyx(indices=indices)
+        return stack
+
     def get_image_by_index(self, index: int):
         """Get channel image by its index"""
         stack = self._get_image_stack_cyx(indices=[index])
         return stack[0]
 
+    def get_image_stack_by_names(self, names: Sequence[str]):
+        """Get image stack by channel names"""
+        indices = [self.channel_names.index(name) for name in names]
+        return self.get_image_stack_by_indices(indices)
+
     def get_image_by_name(self, name: str):
         """Get channel image by its name"""
         index = self.channel_names.index(name)
         return self.get_image_by_index(index)
+
+    def get_image_stack_by_labels(self, labels: Sequence[str]):
+        """Get image stack by channel labels"""
+        indices = [self.channel_labels.index(label) for label in labels]
+        return self.get_image_stack_by_indices(indices)
 
     def get_image_by_label(self, label: str):
         """Get channel image by its label"""
