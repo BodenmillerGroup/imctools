@@ -94,7 +94,7 @@ class Session:
         return s
 
     def save(self, filepath: str):
-        """Save session data in JSON format
+        """Save session data in JSON format.
 
         Parameters
         ----------

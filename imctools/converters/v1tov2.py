@@ -6,7 +6,9 @@ import shutil
 from pathlib import Path
 from typing import Sequence
 
+from imctools.data import Session
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
+from imctools.io.ometiff.ometiffparser import OmeTiffParser
 from imctools.io.utils import SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX, OME_TIFF_SUFFIX
 
 logger = logging.getLogger(__name__)
@@ -38,7 +40,6 @@ def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
 
     xml_parser = McdXmlParser(xml, schema_file, process_namespaces=True)
     session = xml_parser.session
-    session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
 
     # Copy schema file
     _copy_files([schema_file], output_folder)
@@ -61,10 +62,26 @@ def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
 
     # Copy OME-TIFF acquisition files
     ome_tiff_files = glob.glob(os.path.join(input_folder, f"*{OME_TIFF_SUFFIX}"))
+    session = _calculate_min_max_intensities(ome_tiff_files, session)
+    session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
     _copy_files(ome_tiff_files, output_folder, fix_names=True)
 
     if not skip_csv:
         session.save_meta_csv(output_folder)
+
+
+def _calculate_min_max_intensities(filenames: Sequence[str], session: Session):
+    """Calculate min and max intensity of each channel."""
+    for fn in filenames:
+        with OmeTiffParser(fn) as parser:
+            ac_data = parser.get_acquisition_data()
+            acquisition = session.acquisitions.get(ac_data.acquisition.id)
+            if acquisition:
+                for channel in acquisition.channels.values():
+                    img = ac_data.get_image_by_name(channel.name)
+                    session.channels[channel.id].min_intensity = round(float(img.min()), 4)
+                    session.channels[channel.id].max_intensity = round(float(img.max()), 4)
+    return session
 
 
 def _copy_files(filenames: Sequence[str], output_folder: str, fix_names=False):
