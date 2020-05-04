@@ -53,10 +53,7 @@ class McdXmlParser:
         session_id = str(uuid.uuid4())
         session = Session(session_id, session_name, __version__, datetime.now(timezone.utc), metadata=self.metadata,)
         for s in self.metadata.get(const.SLIDE):
-            has_slide_image = (
-                int(s.get(const.IMAGE_END_OFFSET, 0))
-                - int(s.get(const.IMAGE_START_OFFSET, 0))
-            ) > 0
+            has_slide_image = (int(s.get(const.IMAGE_END_OFFSET, 0)) - int(s.get(const.IMAGE_START_OFFSET, 0))) > 0
             slide = Slide(
                 session.id,
                 int(s.get(const.ID)),
