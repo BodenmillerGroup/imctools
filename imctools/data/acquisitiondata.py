@@ -31,6 +31,14 @@ class AcquisitionData:
         """Binary image data as numpy array"""
         return self._image_data
 
+    def to_xarray(self):
+        """Get binary image data as xarray"""
+        try:
+            import xarray as xr
+            return xr.DataArray(self._image_data, dims=('x', 'y'))
+        except ImportError:
+            raise ImportError("Please install 'xarray' package first.")
+
     @property
     def is_valid(self):
         return self._acquisition.is_valid
