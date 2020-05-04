@@ -14,7 +14,7 @@ from imctools.io.utils import SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX, OME_TIFF_S
 logger = logging.getLogger(__name__)
 
 
-def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
+def v1_to_v2(input_folder: str, output_folder: str):
     """Converts IMC folder from v1 to v2 format.
 
     Parameters
@@ -23,8 +23,6 @@ def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
         Input folder (with IMC v1 data).
     output_folder
         Output folder.
-    skip_csv
-        Whether to skip creation of CSV metadata files.
     """
     if not (os.path.exists(output_folder)):
         os.makedirs(output_folder)
@@ -66,9 +64,6 @@ def v1_to_v2(input_folder: str, output_folder: str, skip_csv=False):
     session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
     _copy_files(ome_tiff_files, output_folder, fix_names=True)
 
-    if not skip_csv:
-        session.save_meta_csv(output_folder)
-
 
 def _calculate_min_max_intensities(filenames: Sequence[str], session: Session):
     """Calculate min and max intensity of each channel."""
@@ -104,7 +99,6 @@ if __name__ == "__main__":
         # "/home/anton/Documents/IMC Workshop 2019/Data/IMC_Workshop_2019_preprocessing/data/ometiff/20190919_FluidigmBrCa_SE",
         "/home/anton/Data/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035",
         "/home/anton/Downloads/imc_folder_v2",
-        False,
     )
 
     print(timeit.default_timer() - tic)

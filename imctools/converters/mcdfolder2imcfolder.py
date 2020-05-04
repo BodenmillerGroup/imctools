@@ -13,7 +13,7 @@ from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = False, skip_csv: bool = False):
+def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = False):
     """Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -24,8 +24,6 @@ def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = Fa
         Path to the output folder.
     create_zip
         Whether to create an output as .zip file.
-    skip_csv
-        Whether to skip creation of CSV metadata files.
     """
     tmpdir = None
     if input.endswith(ZIP_FILENDING):
@@ -55,7 +53,7 @@ def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = Fa
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
 
         imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
-        imc_writer.write_imc_folder(create_zip=create_zip, skip_csv=skip_csv)
+        imc_writer.write_imc_folder(create_zip=create_zip)
     finally:
         if mcd_parser is not None:
             mcd_parser.close()

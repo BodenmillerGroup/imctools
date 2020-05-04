@@ -39,7 +39,7 @@ def main():
 
 def _add_mcdfolder2imcfolder_parser(subparsers: argparse._SubParsersAction):
     def func(args):
-        mcdfolder_to_imcfolder(args.input, args.output_folder, args.zip, args.skip_csv)
+        mcdfolder_to_imcfolder(args.input, args.output_folder, args.zip)
 
     parser = subparsers.add_parser(
         "mcdfolder-to-imcfolder",
@@ -49,7 +49,6 @@ def _add_mcdfolder2imcfolder_parser(subparsers: argparse._SubParsersAction):
     parser.add_argument("input", help="Path to the folder/zip archive containing the IMC raw data.")
     parser.add_argument("output_folder", help="Path to the output folder.")
     parser.add_argument("--zip", action="store_true", help="Whether to create an output as .zip file.")
-    parser.add_argument("--skip-csv", action="store_true", help="Whether to skip creation of CSV metadata files.")
     parser.set_defaults(func=func)
 
 
@@ -193,7 +192,7 @@ def _add_probability2uncertainty_parser(subparsers: argparse._SubParsersAction):
 
 def _add_v1_to_v2_parser(subparsers: argparse._SubParsersAction):
     def func(args):
-        v1_to_v2(args.input_folder, args.output_folder, args.skip_csv)
+        v1_to_v2(args.input_folder, args.output_folder)
 
     parser = subparsers.add_parser(
         "v1-to-v2",
@@ -202,5 +201,4 @@ def _add_v1_to_v2_parser(subparsers: argparse._SubParsersAction):
     )
     parser.add_argument("input_folder", help="Input folder (with IMC v1 data).")
     parser.add_argument("output_folder", help="Output folder.")
-    parser.add_argument("--skip-csv", action="store_true", help="Whether to skip creation of CSV metadata files.")
     parser.set_defaults(func=func)
