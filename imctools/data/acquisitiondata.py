@@ -35,7 +35,7 @@ class AcquisitionData:
         """Get binary image data as xarray"""
         try:
             import xarray as xr
-            return xr.DataArray(self._image_data, dims=('x', 'y'))
+            return xr.DataArray(self._image_data, dims=("fluor", "x", "y"), coords={"fluor": self.channel_names})
         except ImportError:
             raise ImportError("Please install 'xarray' package first.")
 
@@ -97,8 +97,7 @@ class AcquisitionData:
         """Return the data reshaped as a stack of images"""
         if indices is None:
             indices = range(self.n_channels)
-        img = [self.image_data[i] for i in indices]
-        return img
+        return self.image_data[indices]
 
     def save_ome_tiff(
         self,
