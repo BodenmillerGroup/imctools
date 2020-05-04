@@ -270,7 +270,7 @@ python-versions = ">=3.5"
 version = "1.18.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = false
@@ -373,7 +373,7 @@ mccabe = ">=0.6,<0.7"
 toml = ">=0.7.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python parsing module"
 name = "pyparsing"
 optional = false
@@ -553,7 +553,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "8b2f6adc5737af44a167e9bddff553fb312fedd6d39f5ebfd61896241a258f7e"
+content-hash = "866db00bf1005e3db41145826d2ce8840551f5c07e3fe86410f745ce8076e9fb"
 python-versions = ">=3.7"
 
 [metadata.files]

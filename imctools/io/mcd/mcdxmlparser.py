@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime, timezone
+from packaging import version
 
 import xmltodict
 from dateutil.parser import parse
@@ -96,6 +97,7 @@ class McdXmlParser:
             roi = rois.get(int(a.get(const.ACQUISITION_ROI_ID)))
             panorama = session.panoramas.get(int(roi.get(const.PANORAMA_ID)))
             slide_id = panorama.slide_id
+            slide = session.slides.get(slide_id)
 
             has_before_ablation_image = (
                 int(a.get(const.BEFORE_ABLATION_IMAGE_END_OFFSET, 0))
@@ -105,6 +107,13 @@ class McdXmlParser:
                 int(a.get(const.AFTER_ABLATION_IMAGE_END_OFFSET, 0))
                 - int(a.get(const.AFTER_ABLATION_IMAGE_START_OFFSET, 0))
             ) > 0
+
+            # TODO: check if the issue is fixed in newer Fluidigm versions
+            roi_start_x_pos_um = float(a.get(const.ROI_START_X_POS_UM, 0))
+            roi_start_y_pos_um = float(a.get(const.ROI_START_Y_POS_UM, 0))
+            if slide.sw_version is None or version.parse(slide.sw_version) <= version.parse("7.0.5189.0"):
+                roi_start_x_pos_um /= 1000
+                roi_start_y_pos_um /= 1000
 
             acquisition = Acquisition(
                 slide_id,
@@ -123,8 +132,8 @@ class McdXmlParser:
                 ablation_distance_between_shots_x=float(a.get(const.ABLATION_DISTANCE_BETWEEN_SHOTS_X, 1)),
                 ablation_distance_between_shots_y=float(a.get(const.ABLATION_DISTANCE_BETWEEN_SHOTS_Y, 1)),
                 template=a.get(const.TEMPLATE, ""),
-                roi_start_x_pos_um=float(a.get(const.ROI_START_X_POS_UM, 0)),
-                roi_start_y_pos_um=float(a.get(const.ROI_START_Y_POS_UM, 0)),
+                roi_start_x_pos_um=roi_start_x_pos_um,
+                roi_start_y_pos_um=roi_start_y_pos_um,
                 roi_end_x_pos_um=float(a.get(const.ROI_END_X_POS_UM, 0)),
                 roi_end_y_pos_um=float(a.get(const.ROI_END_Y_POS_UM, 0)),
                 description=a.get(const.DESCRIPTION, "ROI"),

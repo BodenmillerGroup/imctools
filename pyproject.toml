@@ -23,8 +23,9 @@ include = ["AUTHORS.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "README.m
 exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+packaging = "*"
 pandas = ">=1.0.3"
+python = ">=3.7"
 typing_extensions = ">=3.7.4.2"
 xmltodict = ">=0.12.0"
 xtiff = ">=0.6.0"
