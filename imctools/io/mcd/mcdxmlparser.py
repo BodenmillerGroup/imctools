@@ -67,8 +67,6 @@ class McdXmlParser:
             session.slides[slide.id] = slide
 
         for p in self.metadata.get(const.PANORAMA):
-            width = abs(float(p.get(const.SLIDE_X3_POS_UM, 0)) - float(p.get(const.SLIDE_X1_POS_UM, 0)))
-            height = abs(float(p.get(const.SLIDE_Y3_POS_UM, 0)) - float(p.get(const.SLIDE_Y1_POS_UM, 0)))
             panorama = Panorama(
                 int(p.get(const.SLIDE_ID)),
                 int(p.get(const.ID)),
@@ -76,8 +74,12 @@ class McdXmlParser:
                 p.get(const.DESCRIPTION, "Pano"),
                 float(p.get(const.SLIDE_X1_POS_UM, 0)),
                 float(p.get(const.SLIDE_Y1_POS_UM, 0)),
-                width,
-                height,
+                float(p.get(const.SLIDE_X2_POS_UM, 0)),
+                float(p.get(const.SLIDE_Y2_POS_UM, 0)),
+                float(p.get(const.SLIDE_X3_POS_UM, 0)),
+                float(p.get(const.SLIDE_Y3_POS_UM, 0)),
+                float(p.get(const.SLIDE_X4_POS_UM, 0)),
+                float(p.get(const.SLIDE_Y4_POS_UM, 0)),
                 float(p.get(const.ROTATION_ANGLE, 0)),
                 metadata=dict(p),
             )

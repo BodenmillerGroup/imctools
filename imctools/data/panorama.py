@@ -16,10 +16,14 @@ class PanoramaDict(TypedDict):
     id: int
     image_type: str
     description: str
-    start_position_x: float
-    start_position_y: float
-    width: float
-    height: float
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+    x3: float
+    y3: float
+    x4: float
+    y4: float
     rotation_angle: float
     metadata: Optional[Dict[str, str]]
 
@@ -35,10 +39,14 @@ class Panorama:
         id: int,
         image_type: str,
         description: str,
-        start_position_x: float,
-        start_position_y: float,
-        width: float,
-        height: float,
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        x3: float,
+        y3: float,
+        x4: float,
+        y4: float,
         rotation_angle: float,
         metadata: Optional[Dict[str, str]] = None,
     ):
@@ -53,14 +61,22 @@ class Panorama:
             Image type (Imported, Instrument, Default).
         description
             Panorama description.
-        start_position_x
-            X coordinate of start panorama position on the slide (in μm).
-        start_position_y
-            Y coordinate of start panorama position on the slide (in μm).
-        width
-            Panorama physical width (in μm).
-        height
-            Panorama physical height (in μm).
+        x1
+            X1 coordinate of panorama position on the slide (in μm).
+        y1
+            Y1 coordinate of panorama position on the slide (in μm).
+        x2
+            X2 coordinate of panorama position on the slide (in μm).
+        y2
+            Y2 coordinate of panorama position on the slide (in μm).
+        x3
+            X3 coordinate of panorama position on the slide (in μm).
+        y3
+            Y3 coordinate of panorama position on the slide (in μm).
+        x4
+            X4 coordinate of panorama position on the slide (in μm).
+        y4
+            Y4 coordinate of panorama position on the slide (in μm).
         rotation_angle
             Panorama rotation angle (degrees).
         metadata
@@ -70,10 +86,14 @@ class Panorama:
         self.id = id
         self.image_type = image_type
         self.description = description
-        self.start_position_x = start_position_x
-        self.start_position_y = start_position_y
-        self.width = width
-        self.height = height
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.x3 = x3
+        self.y3 = y3
+        self.x4 = x4
+        self.y4 = y4
         self.rotation_angle = rotation_angle
         self.metadata = metadata
 
@@ -87,10 +107,14 @@ class Panorama:
             d.get("id"),
             d.get("image_type"),
             d.get("description"),
-            d.get("start_position_x"),
-            d.get("start_position_y"),
-            d.get("width"),
-            d.get("height"),
+            d.get("x1"),
+            d.get("y1"),
+            d.get("x2"),
+            d.get("y2"),
+            d.get("x3"),
+            d.get("y3"),
+            d.get("x4"),
+            d.get("y4"),
             d.get("rotation_angle"),
             metadata=d.get("metadata"),
         )
