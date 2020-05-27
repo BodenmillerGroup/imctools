@@ -35,7 +35,7 @@ class AcquisitionData:
         """Get binary image data as xarray"""
         try:
             import xarray as xr
-            return xr.DataArray(self._image_data, dims=("channel", "x", "y"), coords={"channel": self.channel_names})
+            return xr.DataArray(self._image_data, dims=("channel", "y", "x"), coords={"channel": self.channel_names})
         except ImportError:
             raise ImportError("Please install 'xarray' package first.")
 
