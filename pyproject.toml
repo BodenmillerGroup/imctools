@@ -24,7 +24,7 @@ exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
 packaging = "*"
-pandas = ">=1.0.3"
+pandas = ">=1.0.5"
 python = ">=3.7"
 typing_extensions = ">=3.7.4.2"
 xmltodict = ">=0.12.0"
@@ -38,9 +38,9 @@ flake8 = "^3.8.2"
 isort = "^4.3.21"
 mypy = "*"
 pdoc3 = "^0.8.1"
-pylint = "^2.5.2"
-pytest = "^5.4.2"
-pytest-cov = "^2.9.0"
+pylint = "^2.5.3"
+pytest = "^5.4.3"
+pytest-cov = "^2.10.0"
 vulture = "^1.5"
 
 [tool.poetry.scripts]
