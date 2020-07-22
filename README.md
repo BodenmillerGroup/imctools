@@ -32,7 +32,7 @@ Documentation: https://imctools.readthedocs.io
 
 Preferable way to install `imctools` is via official PyPI registry. Please define package version explicitly in order to avoid incompatibilities between v1.x and v2.x versions:
 ```
-pip install imctools==1.0.7
+pip install imctools==1.0.8
 ```
 
 ## Usage
