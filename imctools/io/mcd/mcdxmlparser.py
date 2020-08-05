@@ -1,10 +1,10 @@
 import os
 import uuid
 from datetime import datetime, timezone
-from packaging import version
 
 import xmltodict
 from dateutil.parser import parse
+from packaging import version
 
 import imctools.io.mcd.constants as const
 from imctools import __version__

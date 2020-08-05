@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Sequence, Tuple, Type
+from typing import Sequence, Tuple, Type, Optional
 
 import numpy as np
 import pandas as pd
@@ -10,15 +10,51 @@ from imctools.io.ometiff.ometiffparser import OmeTiffParser
 logger = logging.getLogger(__name__)
 
 
+def get_metals_from_panel(
+    panel_csv_file: Optional[str], usedcolumn: str = "ilastik", metalcolumn: str = "Metal Tag", sort_channels=True,
+):
+    """Get list of metals from a panel and a boolean column.
+
+    Parameters
+    ----------
+    panel_csv_file
+        Name of the CSV file that contains the channels to be written out.
+    metalcolumn
+        Column name of the metal names.
+    usedcolumn
+        Column that should contain booleans (0, 1) if the channel should be used, i.e. "ilastik".
+    sort_channels
+        Whether to sort channels by mass.
+    """
+    metals = None
+
+    if panel_csv_file is not None:
+
+        pannel = pd.read_csv(panel_csv_file)
+        if pannel.shape[1] > 1:
+            selected = pannel[usedcolumn]
+            metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
+        else:
+            metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
+
+    if sort_channels:
+        if metals is not None:
+
+            def mass_from_met(x):
+                return int("".join([m for m in x if m.isdigit()])), x
+
+            metals = sorted(metals, key=mass_from_met)
+
+    return metals
+
+
 def omefile_2_analysisfolder(
     filename: str,
     output_folder: str,
     basename: str,
     panel_csv_file: str = None,
     metalcolumn: str = "Metal Tag",
-    masscolumn: str = None,
-    usedcolumn: str = None,
-    add_sum=False,
+    usedcolumn: str = "ilastik",
     bigtiff=False,
     sort_channels=True,
     dtype: Type = None,
@@ -37,12 +73,8 @@ def omefile_2_analysisfolder(
         Name of the CSV file that contains the channels to be written out.
     metalcolumn
         Column name of the metal names.
-    masscolumn
-        Column name of the mass names. If provided the metal column will be ignored.
     usedcolumn
         Column that should contain booleans (0, 1) if the channel should be used, i.e. "ilastik".
-    add_sum
-        Add the sum of the data as the first layer.
     bigtiff
         Whether to save TIFF files in BigTIFF format.
     sort_channels
@@ -50,51 +82,22 @@ def omefile_2_analysisfolder(
     dtype
         Output Numpy data type.
     """
-    metals = None
-    masses = None
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    outname = os.path.join(output_folder, basename)
-    if panel_csv_file is not None:
+    metals = get_metals_from_panel(panel_csv_file, usedcolumn, metalcolumn, sort_channels)
 
-        pannel = pd.read_csv(panel_csv_file)
-        if pannel.shape[1] > 1:
-            selected = pannel[usedcolumn]
-            if masscolumn is None:
-                metalcolumn = metalcolumn
-                metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
-            else:
-                masses = [str(n) for s, n in zip(selected, pannel[masscolumn]) if s]
-        else:
-            metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
     ome = OmeTiffParser(filename)
     acquisition_data = ome.get_acquisition_data()
 
-    if sort_channels:
-        if metals is not None:
+    outname = os.path.join(output_folder, basename)
+    acquisition_data.save_tiff(outname + ".tiff", names=metals, imagej=True, bigtiff=bigtiff, dtype=dtype)
 
-            def mass_from_met(x):
-                return "".join([m for m in x if m.isdigit()]), x
-
-            metals = sorted(metals, key=mass_from_met)
-        if masses is not None:
-            masses = sorted(masses)
-
-    acquisition_data.save_tiff(
-        outname + ".tiff", names=metals, masses=masses, add_sum=add_sum, imagej=True, bigtiff=bigtiff, dtype=dtype
-    )
-
-    if masses is not None:
-        savenames = masses
-    elif metals is not None:
+    if metals is not None:
         savenames = metals
     else:
         savenames = [s for s in acquisition_data.channel_names]
-
-    if add_sum:
-        savenames = ["sum"] + savenames
 
     with open(outname + ".csv", "w") as f:
         for n in savenames:
@@ -107,7 +110,6 @@ def omefolder_to_analysisfolder(
     panel_csv_file: str,
     analysis_stacks: Sequence[Tuple[str, str, bool]],
     metalcolumn: str = "Metal Tag",
-    masscolumn: str = None,
     dtype=np.uint16,
 ):
     """Convert OME tiffs to analysis tiffs that are more compatible with tools. A CSV with a boolean column can be used to select subsets of channels or metals from the stack. The channels of the tiff will have the same order as in the csv.'
@@ -124,8 +126,6 @@ def omefolder_to_analysisfolder(
         Array of analysis stack definitions in a tuple format (column, suffix, add_sum).
     metalcolumn
         Column name of the metal names.
-    masscolumn
-        Column name of the mass names. If provided the metal column will be ignored.
     dtype
         Output numpy dtype
     """
@@ -145,9 +145,7 @@ def omefolder_to_analysisfolder(
                         basename + suffix,
                         panel_csv_file=panel_csv_file,
                         metalcolumn=metalcolumn,
-                        masscolumn=masscolumn,
                         usedcolumn=col,
-                        add_sum=add_sum,
                         bigtiff=False,
                         dtype=dtype,
                     )
@@ -167,7 +165,6 @@ if __name__ == "__main__":
         panel_csv_file="/home/anton/Downloads/example_panel.csv",
         metalcolumn="Metal Tag",
         usedcolumn="ilastik",
-        add_sum=True,
     )
 
     # omefolder_to_analysisfolder(

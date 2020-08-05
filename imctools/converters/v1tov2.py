@@ -9,7 +9,7 @@ from typing import Sequence
 from imctools.data import Session
 from imctools.io.mcd.mcdxmlparser import McdXmlParser
 from imctools.io.ometiff.ometiffparser import OmeTiffParser
-from imctools.io.utils import SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX, OME_TIFF_SUFFIX
+from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX
 
 logger = logging.getLogger(__name__)
 

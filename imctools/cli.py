@@ -117,9 +117,7 @@ def _add_omefile2analysisfolder_parser(subparsers: argparse._SubParsersAction):
             args.basename,
             args.pannelcsv,
             args.metalcolumn,
-            args.masscolumn,
             args.usedcolumn,
-            args.addsum,
             args.bigtiff,
             not args.nosort,  # Invert argument value!
             args.imagetype,
@@ -138,16 +136,10 @@ def _add_omefile2analysisfolder_parser(subparsers: argparse._SubParsersAction):
     )
     parser.add_argument("--metalcolumn", help="Column name of the metal names.", default="Metal Tag")
     parser.add_argument(
-        "--masscolumn",
-        help="Column name of the mass names. If provided the metal column will be ignored.",
-        default=None,
-    )
-    parser.add_argument(
         "--usedcolumn",
         help="Column that should contain booleans (0, 1) if the channel should be used.",
         default="ilastik",
     )
-    parser.add_argument("--addsum", action="store_true", help="Add the sum of the data as the first layer.")
     parser.add_argument("--bigtiff", action="store_true", help="Whether to save TIFF files in BigTIFF format.")
     parser.add_argument("--nosort", action="store_true", help="Whether to skip sorting channels by mass.")
     parser.add_argument(

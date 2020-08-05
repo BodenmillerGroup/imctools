@@ -1,5 +1,5 @@
 [build-system]
-requires = ["poetry>=1.0.5"]
+requires = ["poetry>=1.0.10"]
 build-backend = "poetry.masonry.api"
 
 [tool.poetry]
@@ -24,7 +24,7 @@ exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
 packaging = "*"
-pandas = ">=1.0.5"
+pandas = ">=1.1.0"
 python = ">=3.7"
 typing_extensions = ">=3.7.4.2"
 xmltodict = ">=0.12.0"
@@ -39,7 +39,7 @@ isort = "^4.3.21"
 mypy = "*"
 pdoc3 = "^0.8.1"
 pylint = "^2.5.3"
-pytest = "^5.4.3"
+pytest = "^6.0.1"
 pytest-cov = "^2.10.0"
 vulture = "^1.5"
 

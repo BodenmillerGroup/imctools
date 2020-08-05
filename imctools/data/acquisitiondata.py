@@ -35,6 +35,7 @@ class AcquisitionData:
         """Get binary image data as xarray"""
         try:
             import xarray as xr
+
             return xr.DataArray(self._image_data, dims=("channel", "y", "x"), coords={"channel": self.channel_names})
         except ImportError:
             raise ImportError("Please install 'xarray' package first.")
@@ -148,8 +149,6 @@ class AcquisitionData:
         self,
         filename: str,
         names: Sequence[str] = None,
-        masses: Sequence[str] = None,
-        add_sum=False,
         imagej=False,
         bigtiff=False,
         dtype: Optional[object] = None,
@@ -157,17 +156,10 @@ class AcquisitionData:
     ):
         if names is not None:
             order = self.acquisition.get_name_indices(names)
-        elif masses is not None:
-            order = self.acquisition.get_mass_indices(masses)
         else:
             order = [i for i in range(self.n_channels)]
 
         data = np.array(self._get_image_stack_cyx(order), dtype=dtype)
-
-        if add_sum:
-            img_sum = np.sum(data, axis=0)
-            img_sum = np.reshape(img_sum, [1] + list(img_sum.shape))
-            data = np.append(img_sum, data, axis=0)
 
         data = np.array(data, dtype=dtype)
 
