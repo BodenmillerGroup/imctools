@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='imctools',
-    version='1.0.7',
+    version='1.0.8',
     description='Tools to handle IMC data',
     long_description=readme,
     author='Vito Zanotelli',
@@ -19,7 +19,7 @@ setup(
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     install_requires=[
-        'tifffile>=2019.7.26',
+        'tifffile==2019.7.26',
         'scikit-image',
         'pandas'
     ]

@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "1.0.7"
+version = "1.0.8"
 description = "Tools to handle IMC data"
 license = "LICENSE"
 authors = [
@@ -32,7 +32,7 @@ exclude = ["tests", "docs", "examples"]
 [tool.poetry.dependencies]
 pandas = { version = "*", optional = false }
 scikit-image = { version = "*", optional = false }
-tifffile = { version = ">=2019.7.26", optional = false }
+tifffile = { version = "2019.7.26", optional = false }
 
 [tool.poetry.dev-dependencies]
 sphinx = "*"
