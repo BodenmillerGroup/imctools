@@ -33,6 +33,7 @@ def get_metals_from_panel(
         pannel = pd.read_csv(panel_csv_file)
         if pannel.shape[1] > 1:
             selected = pannel[usedcolumn]
+            assert (selected.any() == 0 or selected.any() == 1), f"Values in 'usedcolumn' column should contain only 0/1"
             metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
         else:
             metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
