@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import csv
 import json
-import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from dateutil.parser import parse
 
@@ -110,32 +110,34 @@ class Session:
         with open(filepath, "wt") as f:
             json.dump(self, f, indent=2, default=handle_default)
 
-    def save_meta_csv(self, output_folder: str):
+    def save_meta_csv(self, output_folder: Union[str, Path]):
         """Writes the metadata as CSV tables"""
-        if not (os.path.exists(output_folder)):
-            os.makedirs(output_folder)
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
+        if not output_folder.exists():
+            output_folder.mkdir(parents=True, exist_ok=True)
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.metaname, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+            output_folder / ("_".join([self.metaname, "session"]) + META_CSV_SUFFIX), [self.get_csv_dict()]
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.metaname, "slides"]) + META_CSV_SUFFIX),
+            output_folder / ("_".join([self.metaname, "slides"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.slides.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.metaname, "panoramas"]) + META_CSV_SUFFIX),
+            output_folder / ("_".join([self.metaname, "panoramas"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.panoramas.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.metaname, "acquisitions"]) + META_CSV_SUFFIX),
+            output_folder / ("_".join([self.metaname, "acquisitions"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.acquisitions.values()],
         )
         Session._save_csv(
-            os.path.join(output_folder, "_".join([self.metaname, "channels"]) + META_CSV_SUFFIX),
+            output_folder / ("_".join([self.metaname, "channels"]) + META_CSV_SUFFIX),
             [v.get_csv_dict() for v in self.channels.values()],
         )
 
     @staticmethod
-    def _save_csv(filepath: str, values: list):
+    def _save_csv(filepath: Path, values: list):
         with open(filepath, "wt") as f:
             cols = values[0].keys()
             writer = csv.DictWriter(f, sorted(cols))
@@ -143,7 +145,7 @@ class Session:
             writer.writerows(values)
 
     @staticmethod
-    def load(filepath: str):
+    def load(filepath: Union[str, Path]):
         """Load IMC session data from JSON file
 
         Parameters
@@ -207,6 +209,6 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
     session = Session.load(
-        "/home/anton/Downloads/imc_folder/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_session.json"
+        "/home/anton/Downloads/imc_from_mcd/20190919_FluidigmBrCa_SE_session.json"
     )
     print(timeit.default_timer() - tic)

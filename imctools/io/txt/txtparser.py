@@ -1,5 +1,6 @@
 import re
-from typing import Sequence
+from pathlib import Path
+from typing import Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -17,7 +18,9 @@ class TxtParser:
     Allows to get a single IMC acquisition from a single TXT file.
     """
 
-    def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
+    def __init__(self, filepath: Union[str, Path], slide_id: int = 0, channel_id_offset: int = 0):
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
         self._filepath = filepath
         self._slide_id = slide_id
         self._channel_id_offset = channel_id_offset
@@ -35,7 +38,7 @@ class TxtParser:
         """Returns AcquisitionData object with binary image data"""
         return self._acquisition_data
 
-    def _parse_acquisition(self, filepath: str):
+    def _parse_acquisition(self, filepath: Path):
         long_data, channel_names, channel_labels = TxtParser._parse_csv(filepath)
         image_data = reshape_long_2_cyx(long_data, is_sorted=True)
 
@@ -55,7 +58,7 @@ class TxtParser:
 
         # Don't forget to change slide ID if needed!
         acquisition = Acquisition(
-            self._slide_id, acquisition_id, self.origin, filepath, max_x, max_y, signal_type=signal_type
+            self._slide_id, acquisition_id, self.origin, str(filepath), max_x, max_y, signal_type=signal_type
         )
 
         for i in range(len(channel_names)):
@@ -74,7 +77,7 @@ class TxtParser:
         return acquisition_data
 
     @staticmethod
-    def extract_acquisition_id(filepath: str):
+    def extract_acquisition_id(filepath: Union[str, Path]):
         """Extract acquisition ID from source TXT filepath.
 
         Filename should end with a numeric symbol!
@@ -84,10 +87,12 @@ class TxtParser:
         filepath
             Input TXT filepath.
         """
-        return int(filepath.rstrip(TXT_FILE_EXTENSION).split("_")[-1])
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
+        return int(filepath.stem.split("_")[-1])
 
     @staticmethod
-    def _parse_csv(filepath: str):
+    def _parse_csv(filepath: Path):
         """Parse CSV file.
 
         Parameters
@@ -124,12 +129,12 @@ class TxtParser:
         names
             CSV file column names.
         """
-        r = re.compile("^.*\((.*?)\)[^(]*$")
-        r_number = re.compile("\d+")
+        r = re.compile(r"^.*\((.*?)\)[^(]*$")
+        r_number = re.compile(r"\d+")
         result = []
         for name in names:
             n = (
-                r.sub("\g<1>", name.strip("\r").strip("\n").replace("(", "").replace(")", "").strip())
+                r.sub(r"\g<1>", name.strip("\r").strip("\n").replace("(", "").replace(")", "").strip())
                 .rstrip("di")
                 .rstrip("Di")
             )
@@ -162,7 +167,9 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    with TxtParser("/home/anton/Data/20190731_ZTMA256.1_slide2_TH/Row_1_14_A3_7.txt") as parser:
+    with TxtParser(
+        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_BreastCa_1_1.txt"
+    ) as parser:
         ac = parser.get_acquisition_data()
         pass
 

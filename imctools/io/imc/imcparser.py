@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Union
 
 import tifffile
 
@@ -11,10 +12,12 @@ from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_S
 class ImcParser:
     """IMC folder parser."""
 
-    def __init__(self, input_dir: str):
+    def __init__(self, input_dir: Union[str, Path]):
+        if isinstance(input_dir, str):
+            input_dir = Path(input_dir)
         self.input_dir = input_dir
 
-        session_json = str(next(Path(input_dir).glob("*" + SESSION_JSON_SUFFIX)))
+        session_json = str(next(input_dir.glob(f"*{SESSION_JSON_SUFFIX}")))
         self._session = Session.load(session_json)
 
     @property
@@ -28,7 +31,7 @@ class ImcParser:
     def get_mcd_xml(self):
         """Original (raw) metadata from MCD file in XML format."""
         xml_metadata_filename = self.session.metaname + SCHEMA_XML_SUFFIX
-        with open(os.path.join(self.input_dir, xml_metadata_filename), "rt") as f:
+        with open(self.input_dir / xml_metadata_filename, "rt") as f:
             return f.read()
 
     def get_acquisition_data(self, acquisition_id: int):
@@ -37,12 +40,12 @@ class ImcParser:
         if acquisition is None:
             return None
         filename = acquisition.metaname + OME_TIFF_SUFFIX
-        image_data = ImcParser._read_file(os.path.join(self.input_dir, filename))
+        image_data = ImcParser._read_file(self.input_dir / filename)
         acquisition_data = AcquisitionData(acquisition, image_data)
         return acquisition_data
 
     @staticmethod
-    def _read_file(filepath: str):
+    def _read_file(filepath: Path):
         with tifffile.TiffFile(filepath) as tif:
             return tif.asarray(out="memmap")
 

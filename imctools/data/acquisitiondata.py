@@ -1,7 +1,8 @@
 import logging
 import os
 import re
-from typing import Optional, Sequence
+from pathlib import Path
+from typing import Optional, Sequence, Union
 
 import numpy as np
 import tifffile
@@ -102,7 +103,7 @@ class AcquisitionData:
 
     def save_ome_tiff(
         self,
-        filename: str,
+        filename: Union[str, Path],
         names: Sequence[str] = None,
         masses: Sequence[str] = None,
         xml_metadata: Optional[str] = None,
@@ -147,7 +148,7 @@ class AcquisitionData:
 
     def save_tiff(
         self,
-        filename: str,
+        filename: Union[str, Path],
         names: Sequence[str] = None,
         imagej=False,
         bigtiff=False,
@@ -167,7 +168,7 @@ class AcquisitionData:
 
     def save_tiffs(
         self,
-        output_folder: str,
+        output_folder: Union[str, Path],
         names: Sequence[str] = None,
         masses: Sequence[str] = None,
         basename: str = None,
@@ -197,6 +198,8 @@ class AcquisitionData:
         compression
             Compression level.
         """
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
         creator = f"imctools {__version__}"
         if names is not None:
             order = self.acquisition.get_name_indices(names)
@@ -211,7 +214,7 @@ class AcquisitionData:
             data = np.array(self.get_image_by_index(i), dtype=dtype)
             if basename is None:
                 basename = self.acquisition.description.rstrip(".ome.tiff") + "_"
-            filename = os.path.join(output_folder, basename + label + "_" + name + ".tiff")
+            filename = output_folder / (basename + label + "_" + name + ".tiff")
             tifffile.imwrite(filename, data, compress=compression, imagej=imagej, bigtiff=bigtiff)
 
     def __repr__(self):

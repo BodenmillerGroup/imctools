@@ -1,6 +1,7 @@
 import logging
 import os
-from typing import Sequence, Tuple, Type, Optional
+from pathlib import Path
+from typing import Optional, Sequence, Tuple, Type, Union
 
 import numpy as np
 import pandas as pd
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_metals_from_panel(
-    panel_csv_file: Optional[str], usedcolumn: str = "ilastik", metalcolumn: str = "Metal Tag", sort_channels=True,
+    panel_csv_file: Optional[Union[str, Path]], usedcolumn: str = "ilastik", metalcolumn: str = "Metal Tag", sort_channels=True,
 ):
     """Get list of metals from a panel and a boolean column.
 
@@ -33,7 +34,7 @@ def get_metals_from_panel(
         pannel = pd.read_csv(panel_csv_file)
         if pannel.shape[1] > 1:
             selected = pannel[usedcolumn]
-            assert (selected.any() == 0 or selected.any() == 1), f"Values in 'usedcolumn' column should contain only 0/1"
+            assert selected.any() == 0 or selected.any() == 1, f"Values in 'usedcolumn' column should contain only 0/1"
             metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
         else:
             metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
@@ -50,15 +51,15 @@ def get_metals_from_panel(
 
 
 def omefile_2_analysisfolder(
-    filename: str,
-    output_folder: str,
+    filename: Union[str, Path],
+    output_folder: Union[str, Path],
     basename: str,
-    panel_csv_file: str = None,
+    panel_csv_file: Optional[Union[str, Path]] = None,
     metalcolumn: str = "Metal Tag",
     usedcolumn: str = "ilastik",
     bigtiff=False,
     sort_channels=True,
-    dtype: Type = None,
+    dtype: Optional[Type] = None,
 ):
     """Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.
 
@@ -83,32 +84,36 @@ def omefile_2_analysisfolder(
     dtype
         Output Numpy data type.
     """
+    if isinstance(filename, str):
+        filename = Path(filename)
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
+
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
 
     metals = get_metals_from_panel(panel_csv_file, usedcolumn, metalcolumn, sort_channels)
 
     ome = OmeTiffParser(filename)
     acquisition_data = ome.get_acquisition_data()
 
-    outname = os.path.join(output_folder, basename)
-    acquisition_data.save_tiff(outname + ".tiff", names=metals, imagej=True, bigtiff=bigtiff, dtype=dtype)
+    acquisition_data.save_tiff(output_folder / (basename + ".tiff"), names=metals, imagej=True, bigtiff=bigtiff, dtype=dtype)
 
     if metals is not None:
         savenames = metals
     else:
         savenames = [s for s in acquisition_data.channel_names]
 
-    with open(outname + ".csv", "w") as f:
+    with open(output_folder / (basename + ".csv"), "w") as f:
         for n in savenames:
             f.write(n + "\n")
 
 
 def omefolder_to_analysisfolder(
-    input_folder: str,
-    output_folder: str,
-    panel_csv_file: str,
+    input_folder: Union[str, Path],
+    output_folder: Union[str, Path],
+    panel_csv_file: Union[str, Path],
     analysis_stacks: Sequence[Tuple[str, str, bool]],
     metalcolumn: str = "Metal Tag",
     dtype=np.uint16,
@@ -130,10 +135,16 @@ def omefolder_to_analysisfolder(
     dtype
         Output numpy dtype
     """
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    if isinstance(input_folder, str):
+        input_folder = Path(input_folder)
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
+
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
+
     for fol in os.listdir(input_folder):
-        sub_fol = os.path.join(input_folder, fol)
+        sub_fol = input_folder / fol
         for img in os.listdir(sub_fol):
             if not img.endswith(".ome.tiff"):
                 continue
@@ -141,7 +152,7 @@ def omefolder_to_analysisfolder(
             for (col, suffix, add_sum) in analysis_stacks:
                 try:
                     omefile_2_analysisfolder(
-                        os.path.join(sub_fol, img),
+                        sub_fol / img,
                         output_folder,
                         basename + suffix,
                         panel_csv_file=panel_csv_file,
@@ -160,10 +171,10 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     omefile_2_analysisfolder(
-        "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff",
-        "/home/anton/Downloads/analysis_folder",
+        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"),
+        Path("/home/anton/Downloads/analysis_folder"),
         "test",
-        panel_csv_file="/home/anton/Downloads/example_panel.csv",
+        panel_csv_file=Path("/home/anton/Downloads/example_panel.csv"),
         metalcolumn="Metal Tag",
         usedcolumn="ilastik",
     )

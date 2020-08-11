@@ -21,7 +21,9 @@ class McdParser:
     The McdParser object should be closed using the close method.
     """
 
-    def __init__(self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: str = None):
+    def __init__(
+        self, filepath: Union[str, Path], file_handle: BinaryIO = None, xml_metadata_filepath: Union[str, Path] = None
+    ):
         if file_handle is None:
             self._fh = open(filepath, mode="rb")
         else:
@@ -93,8 +95,12 @@ class McdParser:
         )
         return data
 
-    def save_panorama_image(self, panorama_id: int, output_folder: str, output_filename: Optional[str] = None):
+    def save_panorama_image(
+        self, panorama_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
+    ):
         """Save panorama image of the acquisition"""
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
         panorama_postfix = "pano"
         image_offset_fix = 161
         p = self.session.panoramas.get(panorama_id)
@@ -113,10 +119,13 @@ class McdParser:
             output_filename += "_" + panorama_postfix + "." + file_end
 
         buf = self._get_buffer(img_start, img_end)
-        with open(os.path.join(output_folder, output_filename), "wb") as f:
+        with open(output_folder / output_filename, "wb") as f:
             f.write(buf)
 
-    def save_slide_image(self, slide_id: int, output_folder: str, output_filename: Optional[str] = None):
+    def save_slide_image(self, slide_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None):
+        """Save slide image"""
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
         image_offset_fix = 161
         slide_postfix = "slide"
         default_format = ".png"
@@ -143,11 +152,11 @@ class McdParser:
             output_filename += "_" + slide_postfix + slide_format
 
         buf = self._get_buffer(img_start, img_end)
-        with open(os.path.join(output_folder, output_filename), "wb") as f:
+        with open(output_folder / output_filename, "wb") as f:
             f.write(buf)
 
     def save_before_ablation_image(
-        self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None
+        self, acquisition_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
     ):
         return self._save_ablation_image(
             acquisition_id,
@@ -158,7 +167,9 @@ class McdParser:
             output_filename,
         )
 
-    def save_after_ablation_image(self, acquisition_id: int, output_folder: str, output_filename: Optional[str] = None):
+    def save_after_ablation_image(
+        self, acquisition_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
+    ):
         return self._save_ablation_image(
             acquisition_id,
             output_folder,
@@ -171,12 +182,14 @@ class McdParser:
     def _save_ablation_image(
         self,
         acquisition_id: int,
-        output_folder: str,
+        output_folder: Union[str, Path],
         ac_postfix: AblationImageType,
         start_offset: str,
         end_offset: str,
         output_filename: Optional[str] = None,
     ):
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
         image_offset_fix = 161
         image_format = ".png"
         a = self.session.acquisitions.get(acquisition_id)
@@ -190,7 +203,7 @@ class McdParser:
         buf = self._get_buffer(img_start, img_end)
         if not (output_filename.endswith(image_format)):
             output_filename += "_" + ac_postfix.value + image_format
-        with open(os.path.join(output_folder, output_filename), "wb") as f:
+        with open(output_folder / output_filename, "wb") as f:
             f.write(buf)
         return True
 
@@ -200,7 +213,7 @@ class McdParser:
         buf = self._fh.read(stop - start)
         return buf
 
-    def _inject_imc_datafile(self, filename: str):
+    def _inject_imc_datafile(self, filename: Union[str, Path]):
         """
         This function is used in cases where the MCD file is corrupted (missing MCD schema)
         but there is a MCD schema file available. In this case the .schema file can
@@ -250,7 +263,9 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     parser = McdParser(
-        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd"
+        Path(
+            "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd"
+        )
     )
 
     print(timeit.default_timer() - tic)

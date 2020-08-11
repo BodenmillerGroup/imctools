@@ -2,6 +2,8 @@ import csv
 import glob
 import os
 from io import StringIO
+from pathlib import Path
+from typing import Union
 
 import pandas as pd
 
@@ -16,7 +18,7 @@ COL_AC_SESSION = "AcSession"
 AC_META = "acquisition_metadata"
 
 
-def export_acquisition_csv(root_folder: str, output_folder: str, output_name=AC_META):
+def export_acquisition_csv(root_folder: Union[str, Path], output_folder: Union[str, Path], output_name=AC_META):
     """Export CSV file with merged acquisition metadata from all session subfolders.
 
     Parameters
@@ -28,6 +30,10 @@ def export_acquisition_csv(root_folder: str, output_folder: str, output_name=AC_
     output_name
         Filename of the acquisition metadata CSV file.
     """
+    if isinstance(root_folder, Path):
+        root_folder = str(root_folder)
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
     ac_names = os.listdir(root_folder)
     session_files = glob.glob(os.path.join(root_folder, f"*/*{SESSION_JSON_SUFFIX}"), recursive=True)
     if len(session_files) == 0:
@@ -48,10 +54,10 @@ def export_acquisition_csv(root_folder: str, output_folder: str, output_name=AC_
     data = data.reset_index(COL_AC_SESSION, drop=False)
     data.rename(columns={COL_MCD_ID: COL_AC_ID})
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
 
-    data.to_csv(os.path.join(output_folder, output_name + CSV_FILENDING), index=False)
+    data.to_csv(output_folder / (output_name + CSV_FILENDING), index=False)
 
 
 if __name__ == "__main__":
@@ -59,6 +65,6 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    export_acquisition_csv("/home/anton/Downloads/imc_folder/", "/home/anton/Downloads/csv_folder")
+    export_acquisition_csv(Path("/home/anton/Downloads/imc_folder/"), Path("/home/anton/Downloads/csv_folder"))
 
     print(timeit.default_timer() - tic)

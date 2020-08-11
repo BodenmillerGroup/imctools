@@ -24,7 +24,7 @@ exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
 packaging = "*"
-pandas = ">=1.1.0"
+pandas = "^1.0"
 python = ">=3.7"
 typing_extensions = ">=3.7.4.2"
 xmltodict = ">=0.12.0"

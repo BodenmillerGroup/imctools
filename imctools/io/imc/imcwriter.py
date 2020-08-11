@@ -1,7 +1,8 @@
 import logging
 import os
 import zipfile
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Union
 
 from imctools.io.mcd.mcdparser import McdParser
 from imctools.io.txt.txtparser import TxtParser
@@ -16,10 +17,17 @@ IMC_ZIP_SUFFIX = "_imc.zip"
 class ImcWriter:
     """Write IMC session data to IMC folder structure."""
 
-    def __init__(self, root_output_folder: str, mcd_parser: McdParser, txt_acquisitions_map: Dict[int, str] = None):
+    def __init__(
+        self,
+        root_output_folder: Union[str, Path],
+        mcd_parser: McdParser,
+        txt_acquisitions_map: Dict[int, Union[str, Path]] = None,
+    ):
         """
         Initializes an ImcFolderWriter that can be used to write out an imcfolder and compress it to zip.
         """
+        if isinstance(root_output_folder, str):
+            root_output_folder = Path(root_output_folder)
         self.root_output_folder = root_output_folder
         self.mcd_parser = mcd_parser
         self.txt_acquisitions_map = txt_acquisitions_map
@@ -32,17 +40,17 @@ class ImcWriter:
         if remove_folder is None:
             remove_folder = create_zip
 
-        output_folder = os.path.join(self.root_output_folder, self.folder_name)
+        output_folder = self.root_output_folder / self.folder_name
 
-        if not (os.path.exists(output_folder)):
-            os.makedirs(output_folder)
+        if not output_folder.exists():
+            output_folder.mkdir(parents=True, exist_ok=True)
 
         session = self.mcd_parser.session
 
         # Save XML metadata if available
         mcd_xml = self.mcd_parser.get_mcd_xml()
         if mcd_xml is not None:
-            with open(os.path.join(output_folder, session.metaname + SCHEMA_XML_SUFFIX), "wt") as f:
+            with open(output_folder / (session.metaname + SCHEMA_XML_SUFFIX), "wt") as f:
                 f.write(mcd_xml)
 
         # Save acquisition images in OME-TIFF format
@@ -67,10 +75,10 @@ class ImcWriter:
                         ch.min_intensity = round(float(img.min()), 4)
                         ch.max_intensity = round(float(img.max()), 4)
                 acquisition_data.save_ome_tiff(
-                    os.path.join(output_folder, acquisition.metaname + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
+                    output_folder / (acquisition.metaname + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
                 )
 
-        session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
+        session.save(output_folder / (session.metaname + SESSION_JSON_SUFFIX))
 
         # Save MCD file-specific artifacts like ablation images, panoramas, slide images, etc.
         for key in session.slides.keys():
@@ -85,12 +93,12 @@ class ImcWriter:
 
         if create_zip:
             with zipfile.ZipFile(
-                os.path.join(self.root_output_folder, self.folder_name + IMC_ZIP_SUFFIX),
+                self.root_output_folder / (self.folder_name + IMC_ZIP_SUFFIX),
                 "w",
                 compression=zipfile.ZIP_DEFLATED,
                 allowZip64=True,
             ) as imc_zip:
-                for root, d, files in os.walk(output_folder):
+                for root, d, files in os.walk(str(output_folder)):
                     for fn in files:
                         imc_zip.write(os.path.join(root, fn), fn)
                         if remove_folder:
@@ -105,7 +113,9 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    with McdParser("/home/anton/Downloads/test/IMMUcan_Batch20191023_10032401-HN-VAR-TIS-01-IMC-01_AC2.mcd") as parser:
+    with McdParser(
+        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd"
+    ) as parser:
         imc_writer = ImcWriter("/home/anton/Downloads/imc_from_mcd", parser)
         imc_writer.write_imc_folder()
 

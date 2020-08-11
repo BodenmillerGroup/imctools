@@ -2,14 +2,15 @@ import glob
 import logging
 import os
 import shutil
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 from imctools.io.ometiff.ometiffparser import OmeTiffParser
 
 logger = logging.getLogger(__name__)
 
 
-def omefile_to_tifffolder(filepath: str, output_folder: str, basename: str = None, dtype: Optional[object] = None):
+def omefile_to_tifffolder(filepath: Union[str, Path], output_folder: Union[str, Path], basename: str = None, dtype: Optional[object] = None):
     """Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.
 
     Parameters
@@ -23,8 +24,11 @@ def omefile_to_tifffolder(filepath: str, output_folder: str, basename: str = Non
     dtype
         Output numpy format.
     """
-    if not (os.path.exists(output_folder)):
-        os.makedirs(output_folder)
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
+
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
 
     with OmeTiffParser(filepath) as parser:
         acquisition_data = parser.get_acquisition_data()
@@ -32,7 +36,7 @@ def omefile_to_tifffolder(filepath: str, output_folder: str, basename: str = Non
 
 
 def omefile_to_histocatfolder(
-    filepath: str, base_folder: str, mask_file: Optional[str] = None, dtype: Optional[object] = None
+    filepath: Union[str, Path], base_folder: Union[str, Path], mask_file: Optional[Union[str, Path]] = None, dtype: Optional[object] = None
 ):
     """Converts single OME-TIFF file to a folder compatible with HistoCAT software.
 
@@ -47,19 +51,27 @@ def omefile_to_histocatfolder(
     dtype
         Output numpy format.
     """
-    basename = os.path.split(filepath)[1].rstrip(".ome.tiff")
-    output_folder = os.path.join(base_folder, basename)
+    if isinstance(filepath, str):
+        filepath = Path(filepath)
+
+    if isinstance(base_folder, str):
+        base_folder = Path(base_folder)
+
+    basename = filepath.name.rstrip(".ome.tiff")
+    output_folder = base_folder / basename
     omefile_to_tifffolder(filepath, output_folder, basename="", dtype=dtype)
     if mask_file is not None:
-        fn_mask_base = os.path.split(mask_file)[1]
-        fn_mask_new = os.path.join(output_folder, fn_mask_base)
+        if isinstance(mask_file, str):
+            mask_file = Path(mask_file)
+        fn_mask_base = mask_file.stem
+        fn_mask_new = output_folder / fn_mask_base
         shutil.copy2(mask_file, fn_mask_new)
 
 
 def omefolder_to_histocatfolder(
-    input_folder: str,
-    output_folder: str,
-    mask_folder: str = None,
+    input_folder: Union[str, Path],
+    output_folder: Union[str, Path],
+    mask_folder: Optional[Union[str, Path]] = None,
     mask_suffix="_mask.tiff",
     dtype: Optional[object] = None,
 ):
@@ -78,6 +90,12 @@ def omefolder_to_histocatfolder(
     dtype
         Output numpy format.
     """
+    if isinstance(input_folder, Path):
+        input_folder = str(input_folder)
+
+    if mask_folder is not None and isinstance(mask_folder, Path):
+        mask_folder = str(mask_folder)
+
     ome_files = [os.path.basename(fn) for fn in glob.glob(os.path.join(input_folder, "*")) if fn.endswith(".ome.tiff")]
     if mask_folder is not None:
         fn_masks = [
@@ -104,7 +122,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     omefolder_to_histocatfolder(
-        "/home/anton/Downloads/imc_from_mcd", "/home/anton/Downloads/tiff_folder",
+        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa"), Path("/home/anton/Downloads/tiff_folder"),
     )
 
     print(timeit.default_timer() - tic)

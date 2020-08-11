@@ -1,9 +1,9 @@
 import glob
 import logging
-import os
 import zipfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Union
 
 from imctools.io.imc.imcwriter import ImcWriter
 from imctools.io.mcd.mcdparser import McdParser
@@ -13,7 +13,7 @@ from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = False):
+def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
     """Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -25,20 +25,22 @@ def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = Fa
     create_zip
         Whether to create an output as .zip file.
     """
+    if isinstance(input, str):
+        input = Path(input)
     tmpdir = None
-    if input.endswith(ZIP_FILENDING):
+    if input.is_file() and input.suffix == ZIP_FILENDING:
         tmpdir = TemporaryDirectory()
         with zipfile.ZipFile(input, allowZip64=True) as zip:
             zip.extractall(tmpdir.name)
-        input_folder = tmpdir.name
+        input_folder = Path(tmpdir.name)
     else:
         input_folder = input
 
     mcd_parser = None
     try:
-        mcd_files = list(Path(input_folder).rglob(f"*{MCD_FILENDING}"))
+        mcd_files = list(input_folder.rglob(f"*{MCD_FILENDING}"))
         assert len(mcd_files) == 1
-        schema_files = glob.glob(os.path.join(input_folder, f"*{SCHEMA_FILENDING}"))
+        schema_files = glob.glob(str(input_folder / f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
         try:
             mcd_parser = McdParser(mcd_files[0])
@@ -49,7 +51,7 @@ def mcdfolder_to_imcfolder(input: str, output_folder: str, create_zip: bool = Fa
             else:
                 raise
 
-        txt_files = glob.glob(os.path.join(input_folder, f"*[0-9]{TXT_FILE_EXTENSION}"))
+        txt_files = glob.glob(str(input_folder / f"*[0-9]{TXT_FILE_EXTENSION}"))
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
 
         imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
@@ -67,11 +69,11 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcdfolder_to_imcfolder(
-        "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip",
+        Path("/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip"),
         # "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
         # "/home/anton/Downloads/test",
         # "/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip",
-        "/home/anton/Downloads/imc_folder",
+        Path("/home/anton/Downloads/imc_folder"),
     )
 
     print(timeit.default_timer() - tic)

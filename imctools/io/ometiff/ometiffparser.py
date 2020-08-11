@@ -1,11 +1,11 @@
 import xml.etree.ElementTree as ET
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 import tifffile
 
 from imctools.data import Acquisition, Channel
 from imctools.data.acquisitiondata import AcquisitionData
-from imctools.io.utils import OME_TIFF_SUFFIX
 
 
 class OmeTiffParser:
@@ -14,7 +14,9 @@ class OmeTiffParser:
      Allows to get a single IMC acquisition from a single OME-TIFF file.
      """
 
-    def __init__(self, filepath: str, slide_id: int = 0, channel_id_offset: int = 0):
+    def __init__(self, filepath: Union[str, Path], slide_id: int = 0, channel_id_offset: int = 0):
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
         self._filepath = filepath
         self._slide_id = slide_id
         self._channel_id_offset = channel_id_offset
@@ -37,7 +39,7 @@ class OmeTiffParser:
         return self._acquisition_data
 
     @staticmethod
-    def extract_acquisition_id(filepath: str):
+    def extract_acquisition_id(filepath: Union[str, Path]):
         """Extract acquisition ID from source OME-TIFF filepath.
 
         Filename should end with a numeric symbol!
@@ -47,9 +49,11 @@ class OmeTiffParser:
         filepath
             Input OME-TIFF filepath
         """
-        return int(filepath.rstrip(OME_TIFF_SUFFIX).split("_")[-1].lstrip("a"))
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
+        return int(filepath.stem.rstrip("_ac.ome").split("_")[-1].lstrip("a"))
 
-    def _parse_acquisition(self, filepath: str):
+    def _parse_acquisition(self, filepath: Path):
         image_data, ome_xml = OmeTiffParser._read_file(filepath)
         image_name, channel_names, channel_labels, self._mcd_xml = OmeTiffParser._parse_ome_xml(ome_xml)
 
@@ -67,7 +71,7 @@ class OmeTiffParser:
             self._slide_id,
             acquisition_id,
             self.origin,
-            filepath,
+            str(filepath),
             max_x,
             max_y,
             signal_type=signal_type,
@@ -115,7 +119,7 @@ class OmeTiffParser:
         return image_name, channel_names, channel_labels, mcd_xml
 
     @staticmethod
-    def _read_file(filepath: str):
+    def _read_file(filepath: Path):
         with tifffile.TiffFile(filepath) as tif:
             data = tif.asarray(out="memmap")
             try:
@@ -137,7 +141,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     with OmeTiffParser(
-        "/home/anton/Downloads/imc_folder/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_s0_a1_ac.ome.tiff"
+        "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
     ) as parser:
         ac = parser.get_acquisition_data()
         pass

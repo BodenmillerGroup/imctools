@@ -4,6 +4,6 @@
 .. include:: ../README.md
 """
 
-__author__ = """Anton Rau, Vito Zanotelli"""
-__email__ = "anton.rau@uzh.ch, vito.zanotelli@uzh.ch"
+__author__ = """Vito Zanotelli, Anton Rau"""
+__email__ = "vito.zanotelli@uzh.ch, anton.rau@uzh.ch"
 __version__ = "2.0.0"
