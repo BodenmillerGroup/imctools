@@ -1,0 +1,15 @@
+{
+  "include": [
+    "imctools"
+  ],
+  "exclude": [
+    "**/__pycache__"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "imctools",
+      "pythonVersion": "3.7",
+      "pythonPlatform": "Linux"
+    }
+  ]
+}

@@ -1,17 +1,5 @@
 SHELL := /bin/bash
 
-init:
-	poetry install
-
-build:
-	poetry build
-
-publish:
-	poetry publish
-
-update:
-	poetry update && poetry install
-
 clean:
 	find . -type d -name __pycache__ -exec rm -r {} \+
 	find . -type d -name .pytest_cache -exec rm -r {} \+
@@ -19,22 +7,48 @@ clean:
 	find . -name '*.egg-info' -exec rm -fr {} +
 	rm -fr build/
 	rm -fr dist/
-	rm -fr docs/build/
+	rm -fr tests/testdata
 
-lint: ## check style with flake8
+# Install all development dependencies
+install:
+	poetry install
+
+# Build pip package
+build:
+	poetry build
+
+# Publish pip package to PyPI
+publish:
+	poetry publish
+
+update:
+	poetry update && poetry install
+
+pylint:
+	pylint imctools
+
+# Check style with flake8
+flake8:
 	flake8 imctools tests
 
-test: ## run tests quickly with the default Python
+test:
 	pytest
 
-coverage: ## check code coverage
+# Check code test coverage
+coverage:
 	pytest --cov=imctools tests/
 
-generate-docs:
-	sphinx-build -M html "docs/source" "docs/build" $(O)
+build-docs:
+	rm -fr docs/
+	pdoc --html --output-dir docs imctools
+	mv docs/imctools/* docs
+	rmdir docs/imctools
 
 mypy:
 	mypy imctools
+
+pyright:
+	pyright imctools
 
 isort:
 	isort --multi-line=3 --trailing-comma --force-grid-wrap=0 --combine-as --line-width 88 --recursive --apply imctools

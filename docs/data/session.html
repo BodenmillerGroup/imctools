@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.4" />
+<title>imctools.data.session API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imctools.data.session</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from __future__ import annotations
+
+import csv
+import json
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+from dateutil.parser import parse
+
+from imctools.data.acquisition import Acquisition, AcquisitionDict
+from imctools.data.channel import Channel, ChannelDict
+from imctools.data.panorama import Panorama, PanoramaDict
+from imctools.data.slide import Slide, SlideDict
+from imctools.io.utils import META_CSV_SUFFIX
+
+if sys.version_info &gt;= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
+
+
+class SessionDict(TypedDict):
+    id: str
+    name: str
+    imctools_version: str
+    created: str
+    metadata: Optional[Dict[str, Any]]
+    slides: List[SlideDict]
+    acquisitions: List[AcquisitionDict]
+    panoramas: List[PanoramaDict]
+    channels: List[ChannelDict]
+
+
+class Session:
+    &#34;&#34;&#34;IMC session data. Container for all slides, acquisitions, panoramas, etc.&#34;&#34;&#34;
+
+    def __init__(
+        self, id: str, name: str, imctools_version: str, created: datetime, metadata: Optional[Dict[str, Any]] = None,
+    ):
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        id
+            Unique ID of the session (UUID).
+        name
+            Session name.
+        imctools_version
+            Version of imctools library used for conversion.
+        created
+            Datetime of session creation.
+        metadata
+            Whole set of original (raw) metadata as a dictionary.
+        &#34;&#34;&#34;
+        self.id = id
+        self.name = name
+        self.imctools_version = imctools_version
+        self.created = created
+        self.metadata = metadata
+
+        self.slides: Dict[int, Slide] = dict()
+        self.acquisitions: Dict[int, Acquisition] = dict()
+        self.panoramas: Dict[int, Panorama] = dict()
+        self.channels: Dict[int, Channel] = dict()
+
+    @staticmethod
+    def from_dict(d: SessionDict):
+        &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+        result = Session(
+            d.get(&#34;id&#34;), d.get(&#34;name&#34;), d.get(&#34;imctools_version&#34;), parse(d.get(&#34;created&#34;)), d.get(&#34;metadata&#34;),
+        )
+        return result
+
+    def __getstate__(self):
+        &#34;&#34;&#34;Returns dictionary for JSON/YAML serialization&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;created&#34;] = s[&#34;created&#34;].isoformat()
+        s[&#34;slides&#34;] = list(s[&#34;slides&#34;].values())
+        s[&#34;acquisitions&#34;] = list(s[&#34;acquisitions&#34;].values())
+        s[&#34;panoramas&#34;] = list(s[&#34;panoramas&#34;].values())
+        s[&#34;channels&#34;] = list(s[&#34;channels&#34;].values())
+        return s
+
+    def get_csv_dict(self):
+        &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;created&#34;] = s[&#34;created&#34;].isoformat()
+        del s[&#34;slides&#34;]
+        del s[&#34;acquisitions&#34;]
+        del s[&#34;panoramas&#34;]
+        del s[&#34;channels&#34;]
+        del s[&#34;metadata&#34;]
+        return s
+
+    def save(self, filepath: str):
+        &#34;&#34;&#34;Save session data in JSON format.
+
+        Parameters
+        ----------
+        filepath
+            Output JSON file path
+        &#34;&#34;&#34;
+
+        def handle_default(obj):
+            if isinstance(obj, (Session, Slide, Panorama, Acquisition, Channel)):
+                return obj.__getstate__()
+            return None
+
+        with open(filepath, &#34;wt&#34;) as f:
+            json.dump(self, f, indent=2, default=handle_default)
+
+    def save_meta_csv(self, output_folder: Union[str, Path]):
+        &#34;&#34;&#34;Writes the metadata as CSV tables&#34;&#34;&#34;
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
+        if not output_folder.exists():
+            output_folder.mkdir(parents=True, exist_ok=True)
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;session&#34;]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;slides&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.slides.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;panoramas&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.panoramas.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;acquisitions&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.acquisitions.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;channels&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.channels.values()],
+        )
+
+    @staticmethod
+    def _save_csv(filepath: Path, values: list):
+        with open(filepath, &#34;wt&#34;) as f:
+            cols = values[0].keys()
+            writer = csv.DictWriter(f, sorted(cols))
+            writer.writeheader()
+            writer.writerows(values)
+
+    @staticmethod
+    def load(filepath: Union[str, Path]):
+        &#34;&#34;&#34;Load IMC session data from JSON file
+
+        Parameters
+        ----------
+        filepath
+            Input JSON file path.
+        &#34;&#34;&#34;
+        with open(filepath, &#34;r&#34;) as f:
+            data = json.load(f)
+            return Session._rebuild_object_tree(data)
+
+    @staticmethod
+    def _rebuild_object_tree(data: SessionDict):
+        &#34;&#34;&#34;Helper function that re-creates parents/children relations between entities&#34;&#34;&#34;
+
+        session = Session.from_dict(data)
+
+        for item in data.get(&#34;slides&#34;):
+            slide = Slide.from_dict(item)
+            slide.session = session
+            session.slides[slide.id] = slide
+
+        for item in data.get(&#34;panoramas&#34;):
+            panorama = Panorama.from_dict(item)
+            slide = session.slides.get(panorama.slide_id)
+            panorama.slide = slide
+            slide.panoramas[panorama.id] = panorama
+            session.panoramas[panorama.id] = panorama
+
+        for item in data.get(&#34;acquisitions&#34;):
+            acquisition = Acquisition.from_dict(item)
+            slide = session.slides.get(acquisition.slide_id)
+            acquisition.slide = slide
+            slide.acquisitions[acquisition.id] = acquisition
+            session.acquisitions[acquisition.id] = acquisition
+
+        for item in data.get(&#34;channels&#34;):
+            channel = Channel.from_dict(item)
+            acquisition = session.acquisitions.get(channel.acquisition_id)
+            channel.acquisition = acquisition
+            acquisition.channels[channel.id] = channel
+            session.channels[channel.id] = channel
+
+        return session
+
+    @property
+    def metaname(self):
+        &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+        return self.name
+
+    @property
+    def acquisition_ids(self) -&gt; Tuple[int, ...]:
+        return tuple(self.acquisitions.keys())
+
+    def __repr__(self):
+        return f&#34;{self.__class__.__name__}(name={self.name})&#34;
+
+
+if __name__ == &#34;__main__&#34;:
+    import timeit
+
+    tic = timeit.default_timer()
+    session = Session.load(&#34;/home/anton/Downloads/imc_from_mcd/20190919_FluidigmBrCa_SE_session.json&#34;)
+    print(timeit.default_timer() - tic)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imctools.data.session.Session"><code class="flex name class">
+<span>class <span class="ident">Session</span></span>
+<span>(</span><span>id: str, name: str, imctools_version: str, created: datetime, metadata: Optional[Dict[str, Any]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>IMC session data. Container for all slides, acquisitions, panoramas, etc.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong></dt>
+<dd>Unique ID of the session (UUID).</dd>
+<dt><strong><code>name</code></strong></dt>
+<dd>Session name.</dd>
+<dt><strong><code>imctools_version</code></strong></dt>
+<dd>Version of imctools library used for conversion.</dd>
+<dt><strong><code>created</code></strong></dt>
+<dd>Datetime of session creation.</dd>
+<dt><strong><code>metadata</code></strong></dt>
+<dd>Whole set of original (raw) metadata as a dictionary.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Session:
+    &#34;&#34;&#34;IMC session data. Container for all slides, acquisitions, panoramas, etc.&#34;&#34;&#34;
+
+    def __init__(
+        self, id: str, name: str, imctools_version: str, created: datetime, metadata: Optional[Dict[str, Any]] = None,
+    ):
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        id
+            Unique ID of the session (UUID).
+        name
+            Session name.
+        imctools_version
+            Version of imctools library used for conversion.
+        created
+            Datetime of session creation.
+        metadata
+            Whole set of original (raw) metadata as a dictionary.
+        &#34;&#34;&#34;
+        self.id = id
+        self.name = name
+        self.imctools_version = imctools_version
+        self.created = created
+        self.metadata = metadata
+
+        self.slides: Dict[int, Slide] = dict()
+        self.acquisitions: Dict[int, Acquisition] = dict()
+        self.panoramas: Dict[int, Panorama] = dict()
+        self.channels: Dict[int, Channel] = dict()
+
+    @staticmethod
+    def from_dict(d: SessionDict):
+        &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+        result = Session(
+            d.get(&#34;id&#34;), d.get(&#34;name&#34;), d.get(&#34;imctools_version&#34;), parse(d.get(&#34;created&#34;)), d.get(&#34;metadata&#34;),
+        )
+        return result
+
+    def __getstate__(self):
+        &#34;&#34;&#34;Returns dictionary for JSON/YAML serialization&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;created&#34;] = s[&#34;created&#34;].isoformat()
+        s[&#34;slides&#34;] = list(s[&#34;slides&#34;].values())
+        s[&#34;acquisitions&#34;] = list(s[&#34;acquisitions&#34;].values())
+        s[&#34;panoramas&#34;] = list(s[&#34;panoramas&#34;].values())
+        s[&#34;channels&#34;] = list(s[&#34;channels&#34;].values())
+        return s
+
+    def get_csv_dict(self):
+        &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;created&#34;] = s[&#34;created&#34;].isoformat()
+        del s[&#34;slides&#34;]
+        del s[&#34;acquisitions&#34;]
+        del s[&#34;panoramas&#34;]
+        del s[&#34;channels&#34;]
+        del s[&#34;metadata&#34;]
+        return s
+
+    def save(self, filepath: str):
+        &#34;&#34;&#34;Save session data in JSON format.
+
+        Parameters
+        ----------
+        filepath
+            Output JSON file path
+        &#34;&#34;&#34;
+
+        def handle_default(obj):
+            if isinstance(obj, (Session, Slide, Panorama, Acquisition, Channel)):
+                return obj.__getstate__()
+            return None
+
+        with open(filepath, &#34;wt&#34;) as f:
+            json.dump(self, f, indent=2, default=handle_default)
+
+    def save_meta_csv(self, output_folder: Union[str, Path]):
+        &#34;&#34;&#34;Writes the metadata as CSV tables&#34;&#34;&#34;
+        if isinstance(output_folder, str):
+            output_folder = Path(output_folder)
+        if not output_folder.exists():
+            output_folder.mkdir(parents=True, exist_ok=True)
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;session&#34;]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;slides&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.slides.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;panoramas&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.panoramas.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;acquisitions&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.acquisitions.values()],
+        )
+        Session._save_csv(
+            output_folder / (&#34;_&#34;.join([self.metaname, &#34;channels&#34;]) + META_CSV_SUFFIX),
+            [v.get_csv_dict() for v in self.channels.values()],
+        )
+
+    @staticmethod
+    def _save_csv(filepath: Path, values: list):
+        with open(filepath, &#34;wt&#34;) as f:
+            cols = values[0].keys()
+            writer = csv.DictWriter(f, sorted(cols))
+            writer.writeheader()
+            writer.writerows(values)
+
+    @staticmethod
+    def load(filepath: Union[str, Path]):
+        &#34;&#34;&#34;Load IMC session data from JSON file
+
+        Parameters
+        ----------
+        filepath
+            Input JSON file path.
+        &#34;&#34;&#34;
+        with open(filepath, &#34;r&#34;) as f:
+            data = json.load(f)
+            return Session._rebuild_object_tree(data)
+
+    @staticmethod
+    def _rebuild_object_tree(data: SessionDict):
+        &#34;&#34;&#34;Helper function that re-creates parents/children relations between entities&#34;&#34;&#34;
+
+        session = Session.from_dict(data)
+
+        for item in data.get(&#34;slides&#34;):
+            slide = Slide.from_dict(item)
+            slide.session = session
+            session.slides[slide.id] = slide
+
+        for item in data.get(&#34;panoramas&#34;):
+            panorama = Panorama.from_dict(item)
+            slide = session.slides.get(panorama.slide_id)
+            panorama.slide = slide
+            slide.panoramas[panorama.id] = panorama
+            session.panoramas[panorama.id] = panorama
+
+        for item in data.get(&#34;acquisitions&#34;):
+            acquisition = Acquisition.from_dict(item)
+            slide = session.slides.get(acquisition.slide_id)
+            acquisition.slide = slide
+            slide.acquisitions[acquisition.id] = acquisition
+            session.acquisitions[acquisition.id] = acquisition
+
+        for item in data.get(&#34;channels&#34;):
+            channel = Channel.from_dict(item)
+            acquisition = session.acquisitions.get(channel.acquisition_id)
+            channel.acquisition = acquisition
+            acquisition.channels[channel.id] = channel
+            session.channels[channel.id] = channel
+
+        return session
+
+    @property
+    def metaname(self):
+        &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+        return self.name
+
+    @property
+    def acquisition_ids(self) -&gt; Tuple[int, ...]:
+        return tuple(self.acquisitions.keys())
+
+    def __repr__(self):
+        return f&#34;{self.__class__.__name__}(name={self.name})&#34;</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="imctools.data.session.Session.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>d: <a title="imctools.data.session.SessionDict" href="#imctools.data.session.SessionDict">SessionDict</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recreate an object from dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(d: SessionDict):
+    &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+    result = Session(
+        d.get(&#34;id&#34;), d.get(&#34;name&#34;), d.get(&#34;imctools_version&#34;), parse(d.get(&#34;created&#34;)), d.get(&#34;metadata&#34;),
+    )
+    return result</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.session.Session.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>filepath: Union[str, Path])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load IMC session data from JSON file</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filepath</code></strong></dt>
+<dd>Input JSON file path.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def load(filepath: Union[str, Path]):
+    &#34;&#34;&#34;Load IMC session data from JSON file
+
+    Parameters
+    ----------
+    filepath
+        Input JSON file path.
+    &#34;&#34;&#34;
+    with open(filepath, &#34;r&#34;) as f:
+        data = json.load(f)
+        return Session._rebuild_object_tree(data)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imctools.data.session.Session.acquisition_ids"><code class="name">var <span class="ident">acquisition_ids</span> : Tuple[int, ...]</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def acquisition_ids(self) -&gt; Tuple[int, ...]:
+    return tuple(self.acquisitions.keys())</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.session.Session.metaname"><code class="name">var <span class="ident">metaname</span></code></dt>
+<dd>
+<div class="desc"><p>Meta name fully describing the entity</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def metaname(self):
+    &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+    return self.name</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imctools.data.session.Session.get_csv_dict"><code class="name flex">
+<span>def <span class="ident">get_csv_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns dictionary for CSV tables</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_csv_dict(self):
+    &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+    s = self.__dict__.copy()
+    s[&#34;created&#34;] = s[&#34;created&#34;].isoformat()
+    del s[&#34;slides&#34;]
+    del s[&#34;acquisitions&#34;]
+    del s[&#34;panoramas&#34;]
+    del s[&#34;channels&#34;]
+    del s[&#34;metadata&#34;]
+    return s</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.session.Session.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, filepath: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save session data in JSON format.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filepath</code></strong></dt>
+<dd>Output JSON file path</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, filepath: str):
+    &#34;&#34;&#34;Save session data in JSON format.
+
+    Parameters
+    ----------
+    filepath
+        Output JSON file path
+    &#34;&#34;&#34;
+
+    def handle_default(obj):
+        if isinstance(obj, (Session, Slide, Panorama, Acquisition, Channel)):
+            return obj.__getstate__()
+        return None
+
+    with open(filepath, &#34;wt&#34;) as f:
+        json.dump(self, f, indent=2, default=handle_default)</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.session.Session.save_meta_csv"><code class="name flex">
+<span>def <span class="ident">save_meta_csv</span></span>(<span>self, output_folder: Union[str, Path])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Writes the metadata as CSV tables</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_meta_csv(self, output_folder: Union[str, Path]):
+    &#34;&#34;&#34;Writes the metadata as CSV tables&#34;&#34;&#34;
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
+    Session._save_csv(
+        output_folder / (&#34;_&#34;.join([self.metaname, &#34;session&#34;]) + META_CSV_SUFFIX), [self.get_csv_dict()]
+    )
+    Session._save_csv(
+        output_folder / (&#34;_&#34;.join([self.metaname, &#34;slides&#34;]) + META_CSV_SUFFIX),
+        [v.get_csv_dict() for v in self.slides.values()],
+    )
+    Session._save_csv(
+        output_folder / (&#34;_&#34;.join([self.metaname, &#34;panoramas&#34;]) + META_CSV_SUFFIX),
+        [v.get_csv_dict() for v in self.panoramas.values()],
+    )
+    Session._save_csv(
+        output_folder / (&#34;_&#34;.join([self.metaname, &#34;acquisitions&#34;]) + META_CSV_SUFFIX),
+        [v.get_csv_dict() for v in self.acquisitions.values()],
+    )
+    Session._save_csv(
+        output_folder / (&#34;_&#34;.join([self.metaname, &#34;channels&#34;]) + META_CSV_SUFFIX),
+        [v.get_csv_dict() for v in self.channels.values()],
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imctools.data.session.SessionDict"><code class="flex name class">
+<span>class <span class="ident">SessionDict</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+(key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+d = {}
+for k, v in iterable:
+d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+in the keyword argument list.
+For example:
+dict(one=1, two=2)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SessionDict(TypedDict):
+    id: str
+    name: str
+    imctools_version: str
+    created: str
+    metadata: Optional[Dict[str, Any]]
+    slides: List[SlideDict]
+    acquisitions: List[AcquisitionDict]
+    panoramas: List[PanoramaDict]
+    channels: List[ChannelDict]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imctools.data" href="index.html">imctools.data</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imctools.data.session.Session" href="#imctools.data.session.Session">Session</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imctools.data.session.Session.acquisition_ids" href="#imctools.data.session.Session.acquisition_ids">acquisition_ids</a></code></li>
+<li><code><a title="imctools.data.session.Session.from_dict" href="#imctools.data.session.Session.from_dict">from_dict</a></code></li>
+<li><code><a title="imctools.data.session.Session.get_csv_dict" href="#imctools.data.session.Session.get_csv_dict">get_csv_dict</a></code></li>
+<li><code><a title="imctools.data.session.Session.load" href="#imctools.data.session.Session.load">load</a></code></li>
+<li><code><a title="imctools.data.session.Session.metaname" href="#imctools.data.session.Session.metaname">metaname</a></code></li>
+<li><code><a title="imctools.data.session.Session.save" href="#imctools.data.session.Session.save">save</a></code></li>
+<li><code><a title="imctools.data.session.Session.save_meta_csv" href="#imctools.data.session.Session.save_meta_csv">save_meta_csv</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imctools.data.session.SessionDict" href="#imctools.data.session.SessionDict">SessionDict</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.4</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,18 +1,19 @@
 # imctools
 
-[![Build Status](https://travis-ci.org/BodenmillerGroup/imctools.svg?branch=master)](https://travis-ci.org/BodenmillerGroup/imctools)
-[![Documentation Status](https://readthedocs.org/projects/imctools/badge/?version=latest)](https://imctools.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://github.com/BodenmillerGroup/imctools/workflows/CI/badge.svg)](https://github.com/BodenmillerGroup/imctools/workflows/CI/badge.svg)
+[![PyPI version](https://badge.fury.io/py/imctools.svg)](https://pypi.python.org/pypi/imctools)
 
-> `imctools` v1.x is now deprecated. We strongly encourage you to migrate to `imctools` v2.x as all further efforts will be focused on a development of this version.
-> Please modify your processing pipeline source code accordingly, due to many changes in data output format, CLI changes, dropped Python 2 and Fiji plugins support, etc.
+> `imctools` v2.x has many changes in IMC data output format, available CLI commands, dropped Python 2 and Fiji plugins support, etc.
+> If you are using `imctools` in pre-processing pipelines, please install v1.x version until your pipeline is modified accordingly!
+> We strongly encourage you to migrate to `imctools` v2.x as all further efforts will be focused on a development of this version.
 
-An IMC file conversion tool that aims to convert IMC rawfiles (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler tiff files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
-
-Further imctools can directly work as a FIJI plugin, exploiting the Jython language. That allows that IMC data can be directly visualized in FIJI.
+An IMC file conversion tool that aims to convert IMC raw data files (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler TIFF files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
 
 For a description of the associated segmentation pipline, please visit: https://github.com/BodenmillerGroup/ImcSegmentationPipeline
 
-Documentation: https://imctools.readthedocs.io
+Version 2.x documentation: https://bodenmillergroup.github.io/imctools
+
+Version 1.x documentation (deprecated): https://imctools.readthedocs.io
 
 ## Features
 
@@ -24,22 +25,64 @@ Documentation: https://imctools.readthedocs.io
 
 ## Prerequisites
 
-- The package is written for Python3, but should also work with Python2
-- The core functions have a 'base' pure Python/Jython implementation with no dependencies outside the standard libraries.
-- The fast functions do need Python packages, such as numpy, scipy etc. installed.
+- Supports Python 3.7 or newer
+- External dependencies: `numpy`, `pandas`, `xmltodict`, `xtiff`.
 
 ## Installation
 
 Preferable way to install `imctools` is via official PyPI registry. Please define package version explicitly in order to avoid incompatibilities between v1.x and v2.x versions:
 ```
-pip install imctools==1.0.8
+pip install imctools==2.0.0
+```
+In old IMC segmentation pipelines versions 1.x should be used!
+```
+pip install imctools==1.0.7
 ```
 
-## Usage
+## Usage of version 2.x
 
-imctools is often used from jupyter as part of the preprocessing pipeline, mainly using the 'script' wrapper functions. Check 'notebooks/example_preprocessing_pipline.ipynb' as a template
+`imctools` is often used from Jupyter as part of the pre-processing pipeline, mainly using the __converters__ wrapper functions. Please check the [following example](https://github.com/BodenmillerGroup/ImcSegmentationPipeline/blob/development/scripts/imc_preprocessing.ipynb) as a template.
 
-Further imctools can be directly used as a module:
+Further `imctools` can be directly used as a module:
+
+```python
+from imctools.io.mcd.mcdparser import McdParser
+
+fn_mcd = "/home/vitoz/Data/varia/201708_instrument_comp/mcd/20170815_imccomp_zoidberg_conc5_acm1.mcd"
+
+parser = McdParser(fn_mcd)
+
+# Get original metadata in XML format
+xml = parser.get_mcd_xml()
+
+# Get parsed session metadata (i.e. session -> slides -> acquisitions -> channels, panoramas data)
+session = parser.session
+
+# Get all acquisition IDs
+ids = parser.session.acquisition_ids
+
+# The common class to represent a single IMC acquisition is AcquisitionData class.
+# Get acquisition data for acquisition with id 2
+ac_data = parser.get_acquisition_data(2)
+
+# imc acquisitions can yield the image data by name (tag), label or index
+channel_image1 = ac_data.get_image_by_name('Ir191')
+channel_image2 = ac_data.get_image_by_label('Histone_phospho_125((2468))Eu153')
+channel_image3 = ac_data.get_image_by_index(7)
+
+# or can be used to save OME-TIFF files
+fn_out ='/home/vitoz/temp/test.ome.tiff'
+ac_data.save_ome_tiff(fn_out, names=['Ir191', 'Yb172'])
+
+# save multiple standard TIFF files in a folder
+ac_data.save_tiffs("/home/anton/tiffs", compression=0, bigtiff=False)
+
+# as the mcd object is using lazy loading memory maps, it needs to be closed
+# or used with a context manager.
+parser.close()
+```
+
+### Usage of previous version 1.x
 
 ```python
 import imctools.io.mcdparser as mcdparser

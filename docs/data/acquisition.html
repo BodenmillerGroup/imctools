@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.4" />
+<title>imctools.data.acquisition API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>imctools.data.acquisition</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import logging
+import sys
+from datetime import datetime
+from enum import Enum
+from typing import Dict, Optional, Sequence
+
+from dateutil.parser import parse
+
+from imctools.data.channel import Channel
+from imctools.data.slide import Slide
+
+if sys.version_info &gt;= (3, 8):
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+else:
+    from typing_extensions import TypedDict
+
+
+logger = logging.getLogger(__name__)
+
+
+class AblationImageType(Enum):
+    &#34;&#34;&#34;Before / after ablation types of images&#34;&#34;&#34;
+
+    BEFORE = &#34;before&#34;
+    AFTER = &#34;after&#34;
+
+
+class AcquisitionDict(TypedDict):
+    slide_id: int
+    id: int
+    origin: str
+    source_path: str
+    max_x: int
+    max_y: int
+    signal_type: Optional[str]
+    segment_data_format: Optional[str]
+    ablation_frequency: Optional[float]
+    ablation_power: Optional[float]
+    start_timestamp: Optional[str]
+    end_timestamp: Optional[str]
+    movement_type: Optional[str]
+    ablation_distance_between_shots_x: Optional[float]
+    ablation_distance_between_shots_y: Optional[float]
+    template: Optional[str]
+    roi_start_x_pos_um: Optional[float]
+    roi_start_y_pos_um: Optional[float]
+    roi_end_x_pos_um: Optional[float]
+    roi_end_y_pos_um: Optional[float]
+    description: Optional[str]
+    has_before_ablation_image: bool
+    has_after_ablation_image: bool
+    metadata: Optional[Dict[str, str]]
+    is_valid: bool
+
+
+class Acquisition:
+    &#34;&#34;&#34;IMC acquisition as a collection of acquisition channels.&#34;&#34;&#34;
+
+    symbol = &#34;a&#34;
+
+    def __init__(
+        self,
+        slide_id: int,
+        id: int,
+        origin: str,
+        source_path: str,
+        max_x: int,
+        max_y: int,
+        signal_type: Optional[str] = None,
+        segment_data_format: Optional[str] = None,
+        ablation_frequency: Optional[float] = None,
+        ablation_power: Optional[float] = None,
+        start_timestamp: Optional[datetime] = None,
+        end_timestamp: Optional[datetime] = None,
+        movement_type: Optional[str] = None,
+        ablation_distance_between_shots_x: Optional[float] = None,
+        ablation_distance_between_shots_y: Optional[float] = None,
+        template: Optional[str] = None,
+        roi_start_x_pos_um: Optional[float] = None,
+        roi_start_y_pos_um: Optional[float] = None,
+        roi_end_x_pos_um: Optional[float] = None,
+        roi_end_y_pos_um: Optional[float] = None,
+        description: Optional[str] = None,
+        has_before_ablation_image: bool = False,
+        has_after_ablation_image: bool = False,
+        metadata: Optional[Dict[str, str]] = None,
+        is_valid: bool = True,
+    ):
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        slide_id
+            Parent slide ID.
+        id
+            Original acquisition ID.
+        origin
+            Origin of the data (mcd, txt, etc).
+        source_path
+            Path to data source file.
+        max_x
+            Acquisition width in pixels.
+        max_y
+            Acquisition height in pixels.
+        signal_type
+            Signal type (Dual, etc).
+        segment_data_format
+            Data format (Float, etc).
+        ablation_frequency
+            Ablation frequency.
+        ablation_power
+            Ablation power.
+        start_timestamp
+            Acquisition start timestamp.
+        end_timestamp
+            Acquisition end timestamp.
+        movement_type
+            Movement type (XRaster, YRaster, etc).
+        ablation_distance_between_shots_x
+            Horizontal ablation distance between shots (in μm).
+        ablation_distance_between_shots_y
+            Vertical ablation distance between shots (in μm).
+        template
+            Template name.
+        roi_start_x_pos_um
+            Start X position on the slide (in μm).
+        roi_start_y_pos_um
+            Start Y position on the slide (in μm).
+        roi_end_x_pos_um
+            End X position on the slide (in μm).
+        roi_end_y_pos_um
+            End Y position on the slide (in μm).
+        description
+            Acquisition description.
+        has_before_ablation_image
+            Whether before ablation image exists.
+        has_after_ablation_image
+            Whether after ablation image exists.
+        metadata
+            Original (raw) metadata as a dictionary.
+        &#34;&#34;&#34;
+        self.slide_id = slide_id
+        self.id = id
+        self.origin = origin
+        self.source_path = source_path
+        self.max_x = max_x
+        self.max_y = max_y
+        self.signal_type = signal_type
+        self.segment_data_format = segment_data_format
+        self.ablation_frequency = ablation_frequency
+        self.ablation_power = ablation_power
+        self.start_timestamp = start_timestamp
+        self.end_timestamp = end_timestamp
+        self.movement_type = movement_type
+        self.ablation_distance_between_shots_x = ablation_distance_between_shots_x
+        self.ablation_distance_between_shots_y = ablation_distance_between_shots_y
+        self.template = template
+        self.roi_start_x_pos_um = roi_start_x_pos_um
+        self.roi_start_y_pos_um = roi_start_y_pos_um
+        self.roi_end_x_pos_um = roi_end_x_pos_um
+        self.roi_end_y_pos_um = roi_end_y_pos_um
+        self.description = description
+        self.has_before_ablation_image = has_before_ablation_image
+        self.has_after_ablation_image = has_after_ablation_image
+        self.metadata = metadata if metadata is not None else dict()
+        self.is_valid = is_valid
+
+        self.slide: Optional[Slide] = None
+        self.channels: Dict[int, Channel] = dict()
+
+    @staticmethod
+    def from_dict(d: AcquisitionDict):
+        &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+        result = Acquisition(
+            d.get(&#34;slide_id&#34;),
+            d.get(&#34;id&#34;),
+            d.get(&#34;origin&#34;),
+            d.get(&#34;source_path&#34;),
+            d.get(&#34;max_x&#34;),
+            d.get(&#34;max_y&#34;),
+            signal_type=d.get(&#34;signal_type&#34;),
+            segment_data_format=d.get(&#34;segment_data_format&#34;),
+            ablation_frequency=d.get(&#34;ablation_frequency&#34;),
+            ablation_power=d.get(&#34;ablation_power&#34;),
+            start_timestamp=parse(d.get(&#34;start_timestamp&#34;)),
+            end_timestamp=parse(d.get(&#34;end_timestamp&#34;)),
+            movement_type=d.get(&#34;movement_type&#34;),
+            ablation_distance_between_shots_x=d.get(&#34;ablation_distance_between_shots_x&#34;),
+            ablation_distance_between_shots_y=d.get(&#34;ablation_distance_between_shots_y&#34;),
+            template=d.get(&#34;template&#34;),
+            roi_start_x_pos_um=d.get(&#34;roi_start_x_pos_um&#34;),
+            roi_start_y_pos_um=d.get(&#34;roi_start_y_pos_um&#34;),
+            roi_end_x_pos_um=d.get(&#34;roi_end_x_pos_um&#34;),
+            roi_end_y_pos_um=d.get(&#34;roi_end_y_pos_um&#34;),
+            description=d.get(&#34;description&#34;),
+            has_before_ablation_image=d.get(&#34;has_before_ablation_image&#34;),
+            has_after_ablation_image=d.get(&#34;has_after_ablation_image&#34;),
+            metadata=d.get(&#34;metadata&#34;),
+            is_valid=d.get(&#34;is_valid&#34;),
+        )
+        return result
+
+    @property
+    def metaname(self):
+        &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+        parent_name = self.slide.metaname
+        return f&#34;{parent_name}_{self.symbol}{self.id}&#34;
+
+    @property
+    def n_channels(self):
+        &#34;&#34;&#34;Number of channels&#34;&#34;&#34;
+        return len(self.channels)
+
+    @property
+    def channel_names(self):
+        &#34;&#34;&#34;Channel names&#34;&#34;&#34;
+        channel_names = [c.name for c in self.channels.values()]
+        return channel_names
+
+    @property
+    def channel_labels(self):
+        &#34;&#34;&#34;Channel labels&#34;&#34;&#34;
+        channel_labels = [c.label for c in self.channels.values()]
+        return channel_labels
+
+    @property
+    def channel_masses(self):
+        &#34;&#34;&#34;Channel masses&#34;&#34;&#34;
+        return [&#34;&#34;.join([n for n in name if n.isdigit()]) for name in self.channel_names]
+
+    def get_name_indices(self, names: Sequence[str]):
+        &#34;&#34;&#34;Returns a list with the indices from names&#34;&#34;&#34;
+        order_dict = dict()
+        for i, v in enumerate(self.channel_names):
+            order_dict.update({v: i})
+        return [order_dict[n] for n in names]
+
+    def get_mass_indices(self, masses: Sequence[str]):
+        &#34;&#34;&#34;Returns the channel indices from the queried mass&#34;&#34;&#34;
+        order_dict = dict()
+        for i, v in enumerate(self.channel_masses):
+            order_dict.update({v: i})
+        return [order_dict[m] for m in masses]
+
+    def __getstate__(self):
+        &#34;&#34;&#34;Returns dictionary for JSON/YAML serialization&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;start_timestamp&#34;] = s[&#34;start_timestamp&#34;].isoformat() if s[&#34;start_timestamp&#34;] is not None else None
+        s[&#34;end_timestamp&#34;] = s[&#34;end_timestamp&#34;].isoformat() if s[&#34;end_timestamp&#34;] is not None else None
+        del s[&#34;slide&#34;]
+        del s[&#34;channels&#34;]
+        return s
+
+    def get_csv_dict(self):
+        &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+        s = self.__getstate__()
+        del s[&#34;metadata&#34;]
+        return s
+
+    def __repr__(self):
+        return f&#34;{self.__class__.__name__}(id={self.id}, description={self.description})&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="imctools.data.acquisition.AblationImageType"><code class="flex name class">
+<span>class <span class="ident">AblationImageType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Before / after ablation types of images</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AblationImageType(Enum):
+    &#34;&#34;&#34;Before / after ablation types of images&#34;&#34;&#34;
+
+    BEFORE = &#34;before&#34;
+    AFTER = &#34;after&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="imctools.data.acquisition.AblationImageType.AFTER"><code class="name">var <span class="ident">AFTER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="imctools.data.acquisition.AblationImageType.BEFORE"><code class="name">var <span class="ident">BEFORE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition"><code class="flex name class">
+<span>class <span class="ident">Acquisition</span></span>
+<span>(</span><span>slide_id: int, id: int, origin: str, source_path: str, max_x: int, max_y: int, signal_type: Union[str, NoneType] = None, segment_data_format: Union[str, NoneType] = None, ablation_frequency: Union[float, NoneType] = None, ablation_power: Union[float, NoneType] = None, start_timestamp: Union[datetime.datetime, NoneType] = None, end_timestamp: Union[datetime.datetime, NoneType] = None, movement_type: Union[str, NoneType] = None, ablation_distance_between_shots_x: Union[float, NoneType] = None, ablation_distance_between_shots_y: Union[float, NoneType] = None, template: Union[str, NoneType] = None, roi_start_x_pos_um: Union[float, NoneType] = None, roi_start_y_pos_um: Union[float, NoneType] = None, roi_end_x_pos_um: Union[float, NoneType] = None, roi_end_y_pos_um: Union[float, NoneType] = None, description: Union[str, NoneType] = None, has_before_ablation_image: bool = False, has_after_ablation_image: bool = False, metadata: Union[Dict[str, str], NoneType] = None, is_valid: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>IMC acquisition as a collection of acquisition channels.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>slide_id</code></strong></dt>
+<dd>Parent slide ID.</dd>
+<dt><strong><code>id</code></strong></dt>
+<dd>Original acquisition ID.</dd>
+<dt><strong><code>origin</code></strong></dt>
+<dd>Origin of the data (mcd, txt, etc).</dd>
+<dt><strong><code>source_path</code></strong></dt>
+<dd>Path to data source file.</dd>
+<dt><strong><code>max_x</code></strong></dt>
+<dd>Acquisition width in pixels.</dd>
+<dt><strong><code>max_y</code></strong></dt>
+<dd>Acquisition height in pixels.</dd>
+<dt><strong><code>signal_type</code></strong></dt>
+<dd>Signal type (Dual, etc).</dd>
+<dt><strong><code>segment_data_format</code></strong></dt>
+<dd>Data format (Float, etc).</dd>
+<dt><strong><code>ablation_frequency</code></strong></dt>
+<dd>Ablation frequency.</dd>
+<dt><strong><code>ablation_power</code></strong></dt>
+<dd>Ablation power.</dd>
+<dt><strong><code>start_timestamp</code></strong></dt>
+<dd>Acquisition start timestamp.</dd>
+<dt><strong><code>end_timestamp</code></strong></dt>
+<dd>Acquisition end timestamp.</dd>
+<dt><strong><code>movement_type</code></strong></dt>
+<dd>Movement type (XRaster, YRaster, etc).</dd>
+<dt><strong><code>ablation_distance_between_shots_x</code></strong></dt>
+<dd>Horizontal ablation distance between shots (in μm).</dd>
+<dt><strong><code>ablation_distance_between_shots_y</code></strong></dt>
+<dd>Vertical ablation distance between shots (in μm).</dd>
+<dt><strong><code>template</code></strong></dt>
+<dd>Template name.</dd>
+<dt><strong><code>roi_start_x_pos_um</code></strong></dt>
+<dd>Start X position on the slide (in μm).</dd>
+<dt><strong><code>roi_start_y_pos_um</code></strong></dt>
+<dd>Start Y position on the slide (in μm).</dd>
+<dt><strong><code>roi_end_x_pos_um</code></strong></dt>
+<dd>End X position on the slide (in μm).</dd>
+<dt><strong><code>roi_end_y_pos_um</code></strong></dt>
+<dd>End Y position on the slide (in μm).</dd>
+<dt><strong><code>description</code></strong></dt>
+<dd>Acquisition description.</dd>
+<dt><strong><code>has_before_ablation_image</code></strong></dt>
+<dd>Whether before ablation image exists.</dd>
+<dt><strong><code>has_after_ablation_image</code></strong></dt>
+<dd>Whether after ablation image exists.</dd>
+<dt><strong><code>metadata</code></strong></dt>
+<dd>Original (raw) metadata as a dictionary.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Acquisition:
+    &#34;&#34;&#34;IMC acquisition as a collection of acquisition channels.&#34;&#34;&#34;
+
+    symbol = &#34;a&#34;
+
+    def __init__(
+        self,
+        slide_id: int,
+        id: int,
+        origin: str,
+        source_path: str,
+        max_x: int,
+        max_y: int,
+        signal_type: Optional[str] = None,
+        segment_data_format: Optional[str] = None,
+        ablation_frequency: Optional[float] = None,
+        ablation_power: Optional[float] = None,
+        start_timestamp: Optional[datetime] = None,
+        end_timestamp: Optional[datetime] = None,
+        movement_type: Optional[str] = None,
+        ablation_distance_between_shots_x: Optional[float] = None,
+        ablation_distance_between_shots_y: Optional[float] = None,
+        template: Optional[str] = None,
+        roi_start_x_pos_um: Optional[float] = None,
+        roi_start_y_pos_um: Optional[float] = None,
+        roi_end_x_pos_um: Optional[float] = None,
+        roi_end_y_pos_um: Optional[float] = None,
+        description: Optional[str] = None,
+        has_before_ablation_image: bool = False,
+        has_after_ablation_image: bool = False,
+        metadata: Optional[Dict[str, str]] = None,
+        is_valid: bool = True,
+    ):
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        slide_id
+            Parent slide ID.
+        id
+            Original acquisition ID.
+        origin
+            Origin of the data (mcd, txt, etc).
+        source_path
+            Path to data source file.
+        max_x
+            Acquisition width in pixels.
+        max_y
+            Acquisition height in pixels.
+        signal_type
+            Signal type (Dual, etc).
+        segment_data_format
+            Data format (Float, etc).
+        ablation_frequency
+            Ablation frequency.
+        ablation_power
+            Ablation power.
+        start_timestamp
+            Acquisition start timestamp.
+        end_timestamp
+            Acquisition end timestamp.
+        movement_type
+            Movement type (XRaster, YRaster, etc).
+        ablation_distance_between_shots_x
+            Horizontal ablation distance between shots (in μm).
+        ablation_distance_between_shots_y
+            Vertical ablation distance between shots (in μm).
+        template
+            Template name.
+        roi_start_x_pos_um
+            Start X position on the slide (in μm).
+        roi_start_y_pos_um
+            Start Y position on the slide (in μm).
+        roi_end_x_pos_um
+            End X position on the slide (in μm).
+        roi_end_y_pos_um
+            End Y position on the slide (in μm).
+        description
+            Acquisition description.
+        has_before_ablation_image
+            Whether before ablation image exists.
+        has_after_ablation_image
+            Whether after ablation image exists.
+        metadata
+            Original (raw) metadata as a dictionary.
+        &#34;&#34;&#34;
+        self.slide_id = slide_id
+        self.id = id
+        self.origin = origin
+        self.source_path = source_path
+        self.max_x = max_x
+        self.max_y = max_y
+        self.signal_type = signal_type
+        self.segment_data_format = segment_data_format
+        self.ablation_frequency = ablation_frequency
+        self.ablation_power = ablation_power
+        self.start_timestamp = start_timestamp
+        self.end_timestamp = end_timestamp
+        self.movement_type = movement_type
+        self.ablation_distance_between_shots_x = ablation_distance_between_shots_x
+        self.ablation_distance_between_shots_y = ablation_distance_between_shots_y
+        self.template = template
+        self.roi_start_x_pos_um = roi_start_x_pos_um
+        self.roi_start_y_pos_um = roi_start_y_pos_um
+        self.roi_end_x_pos_um = roi_end_x_pos_um
+        self.roi_end_y_pos_um = roi_end_y_pos_um
+        self.description = description
+        self.has_before_ablation_image = has_before_ablation_image
+        self.has_after_ablation_image = has_after_ablation_image
+        self.metadata = metadata if metadata is not None else dict()
+        self.is_valid = is_valid
+
+        self.slide: Optional[Slide] = None
+        self.channels: Dict[int, Channel] = dict()
+
+    @staticmethod
+    def from_dict(d: AcquisitionDict):
+        &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+        result = Acquisition(
+            d.get(&#34;slide_id&#34;),
+            d.get(&#34;id&#34;),
+            d.get(&#34;origin&#34;),
+            d.get(&#34;source_path&#34;),
+            d.get(&#34;max_x&#34;),
+            d.get(&#34;max_y&#34;),
+            signal_type=d.get(&#34;signal_type&#34;),
+            segment_data_format=d.get(&#34;segment_data_format&#34;),
+            ablation_frequency=d.get(&#34;ablation_frequency&#34;),
+            ablation_power=d.get(&#34;ablation_power&#34;),
+            start_timestamp=parse(d.get(&#34;start_timestamp&#34;)),
+            end_timestamp=parse(d.get(&#34;end_timestamp&#34;)),
+            movement_type=d.get(&#34;movement_type&#34;),
+            ablation_distance_between_shots_x=d.get(&#34;ablation_distance_between_shots_x&#34;),
+            ablation_distance_between_shots_y=d.get(&#34;ablation_distance_between_shots_y&#34;),
+            template=d.get(&#34;template&#34;),
+            roi_start_x_pos_um=d.get(&#34;roi_start_x_pos_um&#34;),
+            roi_start_y_pos_um=d.get(&#34;roi_start_y_pos_um&#34;),
+            roi_end_x_pos_um=d.get(&#34;roi_end_x_pos_um&#34;),
+            roi_end_y_pos_um=d.get(&#34;roi_end_y_pos_um&#34;),
+            description=d.get(&#34;description&#34;),
+            has_before_ablation_image=d.get(&#34;has_before_ablation_image&#34;),
+            has_after_ablation_image=d.get(&#34;has_after_ablation_image&#34;),
+            metadata=d.get(&#34;metadata&#34;),
+            is_valid=d.get(&#34;is_valid&#34;),
+        )
+        return result
+
+    @property
+    def metaname(self):
+        &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+        parent_name = self.slide.metaname
+        return f&#34;{parent_name}_{self.symbol}{self.id}&#34;
+
+    @property
+    def n_channels(self):
+        &#34;&#34;&#34;Number of channels&#34;&#34;&#34;
+        return len(self.channels)
+
+    @property
+    def channel_names(self):
+        &#34;&#34;&#34;Channel names&#34;&#34;&#34;
+        channel_names = [c.name for c in self.channels.values()]
+        return channel_names
+
+    @property
+    def channel_labels(self):
+        &#34;&#34;&#34;Channel labels&#34;&#34;&#34;
+        channel_labels = [c.label for c in self.channels.values()]
+        return channel_labels
+
+    @property
+    def channel_masses(self):
+        &#34;&#34;&#34;Channel masses&#34;&#34;&#34;
+        return [&#34;&#34;.join([n for n in name if n.isdigit()]) for name in self.channel_names]
+
+    def get_name_indices(self, names: Sequence[str]):
+        &#34;&#34;&#34;Returns a list with the indices from names&#34;&#34;&#34;
+        order_dict = dict()
+        for i, v in enumerate(self.channel_names):
+            order_dict.update({v: i})
+        return [order_dict[n] for n in names]
+
+    def get_mass_indices(self, masses: Sequence[str]):
+        &#34;&#34;&#34;Returns the channel indices from the queried mass&#34;&#34;&#34;
+        order_dict = dict()
+        for i, v in enumerate(self.channel_masses):
+            order_dict.update({v: i})
+        return [order_dict[m] for m in masses]
+
+    def __getstate__(self):
+        &#34;&#34;&#34;Returns dictionary for JSON/YAML serialization&#34;&#34;&#34;
+        s = self.__dict__.copy()
+        s[&#34;start_timestamp&#34;] = s[&#34;start_timestamp&#34;].isoformat() if s[&#34;start_timestamp&#34;] is not None else None
+        s[&#34;end_timestamp&#34;] = s[&#34;end_timestamp&#34;].isoformat() if s[&#34;end_timestamp&#34;] is not None else None
+        del s[&#34;slide&#34;]
+        del s[&#34;channels&#34;]
+        return s
+
+    def get_csv_dict(self):
+        &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+        s = self.__getstate__()
+        del s[&#34;metadata&#34;]
+        return s
+
+    def __repr__(self):
+        return f&#34;{self.__class__.__name__}(id={self.id}, description={self.description})&#34;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="imctools.data.acquisition.Acquisition.symbol"><code class="name">var <span class="ident">symbol</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="imctools.data.acquisition.Acquisition.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>d: <a title="imctools.data.acquisition.AcquisitionDict" href="#imctools.data.acquisition.AcquisitionDict">AcquisitionDict</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recreate an object from dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(d: AcquisitionDict):
+    &#34;&#34;&#34;Recreate an object from dictionary&#34;&#34;&#34;
+    result = Acquisition(
+        d.get(&#34;slide_id&#34;),
+        d.get(&#34;id&#34;),
+        d.get(&#34;origin&#34;),
+        d.get(&#34;source_path&#34;),
+        d.get(&#34;max_x&#34;),
+        d.get(&#34;max_y&#34;),
+        signal_type=d.get(&#34;signal_type&#34;),
+        segment_data_format=d.get(&#34;segment_data_format&#34;),
+        ablation_frequency=d.get(&#34;ablation_frequency&#34;),
+        ablation_power=d.get(&#34;ablation_power&#34;),
+        start_timestamp=parse(d.get(&#34;start_timestamp&#34;)),
+        end_timestamp=parse(d.get(&#34;end_timestamp&#34;)),
+        movement_type=d.get(&#34;movement_type&#34;),
+        ablation_distance_between_shots_x=d.get(&#34;ablation_distance_between_shots_x&#34;),
+        ablation_distance_between_shots_y=d.get(&#34;ablation_distance_between_shots_y&#34;),
+        template=d.get(&#34;template&#34;),
+        roi_start_x_pos_um=d.get(&#34;roi_start_x_pos_um&#34;),
+        roi_start_y_pos_um=d.get(&#34;roi_start_y_pos_um&#34;),
+        roi_end_x_pos_um=d.get(&#34;roi_end_x_pos_um&#34;),
+        roi_end_y_pos_um=d.get(&#34;roi_end_y_pos_um&#34;),
+        description=d.get(&#34;description&#34;),
+        has_before_ablation_image=d.get(&#34;has_before_ablation_image&#34;),
+        has_after_ablation_image=d.get(&#34;has_after_ablation_image&#34;),
+        metadata=d.get(&#34;metadata&#34;),
+        is_valid=d.get(&#34;is_valid&#34;),
+    )
+    return result</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="imctools.data.acquisition.Acquisition.channel_labels"><code class="name">var <span class="ident">channel_labels</span></code></dt>
+<dd>
+<div class="desc"><p>Channel labels</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def channel_labels(self):
+    &#34;&#34;&#34;Channel labels&#34;&#34;&#34;
+    channel_labels = [c.label for c in self.channels.values()]
+    return channel_labels</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.channel_masses"><code class="name">var <span class="ident">channel_masses</span></code></dt>
+<dd>
+<div class="desc"><p>Channel masses</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def channel_masses(self):
+    &#34;&#34;&#34;Channel masses&#34;&#34;&#34;
+    return [&#34;&#34;.join([n for n in name if n.isdigit()]) for name in self.channel_names]</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.channel_names"><code class="name">var <span class="ident">channel_names</span></code></dt>
+<dd>
+<div class="desc"><p>Channel names</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def channel_names(self):
+    &#34;&#34;&#34;Channel names&#34;&#34;&#34;
+    channel_names = [c.name for c in self.channels.values()]
+    return channel_names</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.metaname"><code class="name">var <span class="ident">metaname</span></code></dt>
+<dd>
+<div class="desc"><p>Meta name fully describing the entity</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def metaname(self):
+    &#34;&#34;&#34;Meta name fully describing the entity&#34;&#34;&#34;
+    parent_name = self.slide.metaname
+    return f&#34;{parent_name}_{self.symbol}{self.id}&#34;</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.n_channels"><code class="name">var <span class="ident">n_channels</span></code></dt>
+<dd>
+<div class="desc"><p>Number of channels</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def n_channels(self):
+    &#34;&#34;&#34;Number of channels&#34;&#34;&#34;
+    return len(self.channels)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="imctools.data.acquisition.Acquisition.get_csv_dict"><code class="name flex">
+<span>def <span class="ident">get_csv_dict</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns dictionary for CSV tables</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_csv_dict(self):
+    &#34;&#34;&#34;Returns dictionary for CSV tables&#34;&#34;&#34;
+    s = self.__getstate__()
+    del s[&#34;metadata&#34;]
+    return s</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.get_mass_indices"><code class="name flex">
+<span>def <span class="ident">get_mass_indices</span></span>(<span>self, masses: Sequence[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the channel indices from the queried mass</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mass_indices(self, masses: Sequence[str]):
+    &#34;&#34;&#34;Returns the channel indices from the queried mass&#34;&#34;&#34;
+    order_dict = dict()
+    for i, v in enumerate(self.channel_masses):
+        order_dict.update({v: i})
+    return [order_dict[m] for m in masses]</code></pre>
+</details>
+</dd>
+<dt id="imctools.data.acquisition.Acquisition.get_name_indices"><code class="name flex">
+<span>def <span class="ident">get_name_indices</span></span>(<span>self, names: Sequence[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list with the indices from names</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_name_indices(self, names: Sequence[str]):
+    &#34;&#34;&#34;Returns a list with the indices from names&#34;&#34;&#34;
+    order_dict = dict()
+    for i, v in enumerate(self.channel_names):
+        order_dict.update({v: i})
+    return [order_dict[n] for n in names]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="imctools.data.acquisition.AcquisitionDict"><code class="flex name class">
+<span>class <span class="ident">AcquisitionDict</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+(key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+d = {}
+for k, v in iterable:
+d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+in the keyword argument list.
+For example:
+dict(one=1, two=2)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AcquisitionDict(TypedDict):
+    slide_id: int
+    id: int
+    origin: str
+    source_path: str
+    max_x: int
+    max_y: int
+    signal_type: Optional[str]
+    segment_data_format: Optional[str]
+    ablation_frequency: Optional[float]
+    ablation_power: Optional[float]
+    start_timestamp: Optional[str]
+    end_timestamp: Optional[str]
+    movement_type: Optional[str]
+    ablation_distance_between_shots_x: Optional[float]
+    ablation_distance_between_shots_y: Optional[float]
+    template: Optional[str]
+    roi_start_x_pos_um: Optional[float]
+    roi_start_y_pos_um: Optional[float]
+    roi_end_x_pos_um: Optional[float]
+    roi_end_y_pos_um: Optional[float]
+    description: Optional[str]
+    has_before_ablation_image: bool
+    has_after_ablation_image: bool
+    metadata: Optional[Dict[str, str]]
+    is_valid: bool</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="imctools.data" href="index.html">imctools.data</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="imctools.data.acquisition.AblationImageType" href="#imctools.data.acquisition.AblationImageType">AblationImageType</a></code></h4>
+<ul class="">
+<li><code><a title="imctools.data.acquisition.AblationImageType.AFTER" href="#imctools.data.acquisition.AblationImageType.AFTER">AFTER</a></code></li>
+<li><code><a title="imctools.data.acquisition.AblationImageType.BEFORE" href="#imctools.data.acquisition.AblationImageType.BEFORE">BEFORE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imctools.data.acquisition.Acquisition" href="#imctools.data.acquisition.Acquisition">Acquisition</a></code></h4>
+<ul class="two-column">
+<li><code><a title="imctools.data.acquisition.Acquisition.channel_labels" href="#imctools.data.acquisition.Acquisition.channel_labels">channel_labels</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.channel_masses" href="#imctools.data.acquisition.Acquisition.channel_masses">channel_masses</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.channel_names" href="#imctools.data.acquisition.Acquisition.channel_names">channel_names</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.from_dict" href="#imctools.data.acquisition.Acquisition.from_dict">from_dict</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.get_csv_dict" href="#imctools.data.acquisition.Acquisition.get_csv_dict">get_csv_dict</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.get_mass_indices" href="#imctools.data.acquisition.Acquisition.get_mass_indices">get_mass_indices</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.get_name_indices" href="#imctools.data.acquisition.Acquisition.get_name_indices">get_name_indices</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.metaname" href="#imctools.data.acquisition.Acquisition.metaname">metaname</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.n_channels" href="#imctools.data.acquisition.Acquisition.n_channels">n_channels</a></code></li>
+<li><code><a title="imctools.data.acquisition.Acquisition.symbol" href="#imctools.data.acquisition.Acquisition.symbol">symbol</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="imctools.data.acquisition.AcquisitionDict" href="#imctools.data.acquisition.AcquisitionDict">AcquisitionDict</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.4</a>.</p>
+</footer>
+</body>
+</html>
