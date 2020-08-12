@@ -26,7 +26,7 @@ Version 1.x documentation (deprecated): https://imctools.readthedocs.io
 ## Prerequisites
 
 - Supports Python 3.7 or newer
-- External dependencies: `numpy`, `pandas`, `xmltodict`, `xtiff`.
+- External dependencies: `imagecodecs`, `pandas`, `xmltodict`, `xtiff`.
 
 ## Installation
 
@@ -36,7 +36,7 @@ pip install imctools==2.0.0
 ```
 In old IMC segmentation pipelines versions 1.x should be used!
 ```
-pip install imctools==1.0.7
+pip install imctools==1.0.8
 ```
 
 ## Usage of version 2.x
