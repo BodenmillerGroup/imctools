@@ -39,6 +39,7 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
     mcd_parser = None
     try:
         mcd_files = list(input_folder.rglob(f"*{MCD_FILENDING}"))
+        mcd_files = [f for f in mcd_files if not f.name.startswith('.')]
         assert len(mcd_files) == 1
         schema_files = glob.glob(str(input_folder / f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
