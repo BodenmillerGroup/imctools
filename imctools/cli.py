@@ -9,7 +9,6 @@ from imctools.converters import (
     omefile_to_histocatfolder,
     omefile_to_tifffolder,
     omefolder_to_histocatfolder,
-    probability_to_uncertainty,
     v1_to_v2,
 )
 from imctools.converters.exportacquisitioncsv import AC_META
@@ -160,25 +159,6 @@ def _add_exportacquisitioncsv_parser(subparsers: argparse._SubParsersAction):
     parser.add_argument("ome_folder", help="The path to the folders containing the OME-TIFFs.")
     parser.add_argument("output_folder", help="Folder where the metadata CSV file should be stored in.")
     parser.add_argument("--output_name", help="Filename of the acquisition metadata CSV file.", default=AC_META)
-    parser.set_defaults(func=func)
-
-
-def _add_probability2uncertainty_parser(subparsers: argparse._SubParsersAction):
-    def func(args):
-        probability_to_uncertainty(args.ome_folder, args.output_folder, args.output_name)
-
-    parser = subparsers.add_parser(
-        "probability-to-uncertainty",
-        description="Converts probability masks to uncertainties.",
-        help="Converts probability masks to uncertainties.",
-    )
-    parser.add_argument("filename", help="The path to the probability TIFF file.")
-    parser.add_argument(
-        "--output_folder",
-        help="Folder to save the images in. By default a sub-folder with the basename image_filename in the image_filename folder.",
-        default=None,
-    )
-    parser.add_argument("--basename", help="Basename for the output image. Default: image_filename", default=None)
     parser.set_defaults(func=func)
 
 

@@ -67,6 +67,7 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
     mcd_parser = None
     try:
         mcd_files = list(input_folder.rglob(f&#34;*{MCD_FILENDING}&#34;))
+        mcd_files = [f for f in mcd_files if not f.name.startswith(&#34;.&#34;)]
         assert len(mcd_files) == 1
         schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_FILENDING}&#34;))
         schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
@@ -159,6 +160,7 @@ raw .mcd/.txt acquisition data files.</dd>
     mcd_parser = None
     try:
         mcd_files = list(input_folder.rglob(f&#34;*{MCD_FILENDING}&#34;))
+        mcd_files = [f for f in mcd_files if not f.name.startswith(&#34;.&#34;)]
         assert len(mcd_files) == 1
         schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_FILENDING}&#34;))
         schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
