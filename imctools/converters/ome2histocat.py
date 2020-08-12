@@ -10,7 +10,9 @@ from imctools.io.ometiff.ometiffparser import OmeTiffParser
 logger = logging.getLogger(__name__)
 
 
-def omefile_to_tifffolder(filepath: Union[str, Path], output_folder: Union[str, Path], basename: str = None, dtype: Optional[object] = None):
+def omefile_to_tifffolder(
+    filepath: Union[str, Path], output_folder: Union[str, Path], basename: str = None, dtype: Optional[object] = None
+):
     """Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.
 
     Parameters
@@ -36,7 +38,10 @@ def omefile_to_tifffolder(filepath: Union[str, Path], output_folder: Union[str, 
 
 
 def omefile_to_histocatfolder(
-    filepath: Union[str, Path], base_folder: Union[str, Path], mask_file: Optional[Union[str, Path]] = None, dtype: Optional[object] = None
+    filepath: Union[str, Path],
+    base_folder: Union[str, Path],
+    mask_file: Optional[Union[str, Path]] = None,
+    dtype: Optional[object] = None,
 ):
     """Converts single OME-TIFF file to a folder compatible with HistoCAT software.
 
@@ -122,7 +127,8 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     omefolder_to_histocatfolder(
-        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa"), Path("/home/anton/Downloads/tiff_folder"),
+        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa"),
+        Path("/home/anton/Downloads/tiff_folder"),
     )
 
     print(timeit.default_timer() - tic)

@@ -1,13 +1,16 @@
 import os
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 import numpy as np
 from tifffile import TiffFile, TiffWriter
 
 
 def probability_to_uncertainty(
-    filename: Union[str, Path], output_folder: Optional[Union[str, Path]] = None, basename: str = None, suffix: str = "_uncertainty"
+    filename: Union[str, Path],
+    output_folder: Optional[Union[str, Path]] = None,
+    basename: str = None,
+    suffix: str = "_uncertainty",
 ):
     """Converts probability masks to uncertainties.
 
@@ -59,7 +62,9 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     probability_to_uncertainty(
-        Path("/home/anton/Documents/IMC Workshop 2019/Data/IMC_Workshop_2019_preprocessing/data/tiffs/20190919_FluidigmBrCa_SE_s0_p8_r8_a8_ac_ilastik_s2_Probabilities.tiff"),
+        Path(
+            "/home/anton/Documents/IMC Workshop 2019/Data/IMC_Workshop_2019_preprocessing/data/tiffs/20190919_FluidigmBrCa_SE_s0_p8_r8_a8_ac_ilastik_s2_Probabilities.tiff"
+        ),
         Path("/home/anton/Downloads/probability_to_uncertainty"),
     )
 

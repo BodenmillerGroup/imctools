@@ -95,65 +95,83 @@ class McdParser:
         )
         return data
 
-    def save_panorama_image(
-        self, panorama_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
-    ):
-        """Save panorama image of the acquisition"""
-        if isinstance(output_folder, str):
-            output_folder = Path(output_folder)
-        panorama_postfix = "pano"
+    def get_slide_image(self, slide_id: int):
+        """Get slide image as numpy array"""
+        image_offset_fix = 161
+
+        s = self.session.slides.get(slide_id)
+        img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
+        img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
+
+        if img_start - img_end == 0:
+            return None
+
+        return self._get_buffer(img_start, img_end)
+
+    def save_slide_image(self, slide_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None):
+        """Save slide image"""
+        buf = self.get_slide_image(slide_id)
+        if buf is not None:
+            if isinstance(output_folder, str):
+                output_folder = Path(output_folder)
+
+            default_format = ".png"
+
+            s = self.session.slides.get(slide_id)
+            slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
+            if slide_format in [None, "", '""', "''"]:
+                slide_format = default_format
+
+            slide_format = os.path.splitext(slide_format.lower())
+            if slide_format[1] == "":
+                slide_format = slide_format[0]
+            else:
+                slide_format = slide_format[1]
+
+            if output_filename is None:
+                output_filename = s.metaname
+            if not (output_filename.endswith(slide_format)):
+                output_filename += "_slide" + slide_format
+
+            with open(output_folder / output_filename, "wb") as f:
+                f.write(buf)
+
+    def get_panorama_image(self, panorama_id: int):
+        """Get panorama image as numpy array"""
         image_offset_fix = 161
         p = self.session.panoramas.get(panorama_id)
         img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
         img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
 
         if img_start - img_end == 0:
-            return 0
+            return None
 
-        file_end = p.metadata.get(const.IMAGE_FORMAT, ".png").lower()
+        return self._get_buffer(img_start, img_end)
 
-        if output_filename is None:
-            output_filename = p.metaname
+    def save_panorama_image(
+        self, panorama_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
+    ):
+        """Save panorama image of the acquisition"""
+        buf = self.get_panorama_image(panorama_id)
+        if buf is not None:
+            if isinstance(output_folder, str):
+                output_folder = Path(output_folder)
 
-        if not (output_filename.endswith(file_end)):
-            output_filename += "_" + panorama_postfix + "." + file_end
+            p = self.session.panoramas.get(panorama_id)
+            file_end = p.metadata.get(const.IMAGE_FORMAT, ".png").lower()
+            if output_filename is None:
+                output_filename = p.metaname
 
-        buf = self._get_buffer(img_start, img_end)
-        with open(output_folder / output_filename, "wb") as f:
-            f.write(buf)
+            if not (output_filename.endswith(file_end)):
+                output_filename += "_pano" + "." + file_end
 
-    def save_slide_image(self, slide_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None):
-        """Save slide image"""
-        if isinstance(output_folder, str):
-            output_folder = Path(output_folder)
-        image_offset_fix = 161
-        slide_postfix = "slide"
-        default_format = ".png"
+            with open(output_folder / output_filename, "wb") as f:
+                f.write(buf)
 
-        s = self.session.slides.get(slide_id)
-        img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
-        img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0)) + image_offset_fix
-        slide_format = s.metadata.get(const.IMAGE_FILE, default_format)
-        if slide_format in [None, "", '""', "''"]:
-            slide_format = default_format
-
-        slide_format = os.path.splitext(slide_format.lower())
-        if slide_format[1] == "":
-            slide_format = slide_format[0]
-        else:
-            slide_format = slide_format[1]
-
-        if img_start - img_end == 0:
-            return 0
-
-        if output_filename is None:
-            output_filename = s.metaname
-        if not (output_filename.endswith(slide_format)):
-            output_filename += "_" + slide_postfix + slide_format
-
-        buf = self._get_buffer(img_start, img_end)
-        with open(output_folder / output_filename, "wb") as f:
-            f.write(buf)
+    def get_before_ablation_image(self, acquisition_id: int):
+        return self._get_ablation_image(
+            acquisition_id, const.BEFORE_ABLATION_IMAGE_START_OFFSET, const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+        )
 
     def save_before_ablation_image(
         self, acquisition_id: int, output_folder: Union[str, Path], output_filename: Optional[str] = None
@@ -165,6 +183,11 @@ class McdParser:
             const.BEFORE_ABLATION_IMAGE_START_OFFSET,
             const.BEFORE_ABLATION_IMAGE_END_OFFSET,
             output_filename,
+        )
+
+    def get_after_ablation_image(self, acquisition_id: int):
+        return self._get_ablation_image(
+            acquisition_id, const.AFTER_ABLATION_IMAGE_START_OFFSET, const.AFTER_ABLATION_IMAGE_END_OFFSET,
         )
 
     def save_after_ablation_image(
@@ -179,6 +202,19 @@ class McdParser:
             output_filename,
         )
 
+    def _get_ablation_image(
+        self, acquisition_id: int, start_offset: str, end_offset: str,
+    ):
+        image_offset_fix = 161
+
+        a = self.session.acquisitions.get(acquisition_id)
+        img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
+        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
+        if img_end - img_start == 0:
+            return None
+
+        return self._get_buffer(img_start, img_end)
+
     def _save_ablation_image(
         self,
         acquisition_id: int,
@@ -188,24 +224,20 @@ class McdParser:
         end_offset: str,
         output_filename: Optional[str] = None,
     ):
-        if isinstance(output_folder, str):
-            output_folder = Path(output_folder)
-        image_offset_fix = 161
-        image_format = ".png"
-        a = self.session.acquisitions.get(acquisition_id)
-        img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
-        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
-        if img_end - img_start == 0:
-            return False
+        buf = self._get_ablation_image(acquisition_id, start_offset, end_offset)
+        if buf is not None:
+            if isinstance(output_folder, str):
+                output_folder = Path(output_folder)
+            image_format = ".png"
 
-        if output_filename is None:
-            output_filename = a.metaname
-        buf = self._get_buffer(img_start, img_end)
-        if not (output_filename.endswith(image_format)):
-            output_filename += "_" + ac_postfix.value + image_format
-        with open(output_folder / output_filename, "wb") as f:
-            f.write(buf)
-        return True
+            if output_filename is None:
+                a = self.session.acquisitions.get(acquisition_id)
+                output_filename = a.metaname
+
+            if not (output_filename.endswith(image_format)):
+                output_filename += "_" + ac_postfix.value + image_format
+            with open(output_folder / output_filename, "wb") as f:
+                f.write(buf)
 
     def _get_buffer(self, start: int, stop: int):
         """Read binary data block from memory-mapped file"""

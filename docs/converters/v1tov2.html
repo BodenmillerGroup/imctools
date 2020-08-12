@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.8.4" />
-<title>imctools.converters.mcdfolder2imcfolder API documentation</title>
+<title>imctools.converters.v1tov2 API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>imctools.converters.mcdfolder2imcfolder</code></h1>
+<h1 class="title">Module <code>imctools.converters.v1tov2</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -28,67 +28,100 @@
 </summary>
 <pre><code class="python">import glob
 import logging
-import zipfile
+import os
+import re
+import shutil
 from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Union
+from typing import Sequence, Union
 
-from imctools.io.imc.imcwriter import ImcWriter
-from imctools.io.mcd.mcdparser import McdParser
-from imctools.io.txt.txtparser import TXT_FILE_EXTENSION, TxtParser
-from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
+from imctools.data import Session
+from imctools.io.mcd.mcdxmlparser import McdXmlParser
+from imctools.io.ometiff.ometiffparser import OmeTiffParser
+from imctools.io.utils import OME_TIFF_SUFFIX, SCHEMA_XML_SUFFIX, SESSION_JSON_SUFFIX
 
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
-    &#34;&#34;&#34;Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
+def v1_to_v2(input_folder: Union[str, Path], output_folder: Union[str, Path]):
+    &#34;&#34;&#34;Converts IMC folder from v1 to v2 format.
 
     Parameters
     ----------
-    input
-        Input folder / .zip file with  raw .mcd/.txt acquisition data files.
+    input_folder
+        Input folder (with IMC v1 data).
     output_folder
-        Path to the output folder.
-    create_zip
-        Whether to create an output as .zip file.
+        Output folder.
     &#34;&#34;&#34;
-    if isinstance(input, str):
-        input = Path(input)
-    tmpdir = None
-    if input.is_file() and input.suffix == ZIP_FILENDING:
-        tmpdir = TemporaryDirectory()
-        with zipfile.ZipFile(input, allowZip64=True) as zip:
-            zip.extractall(tmpdir.name)
-        input_folder = Path(tmpdir.name)
-    else:
-        input_folder = input
+    if isinstance(input_folder, str):
+        input_folder = Path(input_folder)
 
-    mcd_parser = None
-    try:
-        mcd_files = list(input_folder.rglob(f&#34;*{MCD_FILENDING}&#34;))
-        assert len(mcd_files) == 1
-        schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_FILENDING}&#34;))
-        schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
-        try:
-            mcd_parser = McdParser(mcd_files[0])
-        except:
-            if schema_file is not None:
-                logging.error(&#34;MCD file is corrupted, trying to rescue with schema file&#34;)
-                mcd_parser = McdParser(mcd_files[0], xml_metadata_filepath=schema_file)
-            else:
-                raise
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
 
-        txt_files = glob.glob(str(input_folder / f&#34;*[0-9]{TXT_FILE_EXTENSION}&#34;))
-        txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
 
-        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
-        imc_writer.write_imc_folder(create_zip=create_zip)
-    finally:
-        if mcd_parser is not None:
-            mcd_parser.close()
-        if tmpdir is not None:
-            tmpdir.cleanup()
+    schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_XML_SUFFIX}&#34;))
+    schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
+
+    if schema_file is None:
+        raise ValueError(&#34;Input folder doesn&#39;t have a proper XML schema file.&#34;)
+
+    with open(schema_file, &#34;rt&#34;) as f:
+        xml = f.read()
+
+    xml_parser = McdXmlParser(xml, schema_file, process_namespaces=True)
+    session = xml_parser.session
+
+    # Copy schema file
+    _copy_files([schema_file], output_folder)
+
+    # Copy slide images
+    slide_files = glob.glob(str(input_folder / f&#34;*_slide.*&#34;))
+    _copy_files(slide_files, output_folder)
+
+    # Copy panorama images
+    panorama_files = glob.glob(str(input_folder / f&#34;*_pano.*&#34;))
+    _copy_files(panorama_files, output_folder)
+
+    # Copy before ablation images
+    before_ablation_files = glob.glob(str(input_folder / f&#34;*_before.*&#34;))
+    _copy_files(before_ablation_files, output_folder, fix_names=True)
+
+    # Copy after ablation images
+    after_ablation_files = glob.glob(str(input_folder / f&#34;*_after.*&#34;))
+    _copy_files(after_ablation_files, output_folder, fix_names=True)
+
+    # Copy OME-TIFF acquisition files
+    ome_tiff_files = glob.glob(str(input_folder / f&#34;*{OME_TIFF_SUFFIX}&#34;))
+    session = _calculate_min_max_intensities(ome_tiff_files, session)
+    session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
+    _copy_files(ome_tiff_files, output_folder, fix_names=True)
+
+
+def _calculate_min_max_intensities(filenames: Sequence[Union[str, Path]], session: Session):
+    &#34;&#34;&#34;Calculate min and max intensity of each channel.&#34;&#34;&#34;
+    for fn in filenames:
+        with OmeTiffParser(fn) as parser:
+            ac_data = parser.get_acquisition_data()
+            acquisition = session.acquisitions.get(ac_data.acquisition.id)
+            if acquisition:
+                for channel in acquisition.channels.values():
+                    img = ac_data.get_image_by_name(channel.name)
+                    session.channels[channel.id].min_intensity = round(float(img.min()), 4)
+                    session.channels[channel.id].max_intensity = round(float(img.max()), 4)
+    return session
+
+
+def _copy_files(filenames: Sequence[Union[str, Path]], output_folder: Path, fix_names=False):
+    for fn in filenames:
+        if os.path.exists(fn):
+            dst = output_folder
+            if fix_names:
+                name = Path(fn).name
+                new_name = re.sub(r&#34;_p\d+_r\d+&#34;, &#34;&#34;, name)
+                dst = output_folder / new_name
+            shutil.copy2(fn, dst)
 
 
 if __name__ == &#34;__main__&#34;:
@@ -96,12 +129,10 @@ if __name__ == &#34;__main__&#34;:
 
     tic = timeit.default_timer()
 
-    mcdfolder_to_imcfolder(
-        Path(&#34;/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip&#34;),
-        # &#34;/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE&#34;,
-        # &#34;/home/anton/Downloads/test&#34;,
-        # &#34;/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip&#34;,
-        Path(&#34;/home/anton/Downloads/imc_folder&#34;),
+    v1_to_v2(
+        # &#34;/home/anton/Documents/IMC Workshop 2019/Data/IMC_Workshop_2019_preprocessing/data/ometiff/20190919_FluidigmBrCa_SE&#34;,
+        Path(&#34;/home/anton/Data/for Anton/new error/IMMUcan_Batch20191023_S-190701-00035&#34;),
+        Path(&#34;/home/anton/Downloads/imc_folder_v2&#34;),
     )
 
     print(timeit.default_timer() - tic)</code></pre>
@@ -114,73 +145,77 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="imctools.converters.mcdfolder2imcfolder.mcdfolder_to_imcfolder"><code class="name flex">
-<span>def <span class="ident">mcdfolder_to_imcfolder</span></span>(<span>input: Union[str, pathlib.Path], output_folder: Union[str, pathlib.Path], create_zip: bool = False)</span>
+<dt id="imctools.converters.v1tov2.v1_to_v2"><code class="name flex">
+<span>def <span class="ident">v1_to_v2</span></span>(<span>input_folder: Union[str, pathlib.Path], output_folder: Union[str, pathlib.Path])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.</p>
+<div class="desc"><p>Converts IMC folder from v1 to v2 format.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>input</code></strong></dt>
-<dd>Input folder / .zip file with
-raw .mcd/.txt acquisition data files.</dd>
+<dt><strong><code>input_folder</code></strong></dt>
+<dd>Input folder (with IMC v1 data).</dd>
 <dt><strong><code>output_folder</code></strong></dt>
-<dd>Path to the output folder.</dd>
-<dt><strong><code>create_zip</code></strong></dt>
-<dd>Whether to create an output as .zip file.</dd>
+<dd>Output folder.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
-    &#34;&#34;&#34;Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
+<pre><code class="python">def v1_to_v2(input_folder: Union[str, Path], output_folder: Union[str, Path]):
+    &#34;&#34;&#34;Converts IMC folder from v1 to v2 format.
 
     Parameters
     ----------
-    input
-        Input folder / .zip file with  raw .mcd/.txt acquisition data files.
+    input_folder
+        Input folder (with IMC v1 data).
     output_folder
-        Path to the output folder.
-    create_zip
-        Whether to create an output as .zip file.
+        Output folder.
     &#34;&#34;&#34;
-    if isinstance(input, str):
-        input = Path(input)
-    tmpdir = None
-    if input.is_file() and input.suffix == ZIP_FILENDING:
-        tmpdir = TemporaryDirectory()
-        with zipfile.ZipFile(input, allowZip64=True) as zip:
-            zip.extractall(tmpdir.name)
-        input_folder = Path(tmpdir.name)
-    else:
-        input_folder = input
+    if isinstance(input_folder, str):
+        input_folder = Path(input_folder)
 
-    mcd_parser = None
-    try:
-        mcd_files = list(input_folder.rglob(f&#34;*{MCD_FILENDING}&#34;))
-        assert len(mcd_files) == 1
-        schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_FILENDING}&#34;))
-        schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
-        try:
-            mcd_parser = McdParser(mcd_files[0])
-        except:
-            if schema_file is not None:
-                logging.error(&#34;MCD file is corrupted, trying to rescue with schema file&#34;)
-                mcd_parser = McdParser(mcd_files[0], xml_metadata_filepath=schema_file)
-            else:
-                raise
+    if isinstance(output_folder, str):
+        output_folder = Path(output_folder)
 
-        txt_files = glob.glob(str(input_folder / f&#34;*[0-9]{TXT_FILE_EXTENSION}&#34;))
-        txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
+    if not output_folder.exists():
+        output_folder.mkdir(parents=True, exist_ok=True)
 
-        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
-        imc_writer.write_imc_folder(create_zip=create_zip)
-    finally:
-        if mcd_parser is not None:
-            mcd_parser.close()
-        if tmpdir is not None:
-            tmpdir.cleanup()</code></pre>
+    schema_files = glob.glob(str(input_folder / f&#34;*{SCHEMA_XML_SUFFIX}&#34;))
+    schema_file = schema_files[0] if len(schema_files) &gt; 0 else None
+
+    if schema_file is None:
+        raise ValueError(&#34;Input folder doesn&#39;t have a proper XML schema file.&#34;)
+
+    with open(schema_file, &#34;rt&#34;) as f:
+        xml = f.read()
+
+    xml_parser = McdXmlParser(xml, schema_file, process_namespaces=True)
+    session = xml_parser.session
+
+    # Copy schema file
+    _copy_files([schema_file], output_folder)
+
+    # Copy slide images
+    slide_files = glob.glob(str(input_folder / f&#34;*_slide.*&#34;))
+    _copy_files(slide_files, output_folder)
+
+    # Copy panorama images
+    panorama_files = glob.glob(str(input_folder / f&#34;*_pano.*&#34;))
+    _copy_files(panorama_files, output_folder)
+
+    # Copy before ablation images
+    before_ablation_files = glob.glob(str(input_folder / f&#34;*_before.*&#34;))
+    _copy_files(before_ablation_files, output_folder, fix_names=True)
+
+    # Copy after ablation images
+    after_ablation_files = glob.glob(str(input_folder / f&#34;*_after.*&#34;))
+    _copy_files(after_ablation_files, output_folder, fix_names=True)
+
+    # Copy OME-TIFF acquisition files
+    ome_tiff_files = glob.glob(str(input_folder / f&#34;*{OME_TIFF_SUFFIX}&#34;))
+    session = _calculate_min_max_intensities(ome_tiff_files, session)
+    session.save(os.path.join(output_folder, session.metaname + SESSION_JSON_SUFFIX))
+    _copy_files(ome_tiff_files, output_folder, fix_names=True)</code></pre>
 </details>
 </dd>
 </dl>
@@ -201,7 +236,7 @@ raw .mcd/.txt acquisition data files.</dd>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="imctools.converters.mcdfolder2imcfolder.mcdfolder_to_imcfolder" href="#imctools.converters.mcdfolder2imcfolder.mcdfolder_to_imcfolder">mcdfolder_to_imcfolder</a></code></li>
+<li><code><a title="imctools.converters.v1tov2.v1_to_v2" href="#imctools.converters.v1tov2.v1_to_v2">v1_to_v2</a></code></li>
 </ul>
 </li>
 </ul>

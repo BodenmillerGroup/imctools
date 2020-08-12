@@ -208,7 +208,5 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    session = Session.load(
-        "/home/anton/Downloads/imc_from_mcd/20190919_FluidigmBrCa_SE_session.json"
-    )
+    session = Session.load("/home/anton/Downloads/imc_from_mcd/20190919_FluidigmBrCa_SE_session.json")
     print(timeit.default_timer() - tic)

@@ -12,7 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 def get_metals_from_panel(
-    panel_csv_file: Optional[Union[str, Path]], usedcolumn: str = "ilastik", metalcolumn: str = "Metal Tag", sort_channels=True,
+    panel_csv_file: Optional[Union[str, Path]],
+    usedcolumn: str = "ilastik",
+    metalcolumn: str = "Metal Tag",
+    sort_channels=True,
 ):
     """Get list of metals from a panel and a boolean column.
 
@@ -98,7 +101,9 @@ def omefile_2_analysisfolder(
     ome = OmeTiffParser(filename)
     acquisition_data = ome.get_acquisition_data()
 
-    acquisition_data.save_tiff(output_folder / (basename + ".tiff"), names=metals, imagej=True, bigtiff=bigtiff, dtype=dtype)
+    acquisition_data.save_tiff(
+        output_folder / (basename + ".tiff"), names=metals, imagej=True, bigtiff=bigtiff, dtype=dtype
+    )
 
     if metals is not None:
         savenames = metals
@@ -171,7 +176,9 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     omefile_2_analysisfolder(
-        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"),
+        Path(
+            "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
+        ),
         Path("/home/anton/Downloads/analysis_folder"),
         "test",
         panel_csv_file=Path("/home/anton/Downloads/example_panel.csv"),
