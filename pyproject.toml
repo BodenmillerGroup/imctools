@@ -23,6 +23,7 @@ include = ["AUTHORS.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "README.m
 exclude = ["tests", "docs"]
 
 [tool.poetry.dependencies]
+imagecodecs = "^2020.5.30"
 packaging = "*"
 pandas = "^1.0"
 python = ">=3.7"
@@ -41,7 +42,7 @@ pdoc3 = "^0.8.1"
 pylint = "^2.5.3"
 pytest = "^6.0.1"
 pytest-cov = "^2.10.0"
-vulture = "^1.5"
+vulture = "^2.0"
 
 [tool.poetry.scripts]
 imctools = 'imctools.cli:main'
