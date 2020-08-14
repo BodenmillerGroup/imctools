@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "2.0.0"
+version = "2.0.1"
 description = "Tools to handle Fluidigm IMC data"
 license = "MIT"
 authors = ["Vito Zanotelli <vito.zanotelli@uzh.ch>", "Anton Rau <anton.rau@uzh.ch>"]

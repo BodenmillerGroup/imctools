@@ -1,5 +1,4 @@
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Optional, Sequence, Union
@@ -136,7 +135,7 @@ class AcquisitionData:
         data = np.array(self._get_image_stack_cyx(order), dtype=dtype)
         to_tiff(
             data,
-            filename,
+            str(filename),
             ome_xml_fun=get_ome_xml,
             channel_names=channel_labels,
             channel_fluors=channel_names,
