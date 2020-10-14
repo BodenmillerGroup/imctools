@@ -9,6 +9,7 @@ from packaging import version
 import imctools.io.mcd.constants as const
 from imctools import __version__
 from imctools.data import Acquisition, Channel, Panorama, Session, Slide
+from imctools.io.utils import sort_acquisition_channels
 
 
 class McdXmlParser:
@@ -168,6 +169,9 @@ class McdXmlParser:
                 ac = session.acquisitions.get(channel.acquisition_id)
                 channel.acquisition = ac
                 ac.channels[channel.id] = channel
+
+        # Sort acquisitions channels by ORDER_NUMBER
+        sort_acquisition_channels(session)
 
         self._session = session
 

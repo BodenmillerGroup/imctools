@@ -295,9 +295,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     parser = McdParser(
-        Path(
-            "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE.mcd"
-        )
+        Path("/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa.mcd")
     )
 
     print(timeit.default_timer() - tic)

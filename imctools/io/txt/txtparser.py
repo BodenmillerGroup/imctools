@@ -114,9 +114,9 @@ class TxtParser:
             dtype={c: np.float32 for c in header_cols[3:]},
         )
         data = df.values
-        names = [col for col in header_cols if col not in ("Start_push", "End_push", "Pushes_duration")]
-        channel_names = TxtParser._extract_channel_names(names)
-        channel_labels = TxtParser._extract_channel_labels(names)
+        channel_labels = [col for col in header_cols if col not in ("Start_push", "End_push", "Pushes_duration")]
+        channel_names = channel_labels[:]
+        channel_names[3:] = TxtParser._extract_channel_names(channel_names[3:])
         return data, channel_names, channel_labels
 
     @staticmethod
@@ -129,31 +129,31 @@ class TxtParser:
         names
             CSV file column names.
         """
-        r = re.compile(r"^.*\((.*?)\)[^(]*$")
-        r_number = re.compile(r"\d+")
-        result = []
-        for name in names:
-            n = (
-                r.sub(r"\g<1>", name.strip("\r").strip("\n").replace("(", "").replace(")", "").strip())
-                .rstrip("di")
-                .rstrip("Di")
-            )
-            metal_name = r_number.sub("", n)
-            metal_mass = n.replace(metal_name, "")
-            metal_mass = f"({metal_mass})" if metal_mass != "" else ""
-            result.append(f"{metal_name}{metal_mass}")
-        return result
+        # find which version it is
+        names = [n.strip("\r") for n in names]
+        names = [n.strip("\n") for n in names]
+        names = [n.strip() for n in names]
+        # string of sort asbsdf(mn123di)
+        if names[0].rfind(")") == (len(names[0]) - 1):
+            # get m123di
 
-    @staticmethod
-    def _extract_channel_labels(names: Sequence[str]):
-        """Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
+            names = [n[(n.rfind("(") + 1) : (n.rfind(")"))] for n in names]
 
-        Parameters
-        ----------
-        names
-            CSV file column names.
-        """
-        return [name.strip("\r").strip("\n").strip() for name in names]
+        # string of sort aasbas_mn123
+        elif "_" in names[0]:
+            names = [n.split("_")[-1] for n in names]
+
+        # else do nothing
+        else:
+            return names
+
+        # else there is the bug where (123123di)
+        names = [n.rstrip("di") for n in names]
+        names = [n.rstrip("Di") for n in names]
+        if names[0][0].isdigit():
+            names = [n[(int(len(n) / 2)) :] for n in names]
+
+        return names
 
     def __enter__(self):
         return self
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     with TxtParser(
-        "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_BreastCa_1_1.txt"
+        "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa/Site1_0_ROI_1_upperleft_0.txt"
     ) as parser:
         ac = parser.get_acquisition_data()
         pass

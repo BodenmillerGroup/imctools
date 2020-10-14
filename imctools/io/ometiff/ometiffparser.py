@@ -141,7 +141,7 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     with OmeTiffParser(
-        "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
+        "/home/anton/Downloads/imc_folder_v2/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
     ) as parser:
         ac = parser.get_acquisition_data()
         pass

@@ -13,7 +13,7 @@ from imctools.data.acquisition import Acquisition, AcquisitionDict
 from imctools.data.channel import Channel, ChannelDict
 from imctools.data.panorama import Panorama, PanoramaDict
 from imctools.data.slide import Slide, SlideDict
-from imctools.io.utils import META_CSV_SUFFIX
+from imctools.io.utils import META_CSV_SUFFIX, sort_acquisition_channels
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict  # pylint: disable=no-name-in-module
@@ -189,6 +189,9 @@ class Session:
             acquisition.channels[channel.id] = channel
             session.channels[channel.id] = channel
 
+        # Sort acquisitions channels by ORDER_NUMBER
+        sort_acquisition_channels(session)
+
         return session
 
     @property
@@ -208,5 +211,7 @@ if __name__ == "__main__":
     import timeit
 
     tic = timeit.default_timer()
-    session = Session.load("/home/anton/Downloads/imc_from_mcd/20190919_FluidigmBrCa_SE_session.json")
+    session = Session.load(
+        "/home/anton/Downloads/imc_folder_v2/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_session.json"
+    )
     print(timeit.default_timer() - tic)

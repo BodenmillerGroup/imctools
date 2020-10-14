@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "2.0.1"
+version = "2.1.0"
 description = "Tools to handle Fluidigm IMC data"
 license = "MIT"
 authors = ["Vito Zanotelli <vito.zanotelli@uzh.ch>", "Anton Rau <anton.rau@uzh.ch>"]
@@ -29,7 +29,7 @@ packaging = "*"
 pandas = "^1.0"
 typing_extensions = ">=3.7.4.2"
 xmltodict = ">=0.12.0"
-xtiff = ">=0.6.1"
+xtiff = ">=0.6.2"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1.3.1"

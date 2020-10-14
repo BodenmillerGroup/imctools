@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.4" />
+<meta name="generator" content="pdoc 0.8.5" />
 <title>imctools.io.txt.txtparser API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -142,9 +142,9 @@ class TxtParser:
             dtype={c: np.float32 for c in header_cols[3:]},
         )
         data = df.values
-        names = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
-        channel_names = TxtParser._extract_channel_names(names)
-        channel_labels = TxtParser._extract_channel_labels(names)
+        channel_labels = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
+        channel_names = channel_labels[:]
+        channel_names[3:] = TxtParser._extract_channel_names(channel_names[3:])
         return data, channel_names, channel_labels
 
     @staticmethod
@@ -157,31 +157,31 @@ class TxtParser:
         names
             CSV file column names.
         &#34;&#34;&#34;
-        r = re.compile(r&#34;^.*\((.*?)\)[^(]*$&#34;)
-        r_number = re.compile(r&#34;\d+&#34;)
-        result = []
-        for name in names:
-            n = (
-                r.sub(r&#34;\g&lt;1&gt;&#34;, name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).replace(&#34;(&#34;, &#34;&#34;).replace(&#34;)&#34;, &#34;&#34;).strip())
-                .rstrip(&#34;di&#34;)
-                .rstrip(&#34;Di&#34;)
-            )
-            metal_name = r_number.sub(&#34;&#34;, n)
-            metal_mass = n.replace(metal_name, &#34;&#34;)
-            metal_mass = f&#34;({metal_mass})&#34; if metal_mass != &#34;&#34; else &#34;&#34;
-            result.append(f&#34;{metal_name}{metal_mass}&#34;)
-        return result
+        # find which version it is
+        names = [n.strip(&#34;\r&#34;) for n in names]
+        names = [n.strip(&#34;\n&#34;) for n in names]
+        names = [n.strip() for n in names]
+        # string of sort asbsdf(mn123di)
+        if names[0].rfind(&#34;)&#34;) == (len(names[0]) - 1):
+            # get m123di
 
-    @staticmethod
-    def _extract_channel_labels(names: Sequence[str]):
-        &#34;&#34;&#34;Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
+            names = [n[(n.rfind(&#34;(&#34;) + 1) : (n.rfind(&#34;)&#34;))] for n in names]
 
-        Parameters
-        ----------
-        names
-            CSV file column names.
-        &#34;&#34;&#34;
-        return [name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).strip() for name in names]
+        # string of sort aasbas_mn123
+        elif &#34;_&#34; in names[0]:
+            names = [n.split(&#34;_&#34;)[-1] for n in names]
+
+        # else do nothing
+        else:
+            return names
+
+        # else there is the bug where (123123di)
+        names = [n.rstrip(&#34;di&#34;) for n in names]
+        names = [n.rstrip(&#34;Di&#34;) for n in names]
+        if names[0][0].isdigit():
+            names = [n[(int(len(n) / 2)) :] for n in names]
+
+        return names
 
     def __enter__(self):
         return self
@@ -196,7 +196,7 @@ if __name__ == &#34;__main__&#34;:
     tic = timeit.default_timer()
 
     with TxtParser(
-        &#34;/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE/20190919_FluidigmBrCa_SE_BreastCa_1_1.txt&#34;
+        &#34;/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa/Site1_0_ROI_1_upperleft_0.txt&#34;
     ) as parser:
         ac = parser.get_acquisition_data()
         pass
@@ -326,9 +326,9 @@ if __name__ == &#34;__main__&#34;:
             dtype={c: np.float32 for c in header_cols[3:]},
         )
         data = df.values
-        names = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
-        channel_names = TxtParser._extract_channel_names(names)
-        channel_labels = TxtParser._extract_channel_labels(names)
+        channel_labels = [col for col in header_cols if col not in (&#34;Start_push&#34;, &#34;End_push&#34;, &#34;Pushes_duration&#34;)]
+        channel_names = channel_labels[:]
+        channel_names[3:] = TxtParser._extract_channel_names(channel_names[3:])
         return data, channel_names, channel_labels
 
     @staticmethod
@@ -341,31 +341,31 @@ if __name__ == &#34;__main__&#34;:
         names
             CSV file column names.
         &#34;&#34;&#34;
-        r = re.compile(r&#34;^.*\((.*?)\)[^(]*$&#34;)
-        r_number = re.compile(r&#34;\d+&#34;)
-        result = []
-        for name in names:
-            n = (
-                r.sub(r&#34;\g&lt;1&gt;&#34;, name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).replace(&#34;(&#34;, &#34;&#34;).replace(&#34;)&#34;, &#34;&#34;).strip())
-                .rstrip(&#34;di&#34;)
-                .rstrip(&#34;Di&#34;)
-            )
-            metal_name = r_number.sub(&#34;&#34;, n)
-            metal_mass = n.replace(metal_name, &#34;&#34;)
-            metal_mass = f&#34;({metal_mass})&#34; if metal_mass != &#34;&#34; else &#34;&#34;
-            result.append(f&#34;{metal_name}{metal_mass}&#34;)
-        return result
+        # find which version it is
+        names = [n.strip(&#34;\r&#34;) for n in names]
+        names = [n.strip(&#34;\n&#34;) for n in names]
+        names = [n.strip() for n in names]
+        # string of sort asbsdf(mn123di)
+        if names[0].rfind(&#34;)&#34;) == (len(names[0]) - 1):
+            # get m123di
 
-    @staticmethod
-    def _extract_channel_labels(names: Sequence[str]):
-        &#34;&#34;&#34;Returns channel labels in Fluidigm compatible format, i.e. Myelope_276((2669))Y89(Y89Di) or 80ArAr(ArAr80Di).
+            names = [n[(n.rfind(&#34;(&#34;) + 1) : (n.rfind(&#34;)&#34;))] for n in names]
 
-        Parameters
-        ----------
-        names
-            CSV file column names.
-        &#34;&#34;&#34;
-        return [name.strip(&#34;\r&#34;).strip(&#34;\n&#34;).strip() for name in names]
+        # string of sort aasbas_mn123
+        elif &#34;_&#34; in names[0]:
+            names = [n.split(&#34;_&#34;)[-1] for n in names]
+
+        # else do nothing
+        else:
+            return names
+
+        # else there is the bug where (123123di)
+        names = [n.rstrip(&#34;di&#34;) for n in names]
+        names = [n.rstrip(&#34;Di&#34;) for n in names]
+        if names[0][0].isdigit():
+            names = [n[(int(len(n) / 2)) :] for n in names]
+
+        return names
 
     def __enter__(self):
         return self
@@ -483,7 +483,7 @@ def origin(self):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.4</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.5</a>.</p>
 </footer>
 </body>
 </html>

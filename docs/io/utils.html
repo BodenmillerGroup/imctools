@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.8.4" />
+<meta name="generator" content="pdoc 0.8.5" />
 <title>imctools.io.utils API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -26,11 +26,16 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import xml.etree.ElementTree as ET
-from typing import Optional, Sequence
+<pre><code class="python">from __future__ import annotations
+
+import xml.etree.ElementTree as ET
+from typing import TYPE_CHECKING, Optional, Sequence
 
 import numpy as np
 import xtiff
+
+if TYPE_CHECKING:
+    from imctools.data import Session
 
 SESSION_JSON_SUFFIX = &#34;_session.json&#34;
 SCHEMA_XML_SUFFIX = &#34;_schema.xml&#34;
@@ -127,7 +132,18 @@ def get_ome_xml(
         ET.SubElement(original_metadata_element, &#34;Key&#34;).text = &#34;MCD-XML&#34;
         ET.SubElement(original_metadata_element, &#34;Value&#34;).text = xml_metadata.replace(&#34;\r\n&#34;, &#34;&#34;)
 
-    return element_tree</code></pre>
+    return element_tree
+
+
+def sort_acquisition_channels(session: Session):
+    &#34;&#34;&#34;Sort entries of acquisition channels dictionary by channel order number&#34;&#34;&#34;
+    for a in session.acquisitions.values():
+        ordered_dict = dict()
+        ac_channels = list(a.channels.values())
+        ac_channels.sort(key=lambda x: x.order_number)
+        for c in ac_channels:
+            ordered_dict[c.id] = c
+        a.channels = ordered_dict</code></pre>
 </details>
 </section>
 <section>
@@ -138,7 +154,7 @@ def get_ome_xml(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="imctools.io.utils.get_ome_xml"><code class="name flex">
-<span>def <span class="ident">get_ome_xml</span></span>(<span>img: numpy.ndarray, image_name: Union[str, NoneType], channel_names: Union[Sequence[str], NoneType], big_endian: bool, pixel_size: Union[float, NoneType], pixel_depth: Union[float, NoneType], creator: Union[str, NoneType] = None, acquisition_date: Union[str, NoneType] = None, channel_fluors: Union[Sequence[str], NoneType] = None, xml_metadata: Union[str, NoneType] = None, **ome_xml_kwargs) ‑> xml.etree.ElementTree.ElementTree</span>
+<span>def <span class="ident">get_ome_xml</span></span>(<span>img: np.ndarray, image_name: Optional[str], channel_names: Optional[Sequence[str]], big_endian: bool, pixel_size: Optional[float], pixel_depth: Optional[float], creator: Optional[str] = None, acquisition_date: Optional[str] = None, channel_fluors: Optional[Sequence[str]] = None, xml_metadata: Optional[str] = None, **ome_xml_kwargs) ‑> xml.etree.ElementTree.ElementTree</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper function for xtiff library to get a proper OME-TIFF XML</p></div>
@@ -194,7 +210,7 @@ def get_ome_xml(
 </details>
 </dd>
 <dt id="imctools.io.utils.reshape_long_2_cyx"><code class="name flex">
-<span>def <span class="ident">reshape_long_2_cyx</span></span>(<span>data: numpy.memmap, is_sorted: bool = True, shape: Union[numpy.ndarray, NoneType] = None, channel_indices: Union[Sequence[int], NoneType] = None)</span>
+<span>def <span class="ident">reshape_long_2_cyx</span></span>(<span>data: np.memmap, is_sorted: bool = True, shape: Optional[np.ndarray] = None, channel_indices: Optional[Sequence[int]] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Reshape data from long format into cyx format (channels, y, x).</p>
@@ -253,6 +269,26 @@ def get_ome_xml(
         return NotImplemented</code></pre>
 </details>
 </dd>
+<dt id="imctools.io.utils.sort_acquisition_channels"><code class="name flex">
+<span>def <span class="ident">sort_acquisition_channels</span></span>(<span>session: Session)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sort entries of acquisition channels dictionary by channel order number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_acquisition_channels(session: Session):
+    &#34;&#34;&#34;Sort entries of acquisition channels dictionary by channel order number&#34;&#34;&#34;
+    for a in session.acquisitions.values():
+        ordered_dict = dict()
+        ac_channels = list(a.channels.values())
+        ac_channels.sort(key=lambda x: x.order_number)
+        for c in ac_channels:
+            ordered_dict[c.id] = c
+        a.channels = ordered_dict</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -273,13 +309,14 @@ def get_ome_xml(
 <ul class="">
 <li><code><a title="imctools.io.utils.get_ome_xml" href="#imctools.io.utils.get_ome_xml">get_ome_xml</a></code></li>
 <li><code><a title="imctools.io.utils.reshape_long_2_cyx" href="#imctools.io.utils.reshape_long_2_cyx">reshape_long_2_cyx</a></code></li>
+<li><code><a title="imctools.io.utils.sort_acquisition_channels" href="#imctools.io.utils.sort_acquisition_channels">sort_acquisition_channels</a></code></li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.4</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.5</a>.</p>
 </footer>
 </body>
 </html>

@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import xml.etree.ElementTree as ET
-from typing import Optional, Sequence
+from typing import TYPE_CHECKING, Optional, Sequence
 
 import numpy as np
 import xtiff
+
+if TYPE_CHECKING:
+    from imctools.data import Session
 
 SESSION_JSON_SUFFIX = "_session.json"
 SCHEMA_XML_SUFFIX = "_schema.xml"
@@ -100,3 +105,14 @@ def get_ome_xml(
         ET.SubElement(original_metadata_element, "Value").text = xml_metadata.replace("\r\n", "")
 
     return element_tree
+
+
+def sort_acquisition_channels(session: Session):
+    """Sort entries of acquisition channels dictionary by channel order number"""
+    for a in session.acquisitions.values():
+        ordered_dict = dict()
+        ac_channels = list(a.channels.values())
+        ac_channels.sort(key=lambda x: x.order_number)
+        for c in ac_channels:
+            ordered_dict[c.id] = c
+        a.channels = ordered_dict
