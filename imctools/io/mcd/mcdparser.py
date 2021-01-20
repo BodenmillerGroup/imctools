@@ -209,7 +209,7 @@ class McdParser:
 
         a = self.session.acquisitions.get(acquisition_id)
         img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
-        img_end = int(a.metadata.get(end_offset, 0))
+        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
         if img_end - img_start == 0:
             return None
 
