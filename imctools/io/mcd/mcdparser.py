@@ -102,8 +102,7 @@ class McdParser:
         s = self.session.slides.get(slide_id)
         img_start = int(s.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
         img_end = int(s.metadata.get(const.IMAGE_END_OFFSET, 0))
-
-        if img_start - img_end == 0:
+        if img_end - img_start <= 0:
             return None
 
         return self._get_buffer(img_start, img_end)
@@ -142,8 +141,7 @@ class McdParser:
         p = self.session.panoramas.get(panorama_id)
         img_start = int(p.metadata.get(const.IMAGE_START_OFFSET, 0)) + image_offset_fix
         img_end = int(p.metadata.get(const.IMAGE_END_OFFSET, 0))
-
-        if img_start - img_end == 0:
+        if img_end - img_start <= 0:
             return None
 
         return self._get_buffer(img_start, img_end)
@@ -209,8 +207,8 @@ class McdParser:
 
         a = self.session.acquisitions.get(acquisition_id)
         img_start = int(a.metadata.get(start_offset, 0)) + image_offset_fix
-        img_end = int(a.metadata.get(end_offset, 0)) + image_offset_fix
-        if img_end - img_start == 0:
+        img_end = int(a.metadata.get(end_offset, 0))
+        if img_end - img_start <= 0:
             return None
 
         return self._get_buffer(img_start, img_end)
