@@ -115,9 +115,10 @@ class McdXmlParser:
                 # TODO: check if the issue is fixed in newer Fluidigm versions
                 roi_start_x_pos_um = float(a.get(const.ROI_START_X_POS_UM, 0))
                 roi_start_y_pos_um = float(a.get(const.ROI_START_Y_POS_UM, 0))
-                if slide.sw_version is None or version.parse(slide.sw_version) <= version.parse("7.0.5189.0"):
-                    roi_start_x_pos_um /= 1000
-                    roi_start_y_pos_um /= 1000
+                # if slide.sw_version is None or version.parse(slide.sw_version) <= version.parse("7.0.5189.0"):
+                # Apply the fix until Fluidigm fix the issue on their side
+                roi_start_x_pos_um /= 1000
+                roi_start_y_pos_um /= 1000
 
                 acquisition = Acquisition(
                     slide_id,
