@@ -119,7 +119,7 @@ def omefolder_to_analysisfolder(
     input_folder: Union[str, Path],
     output_folder: Union[str, Path],
     panel_csv_file: Union[str, Path],
-    analysis_stacks: Sequence[Tuple[str, str, bool]],
+    analysis_stacks: Sequence[Tuple[str, str]],
     metalcolumn: str = "Metal Tag",
     dtype=np.uint16,
 ):
@@ -134,7 +134,7 @@ def omefolder_to_analysisfolder(
     panel_csv_file
         Name of the CSV file that contains the channels to be written out.
     analysis_stacks
-        Array of analysis stack definitions in a tuple format (column, suffix, add_sum).
+        Array of analysis stack definitions in a tuple format (column, suffix).
     metalcolumn
         Column name of the metal names.
     dtype
@@ -154,7 +154,7 @@ def omefolder_to_analysisfolder(
             if not img.endswith(".ome.tiff"):
                 continue
             basename = img.rstrip(".ome.tiff")
-            for (col, suffix, add_sum) in analysis_stacks:
+            for (col, suffix, *_) in analysis_stacks:
                 try:
                     omefile_2_analysisfolder(
                         sub_fol / img,
@@ -175,26 +175,23 @@ if __name__ == "__main__":
 
     tic = timeit.default_timer()
 
-    omefile_2_analysisfolder(
-        Path(
-            "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
-        ),
-        Path("/home/anton/Downloads/analysis_folder"),
-        "test",
-        panel_csv_file=Path("/home/anton/Downloads/example_panel.csv"),
-        metalcolumn="Metal Tag",
-        usedcolumn="ilastik",
-    )
-
-    # omefolder_to_analysisfolder(
-    #     "/home/anton/Downloads/imc_folder",
-    #     "/home/anton/Downloads/analysis_folder",
-    #     "/home/anton/Downloads/example_panel.csv",
-    #     [
-    #         ("ilastik", "_ilastik", True),
-    #         ("full", "_full", False)
-    #     ],
+    # omefile_2_analysisfolder(
+    #     Path(
+    #         "/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa/20170905_Fluidigmworkshopfinal_SEAJa_s0_a0_ac.ome.tiff"
+    #     ),
+    #     Path("/home/anton/Downloads/analysis_folder"),
+    #     "test",
+    #     panel_csv_file=Path("/home/anton/Downloads/example_panel.csv"),
     #     metalcolumn="Metal Tag",
+    #     usedcolumn="ilastik",
     # )
+
+    omefolder_to_analysisfolder(
+        "/home/anton/Downloads/imc_folder",
+        "/home/anton/Downloads/analysis_folder",
+        "/home/anton/Downloads/example_panel.csv",
+        [("ilastik", "_ilastik", True), ("full", "_full", False)],
+        metalcolumn="Metal Tag",
+    )
 
     print(timeit.default_timer() - tic)
