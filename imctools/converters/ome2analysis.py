@@ -190,10 +190,7 @@ if __name__ == "__main__":
         "/home/anton/Downloads/imc_folder",
         "/home/anton/Downloads/analysis_folder",
         "/home/anton/Downloads/example_panel.csv",
-        [
-            ("ilastik", "_ilastik", True),
-            ("full", "_full", False)
-        ],
+        [("ilastik", "_ilastik", True), ("full", "_full", False)],
         metalcolumn="Metal Tag",
     )
 
