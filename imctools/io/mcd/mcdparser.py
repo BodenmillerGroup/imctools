@@ -61,11 +61,11 @@ class McdParser:
         if acquisition is None:
             return None
         data = self._get_acquisition_raw_data(acquisition)
-        if data is not None:
+        try:
             image_data = reshape_long_2_cyx(data, is_sorted=True)
             # Drop first three channels X, Y, Z
             image_data = image_data[3:]
-        else:
+        except:
             image_data = None
             acquisition.is_valid = False
             logger.warning(f"Error reading MCD acquisition: {acquisition_id}")
