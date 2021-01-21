@@ -22,6 +22,7 @@ class ImcWriter:
         root_output_folder: Union[str, Path],
         mcd_parser: McdParser,
         txt_acquisitions_map: Dict[int, Union[str, Path]] = None,
+        parse_txt: bool = False
     ):
         """
         Initializes an ImcFolderWriter that can be used to write out an imcfolder and compress it to zip.
@@ -31,6 +32,7 @@ class ImcWriter:
         self.root_output_folder = root_output_folder
         self.mcd_parser = mcd_parser
         self.txt_acquisitions_map = txt_acquisitions_map
+        self.parse_txt = parse_txt
 
     @property
     def folder_name(self):
@@ -56,7 +58,7 @@ class ImcWriter:
         # Save acquisition images in OME-TIFF format
         for acquisition in session.acquisitions.values():
             acquisition_data = self.mcd_parser.get_acquisition_data(acquisition.id)
-            if not acquisition_data.is_valid:
+            if self.parse_txt or not acquisition_data.is_valid:
                 if self.txt_acquisitions_map is not None and acquisition.id in self.txt_acquisitions_map:
                     logger.warning(f"Using TXT file for acquisition: {acquisition.id}")
                     try:

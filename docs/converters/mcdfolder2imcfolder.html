@@ -41,7 +41,7 @@ from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
+def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False, parse_txt: bool = False):
     &#34;&#34;&#34;Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -52,6 +52,8 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
         Path to the output folder.
     create_zip
         Whether to create an output as .zip file.
+    parse_txt
+        Always use TXT files if present to get acquisition image data.
     &#34;&#34;&#34;
     if isinstance(input, str):
         input = Path(input)
@@ -83,7 +85,7 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
         txt_files = glob.glob(str(input_folder / f&#34;*[0-9]{TXT_FILE_EXTENSION}&#34;))
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
 
-        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
+        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map, parse_txt)
         imc_writer.write_imc_folder(create_zip=create_zip)
     finally:
         if mcd_parser is not None:
@@ -99,12 +101,15 @@ if __name__ == &#34;__main__&#34;:
 
     mcdfolder_to_imcfolder(
         # Path(&#34;/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip&#34;),
-        &#34;/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa&#34;,
+        # &#34;/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa&#34;,
+        &#34;/home/anton/Data/forAnton_MCD/6505_Lympho&#34;,
         # &#34;/home/anton/Documents/merrick/IMC/20200904_MS_XRF_epithelial_panel_4_titration.zip&#34;,
         # &#34;/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE&#34;,
         # &#34;/home/anton/Downloads/test&#34;,
         # &#34;/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip&#34;,
         Path(&#34;/home/anton/Downloads/imc_folder_v2&#34;),
+        create_zip=False,
+        parse_txt=True
     )
 
     print(timeit.default_timer() - tic)</code></pre>
@@ -118,7 +123,7 @@ if __name__ == &#34;__main__&#34;:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="imctools.converters.mcdfolder2imcfolder.mcdfolder_to_imcfolder"><code class="name flex">
-<span>def <span class="ident">mcdfolder_to_imcfolder</span></span>(<span>input: Union[str, pathlib.Path], output_folder: Union[str, pathlib.Path], create_zip: bool = False)</span>
+<span>def <span class="ident">mcdfolder_to_imcfolder</span></span>(<span>input: Union[str, pathlib.Path], output_folder: Union[str, pathlib.Path], create_zip: bool = False, parse_txt: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.</p>
@@ -131,12 +136,14 @@ raw .mcd/.txt acquisition data files.</dd>
 <dd>Path to the output folder.</dd>
 <dt><strong><code>create_zip</code></strong></dt>
 <dd>Whether to create an output as .zip file.</dd>
+<dt><strong><code>parse_txt</code></strong></dt>
+<dd>Always use TXT files if present to get acquisition image data.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
+<pre><code class="python">def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False, parse_txt: bool = False):
     &#34;&#34;&#34;Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -147,6 +154,8 @@ raw .mcd/.txt acquisition data files.</dd>
         Path to the output folder.
     create_zip
         Whether to create an output as .zip file.
+    parse_txt
+        Always use TXT files if present to get acquisition image data.
     &#34;&#34;&#34;
     if isinstance(input, str):
         input = Path(input)
@@ -178,7 +187,7 @@ raw .mcd/.txt acquisition data files.</dd>
         txt_files = glob.glob(str(input_folder / f&#34;*[0-9]{TXT_FILE_EXTENSION}&#34;))
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
 
-        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
+        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map, parse_txt)
         imc_writer.write_imc_folder(create_zip=create_zip)
     finally:
         if mcd_parser is not None:

@@ -13,7 +13,7 @@ from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False):
+def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False, parse_txt: bool = False):
     """Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -24,6 +24,8 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
         Path to the output folder.
     create_zip
         Whether to create an output as .zip file.
+    parse_txt
+        Always use TXT files if present to get acquisition image data.
     """
     if isinstance(input, str):
         input = Path(input)
@@ -55,7 +57,7 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
         txt_files = glob.glob(str(input_folder / f"*[0-9]{TXT_FILE_EXTENSION}"))
         txt_acquisitions_map = {TxtParser.extract_acquisition_id(f): f for f in txt_files}
 
-        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map)
+        imc_writer = ImcWriter(output_folder, mcd_parser, txt_acquisitions_map, parse_txt)
         imc_writer.write_imc_folder(create_zip=create_zip)
     finally:
         if mcd_parser is not None:
@@ -71,12 +73,15 @@ if __name__ == "__main__":
 
     mcdfolder_to_imcfolder(
         # Path("/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip"),
-        "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa",
+        # "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa",
+        "/home/anton/Data/forAnton_MCD/6505_Lympho",
         # "/home/anton/Documents/merrick/IMC/20200904_MS_XRF_epithelial_panel_4_titration.zip",
         # "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
         # "/home/anton/Downloads/test",
         # "/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip",
         Path("/home/anton/Downloads/imc_folder_v2"),
+        create_zip=False,
+        parse_txt=True
     )
 
     print(timeit.default_timer() - tic)
