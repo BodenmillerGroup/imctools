@@ -32,7 +32,7 @@ Version 1.x documentation (deprecated): https://imctools.readthedocs.io
 
 Preferable way to install `imctools` is via official PyPI registry. Please define package version explicitly in order to avoid incompatibilities between v1.x and v2.x versions:
 ```
-pip install imctools==2.1.3
+pip install imctools==2.1.4
 ```
 In old IMC segmentation pipelines versions 1.x should be used!
 ```

@@ -60,8 +60,8 @@ class McdParser:
         acquisition = self.session.acquisitions.get(acquisition_id)
         if acquisition is None:
             return None
-        data = self._get_acquisition_raw_data(acquisition)
         try:
+            data = self._get_acquisition_raw_data(acquisition)
             image_data = reshape_long_2_cyx(data, is_sorted=True)
             # Drop first three channels X, Y, Z
             image_data = image_data[3:]
