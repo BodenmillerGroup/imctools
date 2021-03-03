@@ -104,7 +104,7 @@ class OmeTiffParser:
 
         channels = img.findall(f"{ns}Pixels/{ns}Channel")
         chan_dict = {
-            int(chan.attrib["ID"].split(":")[2]): (chan.attrib["Name"], chan.attrib["Fluor"]) for chan in channels
+            int(chan.attrib["ID"].split(":")[2]): (chan.attrib.get("Name", chan.attrib["Fluor"]), chan.attrib["Fluor"]) for chan in channels
         }
 
         image_name = img.attrib["Name"]
