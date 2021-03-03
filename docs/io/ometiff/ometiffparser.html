@@ -132,7 +132,7 @@ class OmeTiffParser:
 
         channels = img.findall(f&#34;{ns}Pixels/{ns}Channel&#34;)
         chan_dict = {
-            int(chan.attrib[&#34;ID&#34;].split(&#34;:&#34;)[2]): (chan.attrib[&#34;Name&#34;], chan.attrib[&#34;Fluor&#34;]) for chan in channels
+            int(chan.attrib[&#34;ID&#34;].split(&#34;:&#34;)[2]): (chan.attrib.get(&#34;Name&#34;, chan.attrib[&#34;Fluor&#34;]), chan.attrib[&#34;Fluor&#34;]) for chan in channels
         }
 
         image_name = img.attrib[&#34;Name&#34;]
@@ -293,7 +293,7 @@ if __name__ == &#34;__main__&#34;:
 
         channels = img.findall(f&#34;{ns}Pixels/{ns}Channel&#34;)
         chan_dict = {
-            int(chan.attrib[&#34;ID&#34;].split(&#34;:&#34;)[2]): (chan.attrib[&#34;Name&#34;], chan.attrib[&#34;Fluor&#34;]) for chan in channels
+            int(chan.attrib[&#34;ID&#34;].split(&#34;:&#34;)[2]): (chan.attrib.get(&#34;Name&#34;, chan.attrib[&#34;Fluor&#34;]), chan.attrib[&#34;Fluor&#34;]) for chan in channels
         }
 
         image_name = img.attrib[&#34;Name&#34;]
