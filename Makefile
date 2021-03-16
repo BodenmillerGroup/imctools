@@ -8,6 +8,7 @@ clean:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr tests/testdata
+	rm -fr docs/build
 
 # Install all development dependencies
 install:
@@ -39,10 +40,8 @@ coverage:
 	pytest --cov=imctools tests/
 
 build-docs:
-	rm -fr docs/
-	pdoc --html --output-dir docs imctools
-	mv docs/imctools/* docs
-	rmdir docs/imctools
+	rm -fr docs/build
+	cd docs && make html
 
 mypy:
 	mypy imctools
@@ -51,7 +50,7 @@ pyright:
 	pyright imctools
 
 isort:
-	isort --multi-line=3 --trailing-comma --force-grid-wrap=0 --combine-as --line-width 88 --recursive --apply imctools
+	isort --multi-line=3 --trailing-comma --force-grid-wrap=0 --combine-as --line-width 88 imctools
 
 vulture:
 	vulture imctools --min-confidence 70

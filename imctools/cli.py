@@ -48,7 +48,9 @@ def _add_mcdfolder2imcfolder_parser(subparsers: argparse._SubParsersAction):
     parser.add_argument("input", help="Path to the folder/zip archive containing the IMC raw data.")
     parser.add_argument("output_folder", help="Path to the output folder.")
     parser.add_argument("--zip", action="store_true", help="Whether to create an output as .zip file.")
-    parser.add_argument("--parse_txt", action="store_true", help="Always use TXT files if present to get acquisition image data.")
+    parser.add_argument(
+        "--parse_txt", action="store_true", help="Always use TXT files if present to get acquisition image data."
+    )
     parser.set_defaults(func=func)
 
 

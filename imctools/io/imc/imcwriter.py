@@ -22,7 +22,7 @@ class ImcWriter:
         root_output_folder: Union[str, Path],
         mcd_parser: McdParser,
         txt_acquisitions_map: Dict[int, Union[str, Path]] = None,
-        parse_txt: bool = False
+        parse_txt: bool = False,
     ):
         """
         Initializes an ImcFolderWriter that can be used to write out an imcfolder and compress it to zip.
@@ -77,7 +77,8 @@ class ImcWriter:
                         ch.min_intensity = round(float(img.min()), 4)
                         ch.max_intensity = round(float(img.max()), 4)
                 acquisition_data.save_ome_tiff(
-                    output_folder / (acquisition.metaname + OME_TIFF_SUFFIX), xml_metadata=mcd_xml,
+                    output_folder / (acquisition.metaname + OME_TIFF_SUFFIX),
+                    xml_metadata=mcd_xml,
                 )
 
         session.save(output_folder / (session.metaname + SESSION_JSON_SUFFIX))

@@ -37,7 +37,12 @@ class Session:
     """IMC session data. Container for all slides, acquisitions, panoramas, etc."""
 
     def __init__(
-        self, id: str, name: str, imctools_version: str, created: datetime, metadata: Optional[Dict[str, Any]] = None,
+        self,
+        id: str,
+        name: str,
+        imctools_version: str,
+        created: datetime,
+        metadata: Optional[Dict[str, Any]] = None,
     ):
         """
         Parameters
@@ -68,7 +73,11 @@ class Session:
     def from_dict(d: SessionDict):
         """Recreate an object from dictionary"""
         result = Session(
-            d.get("id"), d.get("name"), d.get("imctools_version"), parse(d.get("created")), d.get("metadata"),
+            d.get("id"),
+            d.get("name"),
+            d.get("imctools_version"),
+            parse(d.get("created")),
+            d.get("metadata"),
         )
         return result
 

@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "imctools"
-version = "2.1.5"
+version = "2.1.6"
 description = "Tools to handle Fluidigm IMC data"
 license = "MIT"
 authors = ["Vito Zanotelli <vito.zanotelli@uzh.ch>", "Anton Rau <anton.rau@uzh.ch>"]
@@ -16,33 +16,37 @@ readme = "README.md"
 classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
 ]
 include = ["AUTHORS.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "README.md"]
-exclude = ["tests", "docs"]
+exclude = ["tests", "docs", "**/__pycache__"]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
-imagecodecs = "^2020.5.30"
+python = ">=3.7,<4.0"
+imagecodecs = "*"
 packaging = "*"
-pandas = "^1.0"
-typing_extensions = ">=3.7.4.2"
+pandas = "*"
+typing_extensions = ">=3.7.4.3"
 xmltodict = ">=0.12.0"
-xtiff = ">=0.6.4"
+xtiff = ">=0.7.1"
 
 [tool.poetry.dev-dependencies]
-autoflake = "^1.4"
-black = "^19.10b0"
-bump2version = "^1.0.1"
-flake8 = "^3.8.4"
+autoflake = "*"
+black = "*"
+flake8 = "*"
 isort = "*"
 mypy = "*"
-pdoc3 = "*"
-pylint = "^2.6.0"
-pytest = "^6.2.1"
+myst-parser = "*"
+pylint = "*"
+pytest = "*"
 pytest-cov = "*"
-vulture = "^2.3"
+sphinx = "*"
+sphinx-autodoc-typehints = "*"
+sphinx_paramlinks = "*"
+sphinx_rtd_theme = "*"
+vulture = "*"
 
 [tool.poetry.scripts]
 imctools = 'imctools.cli:main'

@@ -13,7 +13,9 @@ from imctools.io.utils import MCD_FILENDING, SCHEMA_FILENDING, ZIP_FILENDING
 logger = logging.getLogger(__name__)
 
 
-def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False, parse_txt: bool = False):
+def mcdfolder_to_imcfolder(
+    input: Union[str, Path], output_folder: Union[str, Path], create_zip: bool = False, parse_txt: bool = False
+):
     """Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.
 
     Parameters
@@ -43,6 +45,7 @@ def mcdfolder_to_imcfolder(input: Union[str, Path], output_folder: Union[str, Pa
         mcd_files = list(input_folder.rglob(f"*{MCD_FILENDING}"))
         mcd_files = [f for f in mcd_files if not f.name.startswith(".")]
         assert len(mcd_files) == 1
+        input_folder = mcd_files[0].parent
         schema_files = glob.glob(str(input_folder / f"*{SCHEMA_FILENDING}"))
         schema_file = schema_files[0] if len(schema_files) > 0 else None
         try:
@@ -74,14 +77,15 @@ if __name__ == "__main__":
     mcdfolder_to_imcfolder(
         # Path("/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip"),
         # "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa",
-        "/home/anton/Data/forAnton_MCD/6505_Lympho",
+        # "/home/anton/Data/forAnton_MCD/6505_Lympho",
+        "/home/anton/Downloads/IMMUcan_Batch20201113_10042702-GU-VAR-TIS-01-IMC-01.zip",
         # "/home/anton/Documents/merrick/IMC/20200904_MS_XRF_epithelial_panel_4_titration.zip",
         # "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
         # "/home/anton/Downloads/test",
         # "/home/anton/Data/ForAnton/20200123_IMMUcan_reproducibility_day1_sl1_cp_panel_1_1.06.zip",
         Path("/home/anton/Downloads/imc_folder_v2"),
         create_zip=False,
-        parse_txt=True
+        parse_txt=False,
     )
 
     print(timeit.default_timer() - tic)

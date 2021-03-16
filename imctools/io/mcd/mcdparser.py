@@ -168,7 +168,9 @@ class McdParser:
 
     def get_before_ablation_image(self, acquisition_id: int):
         return self._get_ablation_image(
-            acquisition_id, const.BEFORE_ABLATION_IMAGE_START_OFFSET, const.BEFORE_ABLATION_IMAGE_END_OFFSET,
+            acquisition_id,
+            const.BEFORE_ABLATION_IMAGE_START_OFFSET,
+            const.BEFORE_ABLATION_IMAGE_END_OFFSET,
         )
 
     def save_before_ablation_image(
@@ -185,7 +187,9 @@ class McdParser:
 
     def get_after_ablation_image(self, acquisition_id: int):
         return self._get_ablation_image(
-            acquisition_id, const.AFTER_ABLATION_IMAGE_START_OFFSET, const.AFTER_ABLATION_IMAGE_END_OFFSET,
+            acquisition_id,
+            const.AFTER_ABLATION_IMAGE_START_OFFSET,
+            const.AFTER_ABLATION_IMAGE_END_OFFSET,
         )
 
     def save_after_ablation_image(
@@ -201,7 +205,10 @@ class McdParser:
         )
 
     def _get_ablation_image(
-        self, acquisition_id: int, start_offset: str, end_offset: str,
+        self,
+        acquisition_id: int,
+        start_offset: str,
+        end_offset: str,
     ):
         image_offset_fix = 161
 

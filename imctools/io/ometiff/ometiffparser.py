@@ -11,8 +11,8 @@ from imctools.data.acquisitiondata import AcquisitionData
 class OmeTiffParser:
     """Parser of MCD compatible .OME-TIFF files.
 
-     Allows to get a single IMC acquisition from a single OME-TIFF file.
-     """
+    Allows to get a single IMC acquisition from a single OME-TIFF file.
+    """
 
     def __init__(self, filepath: Union[str, Path], slide_id: int = 0, channel_id_offset: int = 0):
         if isinstance(filepath, str):
@@ -104,7 +104,8 @@ class OmeTiffParser:
 
         channels = img.findall(f"{ns}Pixels/{ns}Channel")
         chan_dict = {
-            int(chan.attrib["ID"].split(":")[2]): (chan.attrib.get("Name", chan.attrib["Fluor"]), chan.attrib["Fluor"]) for chan in channels
+            int(chan.attrib["ID"].split(":")[2]): (chan.attrib.get("Name", chan.attrib["Fluor"]), chan.attrib["Fluor"])
+            for chan in channels
         }
 
         image_name = img.attrib["Name"]

@@ -6,4 +6,4 @@
 
 __author__ = """Vito Zanotelli, Anton Rau"""
 __email__ = "vito.zanotelli@uzh.ch, anton.rau@uzh.ch"
-__version__ = "2.1.5"
+__version__ = "2.1.6"
