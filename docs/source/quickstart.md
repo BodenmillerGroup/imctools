@@ -1,4 +1,4 @@
-# imctools
+# Quickstart
 
 > `imctools` v2.x has many changes in IMC data output format, available CLI commands, dropped Python 2 and Fiji plugins support, etc.
 > If you are using `imctools` in pre-processing pipelines, please install v1.x version until your pipeline is modified accordingly!
@@ -79,7 +79,7 @@ ac_data.save_tiffs("/home/anton/tiffs", compression=0, bigtiff=False)
 parser.close()
 ```
 
-### Usage of previous version 1.x
+## Usage of version 1.x
 
 ```python
 import imctools.io.mcdparser as mcdparser

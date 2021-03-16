@@ -40,13 +40,3 @@ Created and maintained by Vito Zanotelli [vito.zanotelli@uzh.ch](mailto:vito.zan
 ## License
 
 [MIT](https://bodenmillergroup.github.io/imctools/LICENSE.html)
-
-## Contents
-
-```{toctree}
-quickstart
-api_reference
-CONTRIBUTING
-CHANGELOG
-LICENSE
-```

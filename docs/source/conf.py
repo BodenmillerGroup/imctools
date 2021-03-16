@@ -29,14 +29,14 @@ author = "Vito Zanotelli <vito.zanotelli@uzh.ch>, Anton Rau <anton.rau@uzh.ch>"
 extensions = [
     'myst_parser',
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
+    # 'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
     'sphinx_paramlinks'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = []
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -57,4 +57,4 @@ html_static_path = ['_static']
 
 add_module_names = False
 autodoc_member_order = 'bysource'
-autosummary_generate = True
+autosummary_generate = False
