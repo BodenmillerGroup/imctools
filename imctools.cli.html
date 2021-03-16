@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>imctools.cli &mdash; imctools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_paramlinks.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="imctools.converters" href="imctools.converters.html" />
+    <link rel="prev" title="API reference" href="api_reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> imctools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">imctools.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.converters.html">imctools.converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.data.html">imctools.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.io.html">imctools.io</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">imctools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api_reference.html">API reference</a> &raquo;</li>
+        
+      <li>imctools.cli</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/imctools.cli.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-imctools.cli">
+<span id="imctools-cli"></span><h1>imctools.cli<a class="headerlink" href="#module-imctools.cli" title="Permalink to this headline">¶</a></h1>
+<p>CLI interface for imctools library</p>
+<dl class="py function">
+<dt id="imctools.cli.export_acquisition_csv">
+<code class="sig-name descname"><span class="pre">export_acquisition_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'acquisition_metadata'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.export_acquisition_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export CSV file with merged acquisition metadata from all session subfolders.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.export_acquisition_csv.params.root_folder"></span><strong>root_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.export_acquisition_csv.params.root_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – The path to the folders containing the OME-TIFFs.</p></li>
+<li><p><span class="target" id="imctools.cli.export_acquisition_csv.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.export_acquisition_csv.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Folder where the metadata CSV file should be stored in.</p></li>
+<li><p><span class="target" id="imctools.cli.export_acquisition_csv.params.output_name"></span><strong>output_name</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.export_acquisition_csv.params.output_name">¶</a> – Filename of the acquisition metadata CSV file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.mcdfolder_to_imcfolder">
+<code class="sig-name descname"><span class="pre">mcdfolder_to_imcfolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_zip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_txt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.mcdfolder_to_imcfolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts folder (or zipped folder) containing raw acquisition data (mcd and txt files) to IMC folder containing standardized files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.mcdfolder_to_imcfolder.params.input"></span><strong>input</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.mcdfolder_to_imcfolder.params.input">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input folder / .zip file with  raw .mcd/.txt acquisition data files.</p></li>
+<li><p><span class="target" id="imctools.cli.mcdfolder_to_imcfolder.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.mcdfolder_to_imcfolder.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Path to the output folder.</p></li>
+<li><p><span class="target" id="imctools.cli.mcdfolder_to_imcfolder.params.create_zip"></span><strong>create_zip</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.mcdfolder_to_imcfolder.params.create_zip">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to create an output as .zip file.</p></li>
+<li><p><span class="target" id="imctools.cli.mcdfolder_to_imcfolder.params.parse_txt"></span><strong>parse_txt</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.mcdfolder_to_imcfolder.params.parse_txt">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Always use TXT files if present to get acquisition image data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.omefile_2_analysisfolder">
+<code class="sig-name descname"><span class="pre">omefile_2_analysisfolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panel_csv_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metalcolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Metal</span> <span class="pre">Tag'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usedcolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ilastik'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bigtiff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.omefile_2_analysisfolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts single OME-TIFF file to folder compatible with IMC segmentation pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.filename"></span><strong>filename</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.filename">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Path to input OME-TIFF file.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Output folder.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.basename"></span><strong>basename</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.basename">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Basename of the acquisition.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.panel_csv_file"></span><strong>panel_csv_file</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.panel_csv_file">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Name of the CSV file that contains the channels to be written out.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.metalcolumn"></span><strong>metalcolumn</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.metalcolumn">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Column name of the metal names.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.usedcolumn"></span><strong>usedcolumn</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.usedcolumn">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Column that should contain booleans (0, 1) if the channel should be used, i.e. “ilastik”.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.bigtiff"></span><strong>bigtiff</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.bigtiff">¶</a> – Whether to save TIFF files in BigTIFF format.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.sort_channels"></span><strong>sort_channels</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.sort_channels">¶</a> – Whether to sort channels by mass.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_2_analysisfolder.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_2_analysisfolder.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>]) – Output Numpy data type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.omefile_to_histocatfolder">
+<code class="sig-name descname"><span class="pre">omefile_to_histocatfolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.omefile_to_histocatfolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts single OME-TIFF file to a folder compatible with HistoCAT software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.omefile_to_histocatfolder.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_histocatfolder.params.filepath">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Path to OME-TIFF input file.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_histocatfolder.params.base_folder"></span><strong>base_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_histocatfolder.params.base_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Base output folder.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_histocatfolder.params.mask_file"></span><strong>mask_file</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_histocatfolder.params.mask_file">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Path to mask file.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_histocatfolder.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_histocatfolder.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]) – Output numpy format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.omefile_to_tifffolder">
+<code class="sig-name descname"><span class="pre">omefile_to_tifffolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.omefile_to_tifffolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves planes of single OME-TIFF file to a folder containing standard TIFF (ImageJ-compatible) files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.omefile_to_tifffolder.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_tifffolder.params.filepath">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Path to OME-TIFF input file.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_tifffolder.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_tifffolder.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Output folder.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_tifffolder.params.basename"></span><strong>basename</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_tifffolder.params.basename">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Basename for generated output files.</p></li>
+<li><p><span class="target" id="imctools.cli.omefile_to_tifffolder.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefile_to_tifffolder.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]) – Output numpy format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.omefolder_to_histocatfolder">
+<code class="sig-name descname"><span class="pre">omefolder_to_histocatfolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_mask.tiff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.omefolder_to_histocatfolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts all OME-TIFF files in input folder to a folder compatible with HistoCAT software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.omefolder_to_histocatfolder.params.input_folder"></span><strong>input_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefolder_to_histocatfolder.params.input_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input folder.</p></li>
+<li><p><span class="target" id="imctools.cli.omefolder_to_histocatfolder.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefolder_to_histocatfolder.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Output folder.</p></li>
+<li><p><span class="target" id="imctools.cli.omefolder_to_histocatfolder.params.mask_folder"></span><strong>mask_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefolder_to_histocatfolder.params.mask_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Folder containing the masks, or single mask file.</p></li>
+<li><p><span class="target" id="imctools.cli.omefolder_to_histocatfolder.params.mask_suffix"></span><strong>mask_suffix</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefolder_to_histocatfolder.params.mask_suffix">¶</a> – Mask suffix.</p></li>
+<li><p><span class="target" id="imctools.cli.omefolder_to_histocatfolder.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.omefolder_to_histocatfolder.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]) – Output numpy format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.v1_to_v2">
+<code class="sig-name descname"><span class="pre">v1_to_v2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.v1_to_v2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts IMC folder from v1 to v2 format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.cli.v1_to_v2.params.input_folder"></span><strong>input_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.v1_to_v2.params.input_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input folder (with IMC v1 data).</p></li>
+<li><p><span class="target" id="imctools.cli.v1_to_v2.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.cli.v1_to_v2.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Output folder.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.cli.main">
+<code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main CLI entry point.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="imctools.converters.html" class="btn btn-neutral float-right" title="imctools.converters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api_reference.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright University of Zurich, 2021.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

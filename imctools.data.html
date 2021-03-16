@@ -1,0 +1,977 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>imctools.data &mdash; imctools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_paramlinks.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="imctools.io" href="imctools.io.html" />
+    <link rel="prev" title="imctools.converters" href="imctools.converters.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> imctools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="imctools.cli.html">imctools.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.converters.html">imctools.converters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">imctools.data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.acquisition">imctools.data.acquisition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.acquisitiondata">imctools.data.acquisitiondata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.channel">imctools.data.channel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.panorama">imctools.data.panorama</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.session">imctools.data.session</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.data.slide">imctools.data.slide</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.io.html">imctools.io</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">imctools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api_reference.html">API reference</a> &raquo;</li>
+        
+      <li>imctools.data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/imctools.data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="imctools-data">
+<h1>imctools.data<a class="headerlink" href="#imctools-data" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-imctools.data.acquisition">
+<span id="imctools-data-acquisition"></span><h2>imctools.data.acquisition<a class="headerlink" href="#module-imctools.data.acquisition" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.acquisition.AblationImageType">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">AblationImageType</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.AblationImageType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Before / after ablation types of images</p>
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AblationImageType.BEFORE">
+<code class="sig-name descname"><span class="pre">BEFORE</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'before'</span></em><a class="headerlink" href="#imctools.data.acquisition.AblationImageType.BEFORE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AblationImageType.AFTER">
+<code class="sig-name descname"><span class="pre">AFTER</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'after'</span></em><a class="headerlink" href="#imctools.data.acquisition.AblationImageType.AFTER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.acquisition.AcquisitionDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">AcquisitionDict</span></code><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.slide_id">
+<code class="sig-name descname"><span class="pre">slide_id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.slide_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.id">
+<code class="sig-name descname"><span class="pre">id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.origin">
+<code class="sig-name descname"><span class="pre">origin</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.source_path">
+<code class="sig-name descname"><span class="pre">source_path</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.source_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.max_x">
+<code class="sig-name descname"><span class="pre">max_x</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.max_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.max_y">
+<code class="sig-name descname"><span class="pre">max_y</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.max_y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.signal_type">
+<code class="sig-name descname"><span class="pre">signal_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.signal_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.segment_data_format">
+<code class="sig-name descname"><span class="pre">segment_data_format</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.segment_data_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.ablation_frequency">
+<code class="sig-name descname"><span class="pre">ablation_frequency</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.ablation_frequency" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.ablation_power">
+<code class="sig-name descname"><span class="pre">ablation_power</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.ablation_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.start_timestamp">
+<code class="sig-name descname"><span class="pre">start_timestamp</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.start_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.end_timestamp">
+<code class="sig-name descname"><span class="pre">end_timestamp</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.end_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.movement_type">
+<code class="sig-name descname"><span class="pre">movement_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.movement_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.ablation_distance_between_shots_x">
+<code class="sig-name descname"><span class="pre">ablation_distance_between_shots_x</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.ablation_distance_between_shots_x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.ablation_distance_between_shots_y">
+<code class="sig-name descname"><span class="pre">ablation_distance_between_shots_y</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.ablation_distance_between_shots_y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.template">
+<code class="sig-name descname"><span class="pre">template</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.roi_start_x_pos_um">
+<code class="sig-name descname"><span class="pre">roi_start_x_pos_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.roi_start_x_pos_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.roi_start_y_pos_um">
+<code class="sig-name descname"><span class="pre">roi_start_y_pos_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.roi_start_y_pos_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.roi_end_x_pos_um">
+<code class="sig-name descname"><span class="pre">roi_end_x_pos_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.roi_end_x_pos_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.roi_end_y_pos_um">
+<code class="sig-name descname"><span class="pre">roi_end_y_pos_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.roi_end_y_pos_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.description">
+<code class="sig-name descname"><span class="pre">description</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.has_before_ablation_image">
+<code class="sig-name descname"><span class="pre">has_before_ablation_image</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.has_before_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.has_after_ablation_image">
+<code class="sig-name descname"><span class="pre">has_after_ablation_image</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.has_after_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.AcquisitionDict.is_valid">
+<code class="sig-name descname"><span class="pre">is_valid</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#imctools.data.acquisition.AcquisitionDict.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.acquisition.Acquisition">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Acquisition</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slide_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ablation_frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ablation_power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">movement_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ablation_distance_between_shots_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ablation_distance_between_shots_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_start_x_pos_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_start_y_pos_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_end_x_pos_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roi_end_y_pos_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_before_ablation_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_after_ablation_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.Acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>IMC acquisition as a collection of acquisition channels.</p>
+<dl class="py attribute">
+<dt id="imctools.data.acquisition.Acquisition.symbol">
+<code class="sig-name descname"><span class="pre">symbol</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'a'</span></em><a class="headerlink" href="#imctools.data.acquisition.Acquisition.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.from_dict">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.Acquisition.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreate an object from dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.metaname">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metaname</span></code><a class="headerlink" href="#imctools.data.acquisition.Acquisition.metaname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta name fully describing the entity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.n_channels">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_channels</span></code><a class="headerlink" href="#imctools.data.acquisition.Acquisition.n_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of channels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.channel_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_names</span></code><a class="headerlink" href="#imctools.data.acquisition.Acquisition.channel_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.channel_labels">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_labels</span></code><a class="headerlink" href="#imctools.data.acquisition.Acquisition.channel_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel labels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.channel_masses">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_masses</span></code><a class="headerlink" href="#imctools.data.acquisition.Acquisition.channel_masses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel masses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.get_name_indices">
+<code class="sig-name descname"><span class="pre">get_name_indices</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.Acquisition.get_name_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with the indices from names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.get_mass_indices">
+<code class="sig-name descname"><span class="pre">get_mass_indices</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masses</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.Acquisition.get_mass_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the channel indices from the queried mass</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisition.Acquisition.get_csv_dict">
+<code class="sig-name descname"><span class="pre">get_csv_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisition.Acquisition.get_csv_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary for CSV tables</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.data.acquisitiondata">
+<span id="imctools-data-acquisitiondata"></span><h2>imctools.data.acquisitiondata<a class="headerlink" href="#module-imctools.data.acquisitiondata" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.acquisitiondata.AcquisitionData">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">AcquisitionData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for IMC acquisition binary image data.</p>
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.acquisition">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">acquisition</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.acquisition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquisition metadata</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.image_data">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">image_data</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.image_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Binary image data as numpy array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.to_xarray">
+<code class="sig-name descname"><span class="pre">to_xarray</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.to_xarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get binary image data as xarray</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.is_valid">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_valid</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.is_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.n_channels">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">n_channels</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.n_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of channels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.channel_names">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_names</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.channel_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.channel_labels">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_labels</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.channel_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel labels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.channel_masses">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">channel_masses</span></code><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.channel_masses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel masses</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_indices">
+<code class="sig-name descname"><span class="pre">get_image_stack_by_indices</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get image stack by channel indices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_by_index">
+<code class="sig-name descname"><span class="pre">get_image_by_index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get channel image by its index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_names">
+<code class="sig-name descname"><span class="pre">get_image_stack_by_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get image stack by channel names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_by_name">
+<code class="sig-name descname"><span class="pre">get_image_by_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get channel image by its name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_labels">
+<code class="sig-name descname"><span class="pre">get_image_stack_by_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_stack_by_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get image stack by channel labels</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.get_image_by_label">
+<code class="sig-name descname"><span class="pre">get_image_by_label</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.get_image_by_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get channel image by its label</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff">
+<code class="sig-name descname"><span class="pre">save_ome_tiff</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save OME TIFF file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.filename"></span><strong>filename</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.filename">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – .ome.tiff file name.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.names"></span><strong>names</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.names">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Channel names (metals / tags).</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.masses"></span><strong>masses</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.masses">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Channel masses.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.xml_metadata"></span><strong>xml_metadata</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.xml_metadata">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Original MCD-XML metadata.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_ome_tiff.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]) – Output numpy format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.save_tiff">
+<code class="sig-name descname"><span class="pre">save_tiff</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagej</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bigtiff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs">
+<code class="sig-name descname"><span class="pre">save_tiffs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagej</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bigtiff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save ImageJ TIFF files in a folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.output_folder"></span><strong>output_folder</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.output_folder">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Output folder.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.names"></span><strong>names</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.names">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Channel names (metals / tags).</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.masses"></span><strong>masses</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.masses">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Channel masses.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.basename"></span><strong>basename</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.basename">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Base file name.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.imagej"></span><strong>imagej</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.imagej">¶</a> – Save TIFF file compatible with ImageJ format.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.bigtiff"></span><strong>bigtiff</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.bigtiff">¶</a> – BigTIFF format.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.dtype"></span><strong>dtype</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.dtype">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code>]) – Output numpy format.</p></li>
+<li><p><span class="target" id="imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.compression"></span><strong>compression</strong><a class="paramlink headerlink reference internal" href="#imctools.data.acquisitiondata.AcquisitionData.save_tiffs.params.compression">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Compression level.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.data.channel">
+<span id="imctools-data-channel"></span><h2>imctools.data.channel<a class="headerlink" href="#module-imctools.data.channel" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.channel.ChannelDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">ChannelDict</span></code><a class="headerlink" href="#imctools.data.channel.ChannelDict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.acquisition_id">
+<code class="sig-name descname"><span class="pre">acquisition_id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.acquisition_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.id">
+<code class="sig-name descname"><span class="pre">id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.order_number">
+<code class="sig-name descname"><span class="pre">order_number</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.order_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.label">
+<code class="sig-name descname"><span class="pre">label</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.mass">
+<code class="sig-name descname"><span class="pre">mass</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.mass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.min_intensity">
+<code class="sig-name descname"><span class="pre">min_intensity</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.min_intensity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.max_intensity">
+<code class="sig-name descname"><span class="pre">max_intensity</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.max_intensity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.channel.ChannelDict.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.channel.ChannelDict.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.channel.Channel">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Channel</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.channel.Channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>IMC acquisition channel. Represents an image intensity.</p>
+<dl class="py attribute">
+<dt id="imctools.data.channel.Channel.symbol">
+<code class="sig-name descname"><span class="pre">symbol</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'c'</span></em><a class="headerlink" href="#imctools.data.channel.Channel.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.channel.Channel.from_dict">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.channel.Channel.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreate an object from dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.channel.Channel.metaname">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metaname</span></code><a class="headerlink" href="#imctools.data.channel.Channel.metaname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta name fully describing the entity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.channel.Channel.get_csv_dict">
+<code class="sig-name descname"><span class="pre">get_csv_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.channel.Channel.get_csv_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary for CSV tables</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.data.panorama">
+<span id="imctools-data-panorama"></span><h2>imctools.data.panorama<a class="headerlink" href="#module-imctools.data.panorama" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.panorama.PanoramaDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">PanoramaDict</span></code><a class="headerlink" href="#imctools.data.panorama.PanoramaDict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.slide_id">
+<code class="sig-name descname"><span class="pre">slide_id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.slide_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.id">
+<code class="sig-name descname"><span class="pre">id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.image_type">
+<code class="sig-name descname"><span class="pre">image_type</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.image_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.description">
+<code class="sig-name descname"><span class="pre">description</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.x1">
+<code class="sig-name descname"><span class="pre">x1</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.x1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.y1">
+<code class="sig-name descname"><span class="pre">y1</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.y1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.x2">
+<code class="sig-name descname"><span class="pre">x2</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.x2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.y2">
+<code class="sig-name descname"><span class="pre">y2</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.y2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.x3">
+<code class="sig-name descname"><span class="pre">x3</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.x3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.y3">
+<code class="sig-name descname"><span class="pre">y3</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.y3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.x4">
+<code class="sig-name descname"><span class="pre">x4</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.x4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.y4">
+<code class="sig-name descname"><span class="pre">y4</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.y4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.rotation_angle">
+<code class="sig-name descname"><span class="pre">rotation_angle</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.rotation_angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.panorama.PanoramaDict.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.panorama.PanoramaDict.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.panorama.Panorama">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Panorama</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slide_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.panorama.Panorama" title="Permalink to this definition">¶</a></dt>
+<dd><p>Panoramic image (manually attached or automatically generated).</p>
+<dl class="py attribute">
+<dt id="imctools.data.panorama.Panorama.symbol">
+<code class="sig-name descname"><span class="pre">symbol</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'p'</span></em><a class="headerlink" href="#imctools.data.panorama.Panorama.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.panorama.Panorama.from_dict">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.panorama.Panorama.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreate an object from dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.panorama.Panorama.metaname">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metaname</span></code><a class="headerlink" href="#imctools.data.panorama.Panorama.metaname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta name fully describing the entity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.panorama.Panorama.get_csv_dict">
+<code class="sig-name descname"><span class="pre">get_csv_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.panorama.Panorama.get_csv_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary for CSV tables</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.data.session">
+<span id="imctools-data-session"></span><h2>imctools.data.session<a class="headerlink" href="#module-imctools.data.session" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.session.SessionDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">SessionDict</span></code><a class="headerlink" href="#imctools.data.session.SessionDict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.id">
+<code class="sig-name descname"><span class="pre">id</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.session.SessionDict.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.name">
+<code class="sig-name descname"><span class="pre">name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.session.SessionDict.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.imctools_version">
+<code class="sig-name descname"><span class="pre">imctools_version</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.session.SessionDict.imctools_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.created">
+<code class="sig-name descname"><span class="pre">created</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.session.SessionDict.created" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.session.SessionDict.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.slides">
+<code class="sig-name descname"><span class="pre">slides</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#imctools.data.slide.SlideDict" title="imctools.data.slide.SlideDict"><span class="pre">imctools.data.slide.SlideDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.session.SessionDict.slides" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.acquisitions">
+<code class="sig-name descname"><span class="pre">acquisitions</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#imctools.data.acquisition.AcquisitionDict" title="imctools.data.acquisition.AcquisitionDict"><span class="pre">imctools.data.acquisition.AcquisitionDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.session.SessionDict.acquisitions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.panoramas">
+<code class="sig-name descname"><span class="pre">panoramas</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#imctools.data.panorama.PanoramaDict" title="imctools.data.panorama.PanoramaDict"><span class="pre">imctools.data.panorama.PanoramaDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.session.SessionDict.panoramas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.session.SessionDict.channels">
+<code class="sig-name descname"><span class="pre">channels</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#imctools.data.channel.ChannelDict" title="imctools.data.channel.ChannelDict"><span class="pre">imctools.data.channel.ChannelDict</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.session.SessionDict.channels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.session.Session">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Session</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imctools_version</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">created</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session" title="Permalink to this definition">¶</a></dt>
+<dd><p>IMC session data. Container for all slides, acquisitions, panoramas, etc.</p>
+<dl class="py method">
+<dt id="imctools.data.session.Session.from_dict">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreate an object from dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.get_csv_dict">
+<code class="sig-name descname"><span class="pre">get_csv_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session.get_csv_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary for CSV tables</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.save">
+<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save session data in JSON format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="imctools.data.session.Session.save.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.data.session.Session.save.params.filepath">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Output JSON file path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.save_meta_csv">
+<code class="sig-name descname"><span class="pre">save_meta_csv</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session.save_meta_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the metadata as CSV tables</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.load">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.session.Session.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load IMC session data from JSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="imctools.data.session.Session.load.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.data.session.Session.load.params.filepath">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input JSON file path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.metaname">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metaname</span></code><a class="headerlink" href="#imctools.data.session.Session.metaname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta name fully describing the entity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.session.Session.acquisition_ids">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">acquisition_ids</span></code><a class="headerlink" href="#imctools.data.session.Session.acquisition_ids" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.data.slide">
+<span id="imctools-data-slide"></span><h2>imctools.data.slide<a class="headerlink" href="#module-imctools.data.slide" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.data.slide.SlideDict">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">SlideDict</span></code><a class="headerlink" href="#imctools.data.slide.SlideDict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.session_id">
+<code class="sig-name descname"><span class="pre">session_id</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.session_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.id">
+<code class="sig-name descname"><span class="pre">id</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.description">
+<code class="sig-name descname"><span class="pre">description</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.width_um">
+<code class="sig-name descname"><span class="pre">width_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.width_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.height_um">
+<code class="sig-name descname"><span class="pre">height_um</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.height_um" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.has_slide_image">
+<code class="sig-name descname"><span class="pre">has_slide_image</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.has_slide_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="imctools.data.slide.SlideDict.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#imctools.data.slide.SlideDict.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="imctools.data.slide.Slide">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">Slide</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height_um</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_slide_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.slide.Slide" title="Permalink to this definition">¶</a></dt>
+<dd><p>IMC slide (container for IMC acquisitions, panoramas and other entities).</p>
+<dl class="py attribute">
+<dt id="imctools.data.slide.Slide.symbol">
+<code class="sig-name descname"><span class="pre">symbol</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'s'</span></em><a class="headerlink" href="#imctools.data.slide.Slide.symbol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.from_dict">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.slide.Slide.from_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recreate an object from dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.metaname">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">metaname</span></code><a class="headerlink" href="#imctools.data.slide.Slide.metaname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Meta name fully describing the entity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#imctools.data.slide.Slide.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slide name (if available)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.uid">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">uid</span></code><a class="headerlink" href="#imctools.data.slide.Slide.uid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slide UUID (if available)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.filename">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">filename</span></code><a class="headerlink" href="#imctools.data.slide.Slide.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slide original source filename (if available)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.sw_version">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sw_version</span></code><a class="headerlink" href="#imctools.data.slide.Slide.sw_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>CyTOF software version (if available)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.data.slide.Slide.get_csv_dict">
+<code class="sig-name descname"><span class="pre">get_csv_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.data.slide.Slide.get_csv_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns dictionary for CSV tables</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="imctools.io.html" class="btn btn-neutral float-right" title="imctools.io" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="imctools.converters.html" class="btn btn-neutral float-left" title="imctools.converters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright University of Zurich, 2021.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

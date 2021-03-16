@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>imctools.io &mdash; imctools  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_paramlinks.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="CONTRIBUTING.html" />
+    <link rel="prev" title="imctools.data" href="imctools.data.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> imctools
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="imctools.cli.html">imctools.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.converters.html">imctools.converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imctools.data.html">imctools.data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">imctools.io</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.io.utils">imctools.io.utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.io.imc.imcparser">imctools.io.imc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.io.mcd.mcdparser">imctools.io.mcd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.io.ometiff.ometiffparser">imctools.io.ometiff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-imctools.io.txt.txtparser">imctools.io.txt</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">imctools</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="api_reference.html">API reference</a> &raquo;</li>
+        
+      <li>imctools.io</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/imctools.io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="imctools-io">
+<h1>imctools.io<a class="headerlink" href="#imctools-io" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-imctools.io.utils">
+<span id="imctools-io-utils"></span><h2>imctools.io.utils<a class="headerlink" href="#module-imctools.io.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="imctools.io.utils.reshape_long_2_cyx">
+<code class="sig-name descname"><span class="pre">reshape_long_2_cyx</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.utils.reshape_long_2_cyx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reshape data from long format into cyx format (channels, y, x).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="imctools.io.utils.reshape_long_2_cyx.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#imctools.io.utils.reshape_long_2_cyx.params.data">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">memmap</span></code>) – Input data.</p></li>
+<li><p><span class="target" id="imctools.io.utils.reshape_long_2_cyx.params.is_sorted"></span><strong>is_sorted</strong><a class="paramlink headerlink reference internal" href="#imctools.io.utils.reshape_long_2_cyx.params.is_sorted">¶</a> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether data are sorted.</p></li>
+<li><p><span class="target" id="imctools.io.utils.reshape_long_2_cyx.params.shape"></span><strong>shape</strong><a class="paramlink headerlink reference internal" href="#imctools.io.utils.reshape_long_2_cyx.params.shape">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Custom data shape.</p></li>
+<li><p><span class="target" id="imctools.io.utils.reshape_long_2_cyx.params.channel_indices"></span><strong>channel_indices</strong><a class="paramlink headerlink reference internal" href="#imctools.io.utils.reshape_long_2_cyx.params.channel_indices">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Channel indices.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.io.utils.get_ome_xml">
+<code class="sig-name descname"><span class="pre">get_ome_xml</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">big_endian</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">creator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acquisition_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_fluors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">ome_xml_kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.utils.get_ome_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for xtiff library to get a proper OME-TIFF XML</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ElementTree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="imctools.io.utils.sort_acquisition_channels">
+<code class="sig-name descname"><span class="pre">sort_acquisition_channels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.utils.sort_acquisition_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort entries of acquisition channels dictionary by channel order number</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io.imc.imcparser">
+<span id="imctools-io-imc"></span><h2>imctools.io.imc<a class="headerlink" href="#module-imctools.io.imc.imcparser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.io.imc.imcparser.ImcParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">ImcParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_dir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imc.imcparser.ImcParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>IMC folder parser.</p>
+<dl class="py method">
+<dt id="imctools.io.imc.imcparser.ImcParser.origin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">origin</span></code><a class="headerlink" href="#imctools.io.imc.imcparser.ImcParser.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.imc.imcparser.ImcParser.session">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">session</span></code><a class="headerlink" href="#imctools.io.imc.imcparser.ImcParser.session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.imc.imcparser.ImcParser.get_mcd_xml">
+<code class="sig-name descname"><span class="pre">get_mcd_xml</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imc.imcparser.ImcParser.get_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Original (raw) metadata from MCD file in XML format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.imc.imcparser.ImcParser.get_acquisition_data">
+<code class="sig-name descname"><span class="pre">get_acquisition_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imc.imcparser.ImcParser.get_acquisition_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns AcquisitionData object with binary image data</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-imctools.io.imc.imcwriter"></span><dl class="py class">
+<dt id="imctools.io.imc.imcwriter.ImcWriter">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">ImcWriter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mcd_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txt_acquisitions_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_txt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imc.imcwriter.ImcWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write IMC session data to IMC folder structure.</p>
+<dl class="py method">
+<dt id="imctools.io.imc.imcwriter.ImcWriter.folder_name">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">folder_name</span></code><a class="headerlink" href="#imctools.io.imc.imcwriter.ImcWriter.folder_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.imc.imcwriter.ImcWriter.write_imc_folder">
+<code class="sig-name descname"><span class="pre">write_imc_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">create_zip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.imc.imcwriter.ImcWriter.write_imc_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io.mcd.mcdparser">
+<span id="imctools-io-mcd"></span><h2>imctools.io.mcd<a class="headerlink" href="#module-imctools.io.mcd.mcdparser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.io.mcd.mcdparser.McdParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">McdParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_handle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml_metadata_filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw MCD file parser.</p>
+<p>The McdParser object should be closed using the close method.</p>
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.origin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">origin</span></code><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.session">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">session</span></code><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_mcd_xml">
+<code class="sig-name descname"><span class="pre">get_mcd_xml</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Original (raw) metadata from MCD file in XML format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.mcd_filename">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mcd_filename</span></code><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.mcd_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the open MCD file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_acquisition_data">
+<code class="sig-name descname"><span class="pre">get_acquisition_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_acquisition_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns AcquisitionData object with binary image data for given acquisition ID</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_slide_image">
+<code class="sig-name descname"><span class="pre">get_slide_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slide_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_slide_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get slide image as numpy array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_slide_image">
+<code class="sig-name descname"><span class="pre">save_slide_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slide_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.save_slide_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save slide image</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_panorama_image">
+<code class="sig-name descname"><span class="pre">get_panorama_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">panorama_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_panorama_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get panorama image as numpy array</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_panorama_image">
+<code class="sig-name descname"><span class="pre">save_panorama_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">panorama_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.save_panorama_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save panorama image of the acquisition</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_before_ablation_image">
+<code class="sig-name descname"><span class="pre">get_before_ablation_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_before_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_before_ablation_image">
+<code class="sig-name descname"><span class="pre">save_before_ablation_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.save_before_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.get_after_ablation_image">
+<code class="sig-name descname"><span class="pre">get_after_ablation_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.get_after_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.save_after_ablation_image">
+<code class="sig-name descname"><span class="pre">save_after_ablation_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acquisition_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.save_after_ablation_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdparser.McdParser.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdparser.McdParser.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close file handlers.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-imctools.io.mcd.mcdxmlparser"></span><dl class="py class">
+<dt id="imctools.io.mcd.mcdxmlparser.McdXmlParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">McdXmlParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mcd_xml</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process_namespaces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdxmlparser.McdXmlParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts MCD XML structure into IMC session format.</p>
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdxmlparser.McdXmlParser.origin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">origin</span></code><a class="headerlink" href="#imctools.io.mcd.mcdxmlparser.McdXmlParser.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Origin of the data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdxmlparser.McdXmlParser.session">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">session</span></code><a class="headerlink" href="#imctools.io.mcd.mcdxmlparser.McdXmlParser.session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root session data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.mcd.mcdxmlparser.McdXmlParser.get_mcd_xml">
+<code class="sig-name descname"><span class="pre">get_mcd_xml</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.mcd.mcdxmlparser.McdXmlParser.get_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Original (raw) metadata from MCD file in XML format.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-imctools.io.mcd.constants"></span><p>Definitions of MCD XML keywords</p>
+</div>
+<div class="section" id="module-imctools.io.ometiff.ometiffparser">
+<span id="imctools-io-ometiff"></span><h2>imctools.io.ometiff<a class="headerlink" href="#module-imctools.io.ometiff.ometiffparser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">OmeTiffParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slide_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_id_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parser of MCD compatible .OME-TIFF files.</p>
+<p>Allows to get a single IMC acquisition from a single OME-TIFF file.</p>
+<dl class="py method">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser.origin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">origin</span></code><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser.filepath">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">filepath</span></code><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.filepath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser.get_mcd_xml">
+<code class="sig-name descname"><span class="pre">get_mcd_xml</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.get_mcd_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Original (raw) metadata from MCD file in XML format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser.get_acquisition_data">
+<code class="sig-name descname"><span class="pre">get_acquisition_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.get_acquisition_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns AcquisitionData object with binary image data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.ometiff.ometiffparser.OmeTiffParser.extract_acquisition_id">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">extract_acquisition_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.extract_acquisition_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract acquisition ID from source OME-TIFF filepath.</p>
+<p>Filename should end with a numeric symbol!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="imctools.io.ometiff.ometiffparser.OmeTiffParser.extract_acquisition_id.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.io.ometiff.ometiffparser.OmeTiffParser.extract_acquisition_id.params.filepath">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input OME-TIFF filepath</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-imctools.io.txt.txtparser">
+<span id="imctools-io-txt"></span><h2>imctools.io.txt<a class="headerlink" href="#module-imctools.io.txt.txtparser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="imctools.io.txt.txtparser.TxtParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">TxtParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slide_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_id_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txt.txtparser.TxtParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parser of MCD compatible .txt files.</p>
+<p>Allows to get a single IMC acquisition from a single TXT file.</p>
+<dl class="py method">
+<dt id="imctools.io.txt.txtparser.TxtParser.origin">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">origin</span></code><a class="headerlink" href="#imctools.io.txt.txtparser.TxtParser.origin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.txt.txtparser.TxtParser.filepath">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">filepath</span></code><a class="headerlink" href="#imctools.io.txt.txtparser.TxtParser.filepath" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.txt.txtparser.TxtParser.get_acquisition_data">
+<code class="sig-name descname"><span class="pre">get_acquisition_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txt.txtparser.TxtParser.get_acquisition_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns AcquisitionData object with binary image data</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="imctools.io.txt.txtparser.TxtParser.extract_acquisition_id">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">extract_acquisition_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#imctools.io.txt.txtparser.TxtParser.extract_acquisition_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract acquisition ID from source TXT filepath.</p>
+<p>Filename should end with a numeric symbol!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><span class="target" id="imctools.io.txt.txtparser.TxtParser.extract_acquisition_id.params.filepath"></span><strong>filepath</strong><a class="paramlink headerlink reference internal" href="#imctools.io.txt.txtparser.TxtParser.extract_acquisition_id.params.filepath">¶</a> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – Input TXT filepath.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="CONTRIBUTING.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="imctools.data.html" class="btn btn-neutral float-left" title="imctools.data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright University of Zurich, 2021.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

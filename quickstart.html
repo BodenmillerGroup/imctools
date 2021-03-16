@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>imctools &mdash; imctools  documentation</title>
+  <title>Quickstart &mdash; imctools  documentation</title>
   
 
   
@@ -86,14 +86,12 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">imctools</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage-of-version-2-x">Usage of version 2.x</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#usage-of-previous-version-1-x">Usage of previous version 1.x</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-of-version-2-x">Usage of version 2.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-of-version-1-x">Usage of version 1.x</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
@@ -148,7 +146,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>imctools</li>
+      <li>Quickstart</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -167,8 +165,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="imctools">
-<h1>imctools<a class="headerlink" href="#imctools" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">imctools</span></code> v2.x has many changes in IMC data output format, available CLI commands, dropped Python 2 and Fiji plugins support, etc.
 If you are using <code class="docutils literal notranslate"><span class="pre">imctools</span></code> in pre-processing pipelines, please install v1.x version until your pipeline is modified accordingly!
@@ -246,8 +244,9 @@ We strongly encourage you to migrate to <code class="docutils literal notranslat
 <span class="n">parser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="section" id="usage-of-previous-version-1-x">
-<h3>Usage of previous version 1.x<a class="headerlink" href="#usage-of-previous-version-1-x" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="usage-of-version-1-x">
+<h2>Usage of version 1.x<a class="headerlink" href="#usage-of-version-1-x" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">imctools.io.mcdparser</span> <span class="k">as</span> <span class="nn">mcdparser</span>
 <span class="kn">import</span> <span class="nn">imctools.io.txtparser</span> <span class="k">as</span> <span class="nn">txtparser</span>
 <span class="kn">import</span> <span class="nn">imctools.io.ometiffparser</span> <span class="k">as</span> <span class="nn">omeparser</span>
@@ -283,7 +282,6 @@ We strongly encourage you to migrate to <code class="docutils literal notranslat
 <span class="c1"># or used with a context manager.</span>
 <span class="n">mcd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
-</div>
 </div>
 </div>
 </div>

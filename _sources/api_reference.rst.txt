@@ -1,20 +1,10 @@
 API reference
 =============
 
-.. autosummary::
-    :nosignatures:
-    :caption: API reference
-    :toctree: stubs
+.. toctree::
+    :maxdepth: 2
 
-    imctools.cli
-    imctools.converters
-    imctools.data
-    imctools.io
-
-..
-    Indices and tables
-    ==================
-
-    * :ref:`genindex`
-    * :ref:`modindex`
-    * :ref:`search`
+    imctools.cli.rst
+    imctools.converters.rst
+    imctools.data.rst
+    imctools.io.rst
