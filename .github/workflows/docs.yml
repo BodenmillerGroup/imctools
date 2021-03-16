@@ -21,7 +21,7 @@ jobs:
         with:
           docs-folder: docs/
           build-command: make html
-          pre-build-command: python -m pip install --upgrade pip && pip install poetry==1.1.5 && poetry install
+          pre-build-command: python -m pip install --upgrade pip && pip install poetry==1.1.5 && poetry config virtualenvs.create false && poetry install
       - name: Commit documentation changes
         run: |
           cp -r docs/build/html/* gh-pages/
