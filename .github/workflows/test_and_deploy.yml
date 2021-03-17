@@ -3,30 +3,70 @@ name: test-and-deploy
 on:
   push:
     branches: [ master ]
+    tags:
+      - "v*"
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  test:
+    name: Test ${{ matrix.platform }} py${{ matrix.python-version }}
+    runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
-
+        platform:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python-version:
+          - 3.7
+          - 3.8
+          - 3.9
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry==1.1.5
-        poetry install
-      env:
-        POETRY_VIRTUALENVS_CREATE: false
-    - name: Test with pytest
-      run: |
-        pytest
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==1.1.5
+          poetry install
+        env:
+          POETRY_VIRTUALENVS_CREATE: false
+      - name: Test with pytest
+        run: |
+          pytest
+
+  deploy:
+    name: Deploy
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'tags')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry==1.1.5
+          poetry install
+        env:
+          POETRY_VIRTUALENVS_CREATE: false
+      - name: Build and publish
+        env:
+          POETRY_HTTP_BASIC_PYPI_USERNAME: __token__
+          POETRY_HTTP_BASIC_PYPI_PASSWORD: <token>
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.TWINE_API_KEY }}
+        run: |
+          git tag
+          poetry build
+          poetry publish
