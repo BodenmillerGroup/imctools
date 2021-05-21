@@ -75,10 +75,10 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     mcdfolder_to_imcfolder(
-        # Path("/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa.zip"),
+        Path("/home/anton/Data/ImcSegmentationPipelineV2/20191202_HuBMAP_LympNode_ED.zip"),
         # "/home/anton/Downloads/20170905_Fluidigmworkshopfinal_SEAJa",
         # "/home/anton/Data/forAnton_MCD/6505_Lympho",
-        "/home/anton/Downloads/IMMUcan_Batch20201113_10042702-GU-VAR-TIS-01-IMC-01.zip",
+        # "/home/anton/Downloads/IMMUcan_Batch20201113_10042702-GU-VAR-TIS-01-IMC-01.zip",
         # "/home/anton/Documents/merrick/IMC/20200904_MS_XRF_epithelial_panel_4_titration.zip",
         # "/home/anton/Documents/IMC Workshop 2019/Data/iMC_workshop_2019/20190919_FluidigmBrCa_SE",
         # "/home/anton/Downloads/test",

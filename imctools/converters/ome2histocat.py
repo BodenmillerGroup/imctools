@@ -68,9 +68,7 @@ def omefile_to_histocatfolder(
     if mask_file is not None:
         if isinstance(mask_file, str):
             mask_file = Path(mask_file)
-        fn_mask_base = mask_file.stem
-        fn_mask_new = output_folder / fn_mask_base
-        shutil.copy2(mask_file, fn_mask_new)
+        shutil.copy2(mask_file, output_folder)
 
 
 def omefolder_to_histocatfolder(
@@ -127,8 +125,9 @@ if __name__ == "__main__":
     tic = timeit.default_timer()
 
     omefolder_to_histocatfolder(
-        Path("/home/anton/Downloads/imc_folder/20170905_Fluidigmworkshopfinal_SEAJa"),
+        Path("/home/anton/Downloads/imc_folder_v2/20191203_HuBMAP_LN"),
         Path("/home/anton/Downloads/tiff_folder"),
+        mask_folder="/home/anton/Data/ImcSegmentationPipelineV2/hubmap_processed_v2/masks",
     )
 
     print(timeit.default_timer() - tic)

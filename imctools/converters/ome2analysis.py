@@ -34,13 +34,13 @@ def get_metals_from_panel(
 
     if panel_csv_file is not None:
 
-        pannel = pd.read_csv(panel_csv_file)
-        if pannel.shape[1] > 1:
-            selected = pannel[usedcolumn]
-            assert selected.any() == 0 or selected.any() == 1, f"Values in 'usedcolumn' column should contain only 0/1"
-            metals = [str(n) for s, n in zip(selected, pannel[metalcolumn]) if s]
+        panel = pd.read_csv(panel_csv_file)
+        if panel.shape[1] > 1:
+            selected = panel[usedcolumn]
+            assert selected.isin((0, 1)).all(), f"Values in 'usedcolumn' column should contain only 0/1"
+            metals = panel.loc[selected == 1, metalcolumn].tolist()
         else:
-            metals = [pannel.columns[0]] + pannel.iloc[:, 0].tolist()
+            metals = [panel.columns[0]] + panel.iloc[:, 0].tolist()
 
     if sort_channels:
         if metals is not None:
@@ -187,9 +187,9 @@ if __name__ == "__main__":
     # )
 
     omefolder_to_analysisfolder(
-        "/home/anton/Downloads/imc_folder",
+        "/home/anton/Downloads/imc_folder_v2",
         "/home/anton/Downloads/analysis_folder",
-        "/home/anton/Downloads/example_panel.csv",
+        "/home/anton/Data/ImcSegmentationPipelineV2/hubmap_processed_v2/panel.csv",
         [("ilastik", "_ilastik", True), ("full", "_full", False)],
         metalcolumn="Metal Tag",
     )
