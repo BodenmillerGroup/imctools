@@ -85,7 +85,9 @@ def get_ome_xml(
 
     if acquisition_date is not None:
         image_element = element_tree.find("./Image")
-        ET.SubElement(image_element, "AcquisitionDate").text = acquisition_date
+        acquisition_date_element = ET.Element("AcquisitionDate")
+        acquisition_date_element.text = acquisition_date
+        image_element.insert(0, acquisition_date_element)
 
     if channel_fluors is not None:
         assert len(channel_fluors) == size_c
