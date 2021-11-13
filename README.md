@@ -5,6 +5,10 @@
 ![PyPI - License](https://img.shields.io/pypi/l/imctools)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/BodenmillerGroup/imctools/test-and-deploy/master)
 
+**Deprecation note:** This repository is not actively maintained. For a maintained IMC file parser implementing please refer to [readimc](https://github.com/BodenmillerGroup/readimc).
+
+## Background
+
 An IMC file conversion tool that aims to convert IMC raw data files (.mcd, .txt) into an intermediary ome.tiff, containing all the relevant metadata. Further it contains tools to generate simpler TIFF files that can be directly be used as input files for e.g. CellProfiller, Ilastik, Fiji etc.
 
 Documentation is available at [https://bodenmillergroup.github.io/imctools](https://bodenmillergroup.github.io/imctools)
