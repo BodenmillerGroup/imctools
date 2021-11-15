@@ -5,7 +5,7 @@
 ![PyPI - License](https://img.shields.io/pypi/l/imctools)
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/BodenmillerGroup/imctools/test-and-deploy/master)
 
-**Deprecation note:** This repository is not actively maintained. For a maintained IMC file parser implementing please refer to [readimc](https://github.com/BodenmillerGroup/readimc).
+**Deprecation note:** This repository is not actively maintained. For a maintained IMC file parser implementation please refer to [readimc](https://github.com/BodenmillerGroup/readimc).
 
 ## Background
 
